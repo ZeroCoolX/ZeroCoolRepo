@@ -35,7 +35,12 @@ public abstract class AbstractEvent {
 	
 	
 	/**
-	 * Constructors
+	 * Constructors:
+	 * 
+	 * Multiple (parameter number specific) constructors allow for testers to initialize an event 
+	 * with the desired data.
+	 * Default constructor creates a new instance of the desired event with no name, the Type specific 
+	 * EventType, the date right now at this instance, and an eventId
 	 * **/
 	protected AbstractEvent(){
 		this("");
@@ -61,8 +66,12 @@ public abstract class AbstractEvent {
 		this.eventTime = eventTime;
 	}
 	
-	/*
-	 * Functional Abstract Methods
+	/**
+	 *Initialize Event:
+	 *
+	 *parameter: Collection of Participant objects are given as parameter
+	 *
+	 *function: Stores participant[] parameter
 	 **/
 	abstract void initializeEvent(Participant[] participants);
 	abstract void startParticipant();
@@ -83,6 +92,10 @@ public abstract class AbstractEvent {
 	
 	public void setEventTime(Date eventTime){
 		this.eventTime = eventTime;
+	}
+	
+	void setEventId(long eventId){
+		this.eventId = eventId;
 	}
 
 	/*
