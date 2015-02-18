@@ -1,10 +1,13 @@
+package com.zerocool.systemcontroller.event;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.zerocool.systemcontroller.participant.Participant;
 
 
-public class Individual extends Event{
+
+public class Individual extends AbstractEvent{
 	
 	private EventType type;
 	private String name;

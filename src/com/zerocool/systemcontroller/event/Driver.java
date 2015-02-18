@@ -1,3 +1,4 @@
+package com.zerocool.systemcontroller.event;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -8,14 +9,14 @@ public class Driver {
 	public static void main (String [] args){
 		
 		System.out.println("Testing...testing....");
-		Event[] events = new Event[4];
+		AbstractEvent[] events = new AbstractEvent[4];
 		//Calendar cal = Calendar.getInstance();
 		events[0] = new Individual("100M Sprint");
-		events[1] = new Group("CrossCountry Skiiing", Event.EventType.GRP);
-		events[2] = new ParIndividual("Marathon", Event.EventType.PARIND, new Date(2015, 2, 17, 9, 23, 50));
-		events[3] = new ParGroup("Swimming", Event.EventType.PARGRP, new Date(2015, 2, 17, 9, 25, 00), 9000);	
+		events[1] = new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP);
+		events[2] = new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, new Date(2015, 2, 17, 9, 23, 50));
+		events[3] = new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, new Date(2015, 2, 17, 9, 25, 00), 9000);	
 
-		for(Event eve: events){
+		for(AbstractEvent eve: events){
 			String message = "";
 			message += "\nName: "+eve.getName();
 			message += "\nType: "+eve.getType();

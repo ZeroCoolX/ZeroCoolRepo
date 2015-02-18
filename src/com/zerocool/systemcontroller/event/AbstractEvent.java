@@ -1,10 +1,13 @@
+package com.zerocool.systemcontroller.event;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.zerocool.systemcontroller.participant.Participant;
 
-public abstract class Event {
+
+public abstract class AbstractEvent {
 	
 	protected EventType type;
 	protected String name;
@@ -27,23 +30,23 @@ public abstract class Event {
 	/**
 	 * Constructors
 	 * **/
-	protected Event(){
+	protected AbstractEvent(){
 		this("");
 	}
 	
-	protected Event(String name){
+	protected AbstractEvent(String name){
 		this(name, EventType.IND);
 	}
 	
-	protected Event(String name, EventType type){
+	protected AbstractEvent(String name, EventType type){
 		this(name, type, new Date());
 	}
 	
-	protected Event(String name, EventType type, Date eventTime){
+	protected AbstractEvent(String name, EventType type, Date eventTime){
 		this(name, type, eventTime, -1);
 	}
 	
-	protected Event(String name, EventType type, Date eventTime, long eventId){
+	protected AbstractEvent(String name, EventType type, Date eventTime, long eventId){
 		System.out.println("abstract eventid = " + eventId);
 		eventId +=1;		
 		this.type = type;
