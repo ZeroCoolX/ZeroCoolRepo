@@ -43,13 +43,10 @@ public class ParGroup extends AbstractEvent{
 		currentParticipants = participants;
 	}
 	
-	void startParticipant(){
+	void startParticipants(){
 		System.out.println("Starting ParGroup Participants");
 	}
-	
-	void startParticipants(){
-		
-	}
+
 	
 	void finishParticipant(){
 		System.out.println("Finishing ParGroup Participants");

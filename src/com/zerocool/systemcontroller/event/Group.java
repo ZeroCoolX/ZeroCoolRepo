@@ -37,16 +37,26 @@ public class Group extends AbstractEvent {
 	}
 	
 	void initializeEvent(Participant[] participants){
+		//must check for null parameter
 		currentParticipants = participants;
-	}
-	
-	void startParticipant(){
-		System.out.println("Starting Group Participants");
+		//go through each participant and set their eventId and event name
+		for(Participant curPar: currentParticipants){	
+			//UNCOMMENT WHEN Participant CLASS IS WRITTEN
+			/*curPar.setEventName(name);
+			curPar.setEventId(eventId);*/
+		}
 	}
 	
 	void startParticipants(){
-		
+		System.out.println("Starting Group Participants");
+		//go through each participant and set the start time 
+		for(Participant curPar: currentParticipants){
+			//UNCOMMENT WHEN Participant CLASS IS WRITTEN
+			/*curPar.setIsCompeting(true);
+			curPar.setStartTime(eventTime);*/
+		}
 	}
+	
 	
 	void finishParticipant(){
 		System.out.println("Finishing Group Participants");

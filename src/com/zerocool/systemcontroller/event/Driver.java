@@ -30,9 +30,10 @@ public class Driver {
 			message += "\nTime: "+eve.getEventTime().toString();
 			message += "\nId: "+eve.getEventId();
 			System.out.println(message);
-			eve.startParticipant();
+			eve.startParticipants();
 			eve.finishParticipant();
 		}
 	}
 	
+
 }

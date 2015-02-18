@@ -13,7 +13,7 @@ public class Individual extends AbstractEvent{
 	private String name;
 	private long eventId;
 	//only one Participant is needed since this is an Individual event
-	private Participant currentParticipant;
+	private Participant [] currentParticipants;
 	//dateFormat.format(date) prints (example)   2014/08/06 15:59:48
 	private DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	//eventTime stored the entire date but the specific miliseconds, seconds, minutes, hours..etc can be accessed from such
@@ -40,17 +40,26 @@ public class Individual extends AbstractEvent{
 	}
 	
 	void initializeEvent(Participant[] participants){
-		currentParticipant = participants[0];
-		
-	}
-	
-	void startParticipant(){
-		System.out.println("Starting Individual Participants");
+		//must check for null parameter
+		currentParticipants = participants;
+		//go through each participant and set their eventId and event name
+		for(Participant curPar: currentParticipants){
+			//UNCOMMENT WHEN Participant CLASS IS WRITTEN
+			/*curPar.setEventName(name);
+			curPar.setEventId(eventId);*/
+		}
 	}
 	
 	void startParticipants(){
-		
+		System.out.println("Starting Individual Participants");
+		//go through each participant and set the start time 
+		for(Participant curPar: currentParticipants){
+			//UNCOMMENT WHEN Participant CLASS IS WRITTEN
+			/*curPar.setIsCompeting(true);
+			curPar.setStartTime(eventTime);*/
+		}
 	}
+	
 	
 	void finishParticipant(){
 		System.out.println("Finishing Individual Participants");

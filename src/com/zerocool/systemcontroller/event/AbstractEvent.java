@@ -74,7 +74,6 @@ public abstract class AbstractEvent {
 	 *function: Stores participant[] parameter
 	 **/
 	abstract void initializeEvent(Participant[] participants);
-	abstract void startParticipant();
 	abstract void startParticipants();
 	abstract void finishParticipant();
 	

@@ -42,13 +42,10 @@ public class ParIndividual extends AbstractEvent{
 		currentParticipants = participants;
 	}
 	
-	void startParticipant(){
+	void startParticipants(){
 		System.out.println("Starting ParIndividual Participants");
 	}
 	
-	void startParticipants(){
-		
-	}
 	
 	void finishParticipant(){
 		System.out.println("Finishing ParIndividual Participants");
