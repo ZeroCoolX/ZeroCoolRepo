@@ -8,10 +8,17 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 
 public abstract class AbstractEvent {
-	
+	//type of this event
 	protected EventType type;
+	//name of this event
 	protected String name;
+	//sequentially increasing unique identifier
 	protected long eventId;
+	
+	/*
+	 * TOTALLY subject to change. 
+	 * Depends on what Jeremy is using in his Timer class. I also like Calendar. System.Time. Doesn't matter to me.
+	 * */
 	//dateFormat.format(date) prints (example)   2014/08/06 15:59:48
 	protected DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	//eventTime stored the entire date but the specific miliseconds, seconds, minutes, hours..etc can be accessed from such
