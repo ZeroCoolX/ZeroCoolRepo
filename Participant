@@ -1,0 +1,75 @@
+package com.zerocool.systemcontroller.participant;
+
+import java.util.ArrayList;
+
+public class Participant {
+	
+	private boolean isCompeting;
+	ArrayList<Record> records = new ArrayList<Record>();
+
+	public Participant() {
+	}
+
+	public Participant(long id) {
+		
+	}
+	
+	public Participant(long id, String name) {
+		this(id);
+	}
+	
+	
+	// ----- functional methods ----- \\
+	
+	public void createNewRecord() {
+		records.add(new Record(0,  "who cares", 1234, 4322  ));
+	}
+	
+	public Record getLastRecord() {
+			return records.get(records.size()-1);
+	}
+	
+	public String getFormattedData(long eventID) {
+		
+		return null;
+	}
+	
+	
+	// ----- accessors ----- \\
+	
+	public long getID() {
+		
+		return -1;
+	}
+	
+	public int getRecordCount() {
+		
+		return -1;
+	}
+	
+	public String getName() {
+		
+		return null;
+	}
+	
+	public boolean getIsCompeting() {
+		
+		return this.isCompeting;
+	}
+	
+	
+	// ----- mutators ----- \\
+	
+	public void setName(String name) {
+		
+	}
+	
+	public void setID(long id) {
+	
+	}
+	
+	public void setIsCompeting(boolean isCompeting) {
+		this.isCompeting = isCompeting;
+	}
+	
+}

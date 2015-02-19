@@ -1,0 +1,68 @@
+package com.zerocool.systemcontroller.participant;
+
+public class Record {
+	
+	private long eventID;
+	private String eventName;
+	private long startTime;
+	private long finishTime;
+
+	public Record(long id, String name, long stime, long ftime) {
+		eventID = id;
+		eventName = name;
+		startTime = stime;
+		finishTime = ftime;
+	}
+
+	
+	// ----- accessors ----- \\
+	
+	public boolean getDnf() {
+		
+		return false;
+	}
+	
+	public long getFinishTime() {
+		
+		return finishTime;
+	}
+	
+	public long getStartTime() {
+		
+		return startTime;
+	}
+	
+	public String getEventName() {
+		
+		return eventName;
+	}
+	
+	public long getEventID() {
+		
+		return eventID;
+	}
+	
+	
+	// ----- mutators ----- \\
+	
+	public void setEventName(String eventName) {
+		this.eventName = eventName;
+	}
+	
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+	
+	public void setFinishTime(long finishTime) {
+		this.finishTime = finishTime;
+	}
+	
+	public void setDnf(boolean dnf) {
+		
+	}
+	
+	public void setEventId(long eventId){
+		this.eventID = eventId;
+	}
+	
+}
