@@ -67,7 +67,7 @@ public class Channel {
 	 * @return - true if the sensor is armed else false.
 	 */
 	public boolean getSensorState() {
-		return true;
+		return currentSensor != null ? currentSensor.getState() : false;
 	}
 	
 	
