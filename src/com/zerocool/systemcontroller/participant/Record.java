@@ -53,4 +53,8 @@ public class Record {
 		
 	}
 	
+	public void setEventId(long eventId){
+		
+	}
+	
 }
