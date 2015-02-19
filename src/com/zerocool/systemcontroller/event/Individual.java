@@ -54,7 +54,7 @@ public class Individual extends AbstractEvent{
 		//go through each participant and set the start time 
 		for(Participant curPar: currentParticipants){
 			curPar.setIsCompeting(true);
-			curPar.getLastRecord().setStartTime(eventTime.getTime());
+			curPar.getLastRecord().setStartTime(3399);
 		}
 	}
 	
@@ -63,8 +63,12 @@ public class Individual extends AbstractEvent{
 		System.out.println("Finishing Individual Participants");
 		for(Participant curPar: currentParticipants){
 			curPar.setIsCompeting(false);
-			curPar.getLastRecord().setFinishTime(new Date().getTime());
+			curPar.getLastRecord().setFinishTime(34432);
 		}
+	}
+	
+	public Participant[] getParticipants(){
+		return currentParticipants;
 	}
 
 }

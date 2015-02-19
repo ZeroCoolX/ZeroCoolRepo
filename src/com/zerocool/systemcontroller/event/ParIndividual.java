@@ -39,16 +39,35 @@ public class ParIndividual extends AbstractEvent{
 	}
 	
 	void initializeEvent(Participant[] participants){
+		//must check for null parameter
 		currentParticipants = participants;
+		//go through each participant and set their eventId and event name
+		for(Participant curPar: currentParticipants){
+			curPar.getLastRecord().setEventName(name);
+			curPar.getLastRecord().setEventId(eventId);
+		}
 	}
 	
 	void startParticipants(){
 		System.out.println("Starting ParIndividual Participants");
+		//go through each participant and set the start time 
+		for(Participant curPar: currentParticipants){
+			curPar.setIsCompeting(true);
+			curPar.getLastRecord().setStartTime(3425);
+		}
 	}
 	
 	
 	void finishParticipant(){
 		System.out.println("Finishing ParIndividual Participants");
+		for(Participant curPar: currentParticipants){
+			curPar.setIsCompeting(false);
+			curPar.getLastRecord().setFinishTime(1123);
+		}
+	}
+	
+	public Participant[] getParticipants(){
+		return currentParticipants;
 	}
 
 }

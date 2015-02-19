@@ -3,6 +3,8 @@ package com.zerocool.systemcontroller.event;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.zerocool.systemcontroller.participant.Participant;
+
 
 public class Driver {
 	
@@ -22,6 +24,14 @@ public class Driver {
 		events[5] = new Group();
 		events[6] = new ParIndividual();
 		events[7] = new ParGroup();
+		
+		Participant[] partic = new Participant[1];
+		partic[0] = new Participant();
+		partic[0].createNewRecord();
+		
+		for(AbstractEvent e: events){
+			e.initializeEvent(partic);
+		}
 
 		for(AbstractEvent eve: events){
 			String message = "";
@@ -30,8 +40,24 @@ public class Driver {
 			message += "\nTime: "+eve.getEventTime().toString();
 			message += "\nId: "+eve.getEventId();
 			System.out.println(message);
+			message = "";
 			eve.startParticipants();
+			for(Participant par: eve.getParticipants()){
+				message += "\nEvent Name: "+par.getLastRecord().getEventName();
+				message += "\nEvent ID: "+par.getLastRecord().getEventID();
+				message += "\nStart Time: "+par.getLastRecord().getStartTime();
+				message += "\nisCompeting: "+par.getIsCompeting();
+				System.out.println(message);
+			}
+			message = "";
 			eve.finishParticipant();
+			for(Participant par: eve.getParticipants()){
+				message += "\nEvent Name: "+par.getLastRecord().getEventName();
+				message += "\nEvent ID: "+par.getLastRecord().getEventID();
+				message += "\nFinish Time: "+par.getLastRecord().getFinishTime();
+				message += "\nisCompeting: "+par.getIsCompeting();
+				System.out.println(message);
+			}
 		}
 	}
 	

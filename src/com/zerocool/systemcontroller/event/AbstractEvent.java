@@ -15,6 +15,9 @@ public abstract class AbstractEvent {
 	protected String name;
 	//sequentially increasing unique identifier
 	protected long eventId;
+	//participants actually competing in this event
+	public Participant [] currentParticipants;
+
 	
 	/*
 	 * TOTALLY subject to change. 
@@ -113,7 +116,11 @@ public abstract class AbstractEvent {
 		return eventTime;
 	}
 	
-	long getEventId(){
+	public long getEventId(){
 		return eventId;
+	}
+	
+	public Participant[] getParticipants(){
+		return currentParticipants;
 	}
 }

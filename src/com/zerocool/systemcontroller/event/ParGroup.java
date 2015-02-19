@@ -40,16 +40,35 @@ public class ParGroup extends AbstractEvent{
 	}
 	
 	void initializeEvent(Participant[] participants){
+		//must check for null parameter
 		currentParticipants = participants;
+		//go through each participant and set their eventId and event name
+		for(Participant curPar: currentParticipants){
+			curPar.getLastRecord().setEventName(name);
+			curPar.getLastRecord().setEventId(eventId);
+		}
 	}
 	
 	void startParticipants(){
 		System.out.println("Starting ParGroup Participants");
+		//go through each participant and set the start time 
+		for(Participant curPar: currentParticipants){
+			curPar.setIsCompeting(true);
+			curPar.getLastRecord().setStartTime(22222);
+		}
 	}
-
+	
 	
 	void finishParticipant(){
 		System.out.println("Finishing ParGroup Participants");
+		for(Participant curPar: currentParticipants){
+			curPar.setIsCompeting(false);
+			curPar.getLastRecord().setFinishTime(9922);
+		}
+	}
+	
+	public Participant[] getParticipants(){
+		return currentParticipants;
 	}
 
 }
