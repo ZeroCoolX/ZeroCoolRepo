@@ -8,6 +8,7 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 
 public abstract class AbstractEvent {
+	//just doing this for a test
 	//type of this event
 	protected EventType type;
 	//name of this event
