@@ -4,6 +4,8 @@ public class Channel {
 
 	private Sensor currentSensor;
 	
+	private int id;
+	
 	private boolean isActive;
 	
 	/**
@@ -54,12 +56,16 @@ public class Channel {
 	
 	/**
 	 * Check if the current channel is activated er naw.
-	 * @return - true if isActive else false
+	 * @return - true if isActive else false.
 	 */
 	public boolean getState() {
 		return isActive;
 	}
 	
+	/**
+	 * Check if the sensor is armed or not.
+	 * @return - true if the sensor is armed else false.
+	 */
 	public boolean getSensorState() {
 		return true;
 	}
