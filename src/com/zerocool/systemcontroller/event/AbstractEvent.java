@@ -3,6 +3,7 @@ package com.zerocool.systemcontroller.event;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.zerocool.systemcontroller.participant.Participant;
@@ -16,7 +17,7 @@ public abstract class AbstractEvent {
 	// sequentially increasing unique identifier
 	protected long eventId;
 	// participants actually competing in this event
-	public Participant[] currentParticipants;
+	public  ArrayList<Participant> currentParticipants;
 	/*
 	 * TOTALLY subject to change. Depends on what Jeremy is using in his Timer
 	 * class. I also like Calendar. System.Time. Doesn't matter to me.
@@ -84,7 +85,7 @@ public abstract class AbstractEvent {
 	 * participants and their respective Records setting the eventName and
 	 * eventId
 	 **/
-	abstract void initializeEvent(Participant[] participants);
+	abstract void initializeEvent( ArrayList<Participant> participants);
 
 	/**
 	 * startParticipant
@@ -138,7 +139,7 @@ public abstract class AbstractEvent {
 		return eventId;
 	}
 
-	public Participant[] getParticipants() {
+	public ArrayList<Participant> getParticipants() {
 		return currentParticipants;
 	}
 }

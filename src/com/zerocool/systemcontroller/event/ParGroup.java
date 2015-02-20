@@ -2,6 +2,7 @@ package com.zerocool.systemcontroller.event;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
@@ -12,7 +13,7 @@ public class ParGroup extends AbstractEvent {
 	private EventType type;
 	private String name;
 	private long eventId;
-	private Participant[] currentParticipants;
+	private ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
 	private DateFormat eventTimeFormat = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
@@ -40,7 +41,7 @@ public class ParGroup extends AbstractEvent {
 		super(name, type, eventTime, eventId);
 	}
 
-	void initializeEvent(Participant[] participants) {
+	void initializeEvent(ArrayList<Participant> participants) {
 		// must check for null parameter
 		currentParticipants = participants;
 		// go through each participant and set their eventId and event name
@@ -67,7 +68,7 @@ public class ParGroup extends AbstractEvent {
 		}
 	}
 
-	public Participant[] getParticipants() {
+	public ArrayList<Participant> getParticipants() {
 		return currentParticipants;
 	}
 

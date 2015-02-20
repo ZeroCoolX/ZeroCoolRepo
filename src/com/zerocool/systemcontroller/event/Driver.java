@@ -1,5 +1,6 @@
 package com.zerocool.systemcontroller.event;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,9 +26,9 @@ public class Driver {
 		events[6] = new ParIndividual();
 		events[7] = new ParGroup();
 		
-		Participant[] partic = new Participant[1];
-		partic[0] = new Participant();
-		partic[0].createNewRecord();
+		 ArrayList<Participant> partic = new  ArrayList<Participant>();
+		partic.add(new Participant());
+		partic.get(0).createNewRecord();
 		
 		for(AbstractEvent e: events){
 			e.initializeEvent(partic);
