@@ -3,6 +3,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.participant.Participant;
 
 
@@ -63,12 +64,44 @@ public class Individual extends AbstractEvent{
 		System.out.println("Finishing Individual Participants");
 		for(Participant curPar: currentParticipants){
 			curPar.setIsCompeting(false);
-			curPar.getLastRecord().setFinishTime(34432);
+			curPar.getLastRecord().setFinishTime(3);
 		}
 	}
 	
 	public Participant[] getParticipants(){
 		return currentParticipants;
+	}
+	
+	public EventType getType() {
+		return type;
+	}
+
+	public void setType(EventType type) {
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getEventTime() {
+		return eventTime;
+	}
+
+	public void setEventTime(Date eventTime) {
+		this.eventTime = eventTime;
+	}
+
+	public long getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(long eventId) {
+		this.eventId = eventId;
 	}
 
 }
