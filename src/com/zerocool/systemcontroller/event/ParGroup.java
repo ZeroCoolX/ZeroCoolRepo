@@ -7,71 +7,70 @@ import java.util.Date;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.participant.Participant;
 
+public class ParGroup extends AbstractEvent {
 
-
-public class ParGroup extends AbstractEvent{
-	
 	private EventType type;
 	private String name;
 	private long eventId;
-	private Participant [] currentParticipants;
-	//dateFormat.format(date) prints (example)   2014/08/06 15:59:48
-	private DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	//eventTime stored the entire date but the specific miliseconds, seconds, minutes, hours..etc can be accessed from such
+	private Participant[] currentParticipants;
+	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
+	private DateFormat eventTimeFormat = new SimpleDateFormat(
+			"yyyy/MM/dd HH:mm:ss");
+	// eventTime stored the entire date but the specific miliseconds, seconds,
+	// minutes, hours..etc can be accessed from such
 	private Date eventTime;
-	
-	public ParGroup(){
+
+	public ParGroup() {
 		super();
 	}
 
-	public ParGroup(String name){
+	public ParGroup(String name) {
 		super(name, EventType.GRP);
 	}
 
-	public ParGroup(String name, EventType type){
+	public ParGroup(String name, EventType type) {
 		super(name, type, new Date());
 	}
-	
-	public ParGroup(String name, EventType type, Date eventTime){
+
+	public ParGroup(String name, EventType type, Date eventTime) {
 		super(name, type, eventTime, -1);
 	}
-	
-	public ParGroup(String name, EventType type, Date eventTime, long eventId){
+
+	public ParGroup(String name, EventType type, Date eventTime, long eventId) {
 		super(name, type, eventTime, eventId);
 	}
-	
-	void initializeEvent(Participant[] participants){
-		//must check for null parameter
+
+	void initializeEvent(Participant[] participants) {
+		// must check for null parameter
 		currentParticipants = participants;
-		//go through each participant and set their eventId and event name
-		for(Participant curPar: currentParticipants){
+		// go through each participant and set their eventId and event name
+		for (Participant curPar : currentParticipants) {
 			curPar.getLastRecord().setEventName(name);
 			curPar.getLastRecord().setEventId(eventId);
 		}
 	}
-	
-	void startParticipants(){
+
+	void startParticipants() {
 		System.out.println("Starting ParGroup Participants");
-		//go through each participant and set the start time 
-		for(Participant curPar: currentParticipants){
+		// go through each participant and set the start time
+		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(true);
 			curPar.getLastRecord().setStartTime(22222);
 		}
 	}
-	
-	
-	void finishParticipant(){
+
+	void finishParticipant() {
 		System.out.println("Finishing ParGroup Participants");
-		for(Participant curPar: currentParticipants){
+		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
 			curPar.getLastRecord().setFinishTime(9922);
 		}
 	}
-	
-	public Participant[] getParticipants(){
+
+	public Participant[] getParticipants() {
 		return currentParticipants;
 	}
-	
+
 	public EventType getType() {
 		return type;
 	}
