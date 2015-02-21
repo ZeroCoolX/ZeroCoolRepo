@@ -11,81 +11,45 @@ public class Timer {
 	private StopWatch stopwatch;
 	private Participant[] totalParticipants;
 	private AbstractEvent currentEvent;
+	private EventLog eventLogger;
 
 	public Timer() {
 		stopwatch = new StopWatch();
 	}
 	
-	public Timer(long time) {
-		
-	}
-	
-	public Timer(long time, AbstractEvent event) {
-		this(time);
-		
+	public Timer(AbstractEvent event) {
+		this();
+		this.currentEvent=event;
 	}
 	
 	public Timer(long time, AbstractEvent event, EventLog eventLog) {
-		this(time, event);
-		
+		this(event);
+		this.eventLogger=eventLog;
 	}
 	
 	
 	// ----- functional methods ----- \\
 	
-	public void startEvent() {
-		
-	}
+	public void startEvent() { stopwatch.start(); }
 	
-	public void endEvent() {
-		
-	}
+	public void endEvent() { stopwatch.stop(); }
 	
-	public void resetTime() {
-		
-	}
+	public void resetTime() { stopwatch.reset(); }
 	
 	
 	// ----- accessors ----- \\
 	
-	public long getEventTime() {
-		
-		return -1;
-	}
+	public long getEventTime() { return stopwatch.getStartTime(); }
 	
-	public long getSystemTime() {
-		
-		return -1;
-	}
+	public Participant[] getTotalParticipants() { return totalParticipants; }
 	
-	public long getCurrentSystemTime() {
-		
-		return -1;
-	}
-	
-	public int getTotalParticipants() {
-		
-		return -1;
-	}
-	
-	public AbstractEvent getCurrentEvent() {
-		
-		return null;
-	}
+	public AbstractEvent getCurrentEvent() { return currentEvent; }
 	
 	
 	// ----- mutators ----- \\
 	
-	public void setSystemTime(long time) {
-		
-	}
+	public void setEventLog(EventLog eventLog) { eventLogger=eventLog; }
 	
-	public void setEventLog(EventLog eventLog) {
-		
-	}
-	
-	public void setEvent(AbstractEvent event) {
-		
-	}
+	public void setEvent(AbstractEvent event) { currentEvent=event;}
 	
 }
