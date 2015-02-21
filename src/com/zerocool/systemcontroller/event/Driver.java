@@ -27,7 +27,7 @@ public class Driver {
 		events[7] = new ParGroup();
 		
 		 ArrayList<Participant> partic = new  ArrayList<Participant>();
-		partic.add(new Participant());
+		partic.add(new Participant(1,"Bob"));
 		partic.get(0).createNewRecord();
 		
 		for(AbstractEvent e: events){
