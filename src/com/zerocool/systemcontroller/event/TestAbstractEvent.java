@@ -2,6 +2,8 @@ package com.zerocool.systemcontroller.event;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -23,10 +25,17 @@ public class TestAbstractEvent {
     }
     
     public void addEvents(){
-    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, new Date(2015, 2, 17, 9, 23, 50), 1111));
-    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, new Date(2015, 2, 17, 9, 23, 50), 2222));
-    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, new Date(2015, 2, 17, 9, 23, 50), 3333));
-    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, new Date(2015, 2, 17, 9, 23, 50), 4444));
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	Date d;
+		try {
+			d = f.parse("2015/02/17 09:23:50.000");
+	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime(), 1111));
+	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime(), 2222));
+	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime(), 3333));
+	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime(), 4444));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
     }
     
     public void addParticipants(int numPartic){
@@ -75,19 +84,33 @@ public class TestAbstractEvent {
     @Test
 	@SuppressWarnings("deprecation")
     public void testThreeParamConstructor(){
-    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, new Date(2015, 2, 17, 9, 23, 50)));
-    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, new Date(2015, 2, 17, 9, 23, 50)));
-    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, new Date(2015, 2, 17, 9, 23, 50)));
-    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, new Date(2015, 2, 17, 9, 23, 50)));
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	Date d;
+		try {
+			d = f.parse("2015/02/17 09:23:50.000");
+	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime()));
+	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime()));
+	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime()));
+	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
     }
     
     @Test
 	@SuppressWarnings("deprecation")
     public void testFourParamConstructor(){
-    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, new Date(2015, 2, 17, 9, 23, 50), 1111));
-    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, new Date(2015, 2, 17, 9, 23, 50), 2222));
-    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, new Date(2015, 2, 17, 9, 23, 50), 3333));
-    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, new Date(2015, 2, 17, 9, 23, 50), 4444));
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	Date d;
+		try {
+			d = f.parse("2015/02/17 09:23:50.000");
+	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime(), 1111));
+	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime(), 2222));
+	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime(), 3333));
+	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime(), 4444));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
     }
     
     @Test
