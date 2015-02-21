@@ -27,7 +27,7 @@ public abstract class AbstractEvent {
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	protected Date eventTime;
+	protected long eventTime;
 
 	/**
 	 * Type Descriptions:
@@ -92,7 +92,7 @@ public abstract class AbstractEvent {
 		this.type = type;
 	}
 
-	public void setEventTime(Date eventTime) {
+	public void setEventTime(long eventTime) {
 		this.eventTime = eventTime;
 	}
 
@@ -114,7 +114,7 @@ public abstract class AbstractEvent {
 		return type;
 	}
 
-	public Date getEventTime() {
+	public long getEventTime() {
 		return eventTime;
 	}
 
