@@ -38,7 +38,7 @@ public class Driver {
 			String message = "";
 			message += "\nName: "+eve.getName();
 			message += "\nType: "+eve.getType();
-			message += "\nTime: "+eve.getEventTime().toString();
+			message += "\nTime: "+eve.getEventTime();
 			message += "\nId: "+eve.getEventId();
 			System.out.println(message);
 			message = "";
