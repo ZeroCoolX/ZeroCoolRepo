@@ -17,7 +17,7 @@ public abstract class AbstractEvent {
 	// sequentially increasing unique identifier
 	protected long eventId;
 	// participants actually competing in this event
-	public  ArrayList<Participant> currentParticipants;
+	protected  ArrayList<Participant> currentParticipants;
 	/*
 	 * TOTALLY subject to change. Depends on what Jeremy is using in his Timer
 	 * class. I also like Calendar. System.Time. Doesn't matter to me.
@@ -51,28 +51,7 @@ public abstract class AbstractEvent {
 	 * testing purposes multilevel constructors exist as well
 	 * **/
 	protected AbstractEvent() {
-		this("");
-	}
-
-	protected AbstractEvent(String name) {
-		this(name, EventType.IND);
-	}
-
-	protected AbstractEvent(String name, EventType type) {
-		this(name, type, new Date());
-	}
-
-	protected AbstractEvent(String name, EventType type, Date eventTime) {
-		this(name, type, eventTime, -1);
-	}
-
-	protected AbstractEvent(String name, EventType type, Date eventTime,
-			long eventId) {
-		System.out.println("abstract eventid = " + eventId);
-		eventId += 1;
-		this.type = type;
-		this.name = name;
-		this.eventTime = eventTime;
+		this.eventId += 1;
 	}
 
 	// ----- functional methods ----- \\
@@ -101,7 +80,7 @@ public abstract class AbstractEvent {
 	 * function: Goes through list of participants setting isCompeting to false
 	 * and sets the participants Record's finishTime
 	 ***/
-	abstract void finishParticipant();
+	abstract void finishParticipants();
 
 	// ----- functional methods ----- \\
 
@@ -119,6 +98,10 @@ public abstract class AbstractEvent {
 
 	void setEventId(long eventId) {
 		this.eventId = eventId;
+	}
+	
+	void setParticipants(ArrayList<Participant> participants){
+		this.currentParticipants = participants;
 	}
 
 	// ----- accessors ----- \\

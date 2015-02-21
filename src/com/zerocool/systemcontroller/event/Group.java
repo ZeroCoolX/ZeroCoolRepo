@@ -9,36 +9,41 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 public class Group extends AbstractEvent {
 
-	private EventType type;
-	private String name;
-	private  ArrayList<Participant> currentParticipants;
+	protected EventType type;
+	protected String name;
+	protected  ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	private DateFormat eventTimeFormat = new SimpleDateFormat(
+	protected DateFormat eventTimeFormat = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	private Date eventTime;
-	private long eventId;
+	protected Date eventTime;
+	protected long eventId;
 
 	public Group() {
-		super();
+		this("");
 	}
 
 	public Group(String name) {
-		super(name, EventType.GRP);
+		this(name, EventType.GRP);
 	}
 
 	public Group(String name, EventType type) {
-		super(name, type, new Date());
+		this(name, type, new Date());
 	}
 
 	public Group(String name, EventType type, Date eventTime) {
-		super(name, type, eventTime, -1);
+		this(name, type, eventTime, -1);
 	}
 
 	public Group(String name, EventType type, Date eventTime, long eventId) {
-		super(name, type, eventTime, eventId);
-	}
+		super();
+		System.out.println("abstract eventid = " + eventId);
+		System.out.println("type= " + type);
+		System.out.println("name = " + name);
+		this.type = type;
+		this.name = name;
+		this.eventTime = eventTime;	}
 
 	void initializeEvent( ArrayList<Participant> participants) {
 		// must check for null parameter
@@ -59,7 +64,7 @@ public class Group extends AbstractEvent {
 		}
 	}
 
-	void finishParticipant() {
+	void finishParticipants() {
 		System.out.println("Finishing Group Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
@@ -81,6 +86,10 @@ public class Group extends AbstractEvent {
 
 	public String getName() {
 		return name;
+	}
+	
+	void setParticipants(ArrayList<Participant> participants){
+		this.currentParticipants = participants;
 	}
 
 	public void setName(String name) {

@@ -10,36 +10,41 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 public class ParIndividual extends AbstractEvent {
 
-	private EventType type;
-	private String name;
-	private long eventId;
-	private  ArrayList<Participant> currentParticipants;
+	protected EventType type;
+	protected String name;
+	protected long eventId;
+	protected  ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	private DateFormat eventTimeFormat = new SimpleDateFormat(
+	protected DateFormat eventTimeFormat = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	private Date eventTime;
+	protected Date eventTime;
 
 	public ParIndividual() {
-		super();
+		this("");
 	}
 
 	public ParIndividual(String name) {
-		super(name, EventType.GRP);
+		this(name, EventType.GRP);
 	}
 
 	public ParIndividual(String name, EventType type) {
-		super(name, type, new Date());
+		this(name, type, new Date());
 	}
 
 	public ParIndividual(String name, EventType type, Date eventTime) {
-		super(name, type, eventTime, -1);
+		this(name, type, eventTime, -1);
 	}
 
-	public ParIndividual(String name, EventType type, Date eventTime,
-			long eventId) {
-		super(name, type, eventTime, eventId);
+	public ParIndividual(String name, EventType type, Date eventTime, long eventId) {
+		super();
+		System.out.println("abstract eventid = " + eventId);
+		System.out.println("type= " + type);
+		System.out.println("name = " + name);
+		this.type = type;
+		this.name = name;
+		this.eventTime = eventTime;
 	}
 
 	void initializeEvent( ArrayList<Participant> participants) {
@@ -61,7 +66,7 @@ public class ParIndividual extends AbstractEvent {
 		}
 	}
 
-	void finishParticipant() {
+	void finishParticipants() {
 		System.out.println("Finishing ParIndividual Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
@@ -87,6 +92,10 @@ public class ParIndividual extends AbstractEvent {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	void setParticipants(ArrayList<Participant> participants){
+		this.currentParticipants = participants;
 	}
 
 	public Date getEventTime() {

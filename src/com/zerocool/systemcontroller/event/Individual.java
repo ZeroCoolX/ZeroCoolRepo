@@ -10,36 +10,42 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 public class Individual extends AbstractEvent {
 
-	private EventType type;
-	private String name;
-	private long eventId;
+	protected EventType type;
+	protected String name;
+	protected long eventId;
 	// only one Participant is needed since this is an Individual event
-	private  ArrayList<Participant> currentParticipants;
+	protected  ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	private DateFormat eventTimeFormat = new SimpleDateFormat(
+	protected DateFormat eventTimeFormat = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	private Date eventTime;
+	protected Date eventTime;
 
 	public Individual() {
-		super();
+		this("");
 	}
 
 	public Individual(String name) {
-		super(name, EventType.IND);
+		this(name, EventType.IND);
 	}
 
 	public Individual(String name, EventType type) {
-		super(name, type, new Date());
+		this(name, type, new Date());
 	}
 
 	public Individual(String name, EventType type, Date eventTime) {
-		super(name, type, eventTime, -1);
+		this(name, type, eventTime, -1);
 	}
 
 	public Individual(String name, EventType type, Date eventTime, long eventId) {
-		super(name, type, eventTime, eventId);
+		super();
+		System.out.println("abstract eventid = " + eventId);
+		System.out.println("type= " + type);
+		System.out.println("name = " + name);
+		this.type = type;
+		this.name = name;
+		this.eventTime = eventTime;
 	}
 
 	void initializeEvent( ArrayList<Participant> participants) {
@@ -61,7 +67,7 @@ public class Individual extends AbstractEvent {
 		}
 	}
 
-	void finishParticipant() {
+	void finishParticipants() {
 		System.out.println("Finishing Individual Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
@@ -95,6 +101,10 @@ public class Individual extends AbstractEvent {
 
 	public void setEventTime(Date eventTime) {
 		this.eventTime = eventTime;
+	}
+	
+	void setParticipants(ArrayList<Participant> participants){
+		this.currentParticipants = participants;
 	}
 
 	public long getEventId() {
