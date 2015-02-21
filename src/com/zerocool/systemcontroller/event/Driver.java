@@ -51,7 +51,7 @@ public class Driver {
 				System.out.println(message);
 			}
 			message = "";
-			eve.finishParticipant();
+			eve.finishParticipants();
 			for(Participant par: eve.getParticipants()){
 				message += "\nEvent Name: "+par.getLastRecord().getEventName();
 				message += "\nEvent ID: "+par.getLastRecord().getEventID();
