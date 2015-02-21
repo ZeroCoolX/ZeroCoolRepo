@@ -20,7 +20,7 @@ public class Individual extends AbstractEvent {
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	protected Date eventTime;
+	protected long eventTime;
 
 	public Individual() {
 		this("");
@@ -31,14 +31,14 @@ public class Individual extends AbstractEvent {
 	}
 
 	public Individual(String name, EventType type) {
-		this(name, type, new Date());
+		this(name, type, 0);
 	}
 
-	public Individual(String name, EventType type, Date eventTime) {
+	public Individual(String name, EventType type, long eventTime) {
 		this(name, type, eventTime, -1);
 	}
 
-	public Individual(String name, EventType type, Date eventTime, long eventId) {
+	public Individual(String name, EventType type, long eventTime, long eventId) {
 		super();
 		System.out.println("abstract eventid = " + eventId);
 		System.out.println("type= " + type);
@@ -95,11 +95,11 @@ public class Individual extends AbstractEvent {
 		this.name = name;
 	}
 
-	public Date getEventTime() {
+	public long getEventTime() {
 		return eventTime;
 	}
 
-	public void setEventTime(Date eventTime) {
+	public void setEventTime(long eventTime) {
 		this.eventTime = eventTime;
 	}
 	
