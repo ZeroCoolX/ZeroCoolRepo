@@ -31,7 +31,7 @@ public class TestAbstractEvent {
     
     public void addParticipants(int numPartic){
     	for(int i = 0; i < numPartic; ++i){
-    		partic.add(new Participant());
+    		partic.add(new Participant(1234, "test"));
     		partic.get(i).createNewRecord();
     	}
     }
