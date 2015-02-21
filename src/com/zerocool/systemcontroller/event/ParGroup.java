@@ -19,7 +19,7 @@ public class ParGroup extends AbstractEvent {
 			"yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
-	protected Date eventTime;
+	protected long eventTime;
 
 	public ParGroup() {
 		this("");
@@ -30,14 +30,14 @@ public class ParGroup extends AbstractEvent {
 	}
 
 	public ParGroup(String name, EventType type) {
-		this(name, type, new Date());
+		this(name, type, 0);
 	}
 
-	public ParGroup(String name, EventType type, Date eventTime) {
+	public ParGroup(String name, EventType type, long eventTime) {
 		this(name, type, eventTime, -1);
 	}
 
-	public ParGroup(String name, EventType type, Date eventTime, long eventId) {
+	public ParGroup(String name, EventType type, long eventTime, long eventId) {
 		super();
 		System.out.println("abstract eventid = " + eventId);
 		System.out.println("type= " + type);
@@ -97,11 +97,11 @@ public class ParGroup extends AbstractEvent {
 		this.currentParticipants = participants;
 	}
 
-	public Date getEventTime() {
+	public long getEventTime() {
 		return eventTime;
 	}
 
-	public void setEventTime(Date eventTime) {
+	public void setEventTime(long eventTime) {
 		this.eventTime = eventTime;
 	}
 
