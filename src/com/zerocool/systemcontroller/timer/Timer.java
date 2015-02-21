@@ -1,12 +1,18 @@
 package com.zerocool.systemcontroller.timer;
 
+import org.apache.commons.lang3.time.StopWatch;
+
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 
 public class Timer {
+	
+	private StopWatch stopwatch;
+	private Long stopTime;
+	private Long endTime;
 
 	public Timer() {
-		
+		stopwatch = new StopWatch();
 	}
 	
 	public Timer(long time) {
