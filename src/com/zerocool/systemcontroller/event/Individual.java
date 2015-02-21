@@ -16,8 +16,7 @@ public class Individual extends AbstractEvent {
 	// only one Participant is needed since this is an Individual event
 	protected  ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	protected DateFormat eventTimeFormat = new SimpleDateFormat(
-			"yyyy/MM/dd HH:mm:ss");
+	protected DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
@@ -48,7 +47,7 @@ public class Individual extends AbstractEvent {
 		this.eventTime = eventTime;
 	}
 
-	void initializeEvent( ArrayList<Participant> participants) {
+	public void initializeEvent( ArrayList<Participant> participants) {
 		// must check for null parameter
 		currentParticipants = participants;
 		// go through each participant and set their eventId and event name
@@ -58,7 +57,7 @@ public class Individual extends AbstractEvent {
 		}
 	}
 
-	void startParticipants() {
+	public void startParticipants() {
 		System.out.println("Starting Individual Participants");
 		// go through each participant and set the start time
 		for (Participant curPar : currentParticipants) {
@@ -66,13 +65,23 @@ public class Individual extends AbstractEvent {
 			curPar.getLastRecord().setStartTime(3399);
 		}
 	}
+	
+	public void startParticipant(Participant par){
+		par.setIsCompeting(true);
+		par.getLastRecord().setStartTime(3399);
+	}
 
-	void finishParticipants() {
+	public void finishParticipants() {
 		System.out.println("Finishing Individual Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
 			curPar.getLastRecord().setFinishTime(3);
 		}
+	}
+	
+	public void finishParticipant(Participant par){
+		par.setIsCompeting(false);
+		par.getLastRecord().setFinishTime(3);
 	}
 
 	public  ArrayList<Participant> getParticipants() {

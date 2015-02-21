@@ -25,10 +25,11 @@ public class TestAbstractEvent {
     }
     
     public void addEvents(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
     	Date d;
 		try {
 			d = f.parse("2015/02/17 09:23:50.000");
+			System.out.println(d.getTime());
 	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime(), 1111));
 	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime(), 2222));
 	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime(), 3333));
@@ -84,7 +85,7 @@ public class TestAbstractEvent {
     @Test
 	@SuppressWarnings("deprecation")
     public void testThreeParamConstructor(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
     	Date d;
 		try {
 			d = f.parse("2015/02/17 09:23:50.000");
@@ -100,7 +101,7 @@ public class TestAbstractEvent {
     @Test
 	@SuppressWarnings("deprecation")
     public void testFourParamConstructor(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
     	Date d;
 		try {
 			d = f.parse("2015/02/17 09:23:50.000");

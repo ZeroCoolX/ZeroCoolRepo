@@ -23,8 +23,7 @@ public abstract class AbstractEvent {
 	 * class. I also like Calendar. System.Time. Doesn't matter to me.
 	 */
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	protected DateFormat eventTimeFormat = new SimpleDateFormat(
-			"yyyy/MM/dd HH:mm:ss");
+	protected DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
@@ -64,7 +63,7 @@ public abstract class AbstractEvent {
 	 * participants and their respective Records setting the eventName and
 	 * eventId
 	 **/
-	abstract void initializeEvent( ArrayList<Participant> participants);
+	public abstract void initializeEvent( ArrayList<Participant> participants);
 
 	/**
 	 * startParticipant
@@ -72,7 +71,7 @@ public abstract class AbstractEvent {
 	 * function: Goes through list of participants setting isCompeting to true
 	 * and sets the participants Record's startTime
 	 ***/
-	abstract void startParticipants();
+	public abstract void startParticipants();
 
 	/**
 	 * finishParticipant
@@ -80,7 +79,7 @@ public abstract class AbstractEvent {
 	 * function: Goes through list of participants setting isCompeting to false
 	 * and sets the participants Record's finishTime
 	 ***/
-	abstract void finishParticipants();
+	public abstract void finishParticipants();
 
 	// ----- functional methods ----- \\
 

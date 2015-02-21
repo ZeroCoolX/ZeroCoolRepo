@@ -47,7 +47,7 @@ public class ParIndividual extends AbstractEvent {
 		this.eventTime = eventTime;
 	}
 
-	void initializeEvent( ArrayList<Participant> participants) {
+	public void initializeEvent( ArrayList<Participant> participants) {
 		// must check for null parameter
 		currentParticipants = participants;
 		// go through each participant and set their eventId and event name
@@ -57,7 +57,7 @@ public class ParIndividual extends AbstractEvent {
 		}
 	}
 
-	void startParticipants() {
+	public void startParticipants() {
 		System.out.println("Starting ParIndividual Participants");
 		// go through each participant and set the start time
 		for (Participant curPar : currentParticipants) {
@@ -66,7 +66,7 @@ public class ParIndividual extends AbstractEvent {
 		}
 	}
 
-	void finishParticipants() {
+	public void finishParticipants() {
 		System.out.println("Finishing ParIndividual Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);

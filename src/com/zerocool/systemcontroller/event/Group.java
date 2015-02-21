@@ -45,7 +45,7 @@ public class Group extends AbstractEvent {
 		this.name = name;
 		this.eventTime = eventTime;	}
 
-	void initializeEvent( ArrayList<Participant> participants) {
+	public void initializeEvent( ArrayList<Participant> participants) {
 		// must check for null parameter
 		currentParticipants = participants;
 		// go through each participant and set their eventId and event name
@@ -55,7 +55,7 @@ public class Group extends AbstractEvent {
 		}
 	}
 
-	void startParticipants() {
+	public void startParticipants() {
 		System.out.println("Starting Group Participants");
 		// go through each participant and set the start time
 		for (Participant curPar : currentParticipants) {
@@ -64,7 +64,7 @@ public class Group extends AbstractEvent {
 		}
 	}
 
-	void finishParticipants() {
+	public  void finishParticipants() {
 		System.out.println("Finishing Group Participants");
 		for (Participant curPar : currentParticipants) {
 			curPar.setIsCompeting(false);
