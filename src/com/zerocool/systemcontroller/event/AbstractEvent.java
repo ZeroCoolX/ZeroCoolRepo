@@ -27,6 +27,8 @@ public abstract class AbstractEvent {
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
+	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+
 
 	/**
 	 * Type Descriptions:
@@ -95,11 +97,11 @@ public abstract class AbstractEvent {
 		this.eventTime = eventTime;
 	}
 
-	void setEventId(long eventId) {
+	public void setEventId(long eventId) {
 		this.eventId = eventId;
 	}
 	
-	void setParticipants(ArrayList<Participant> participants){
+	public void setParticipants(ArrayList<Participant> participants){
 		this.currentParticipants = participants;
 	}
 

@@ -70,5 +70,13 @@ public class Channel {
 		return currentSensor != null ? currentSensor.getState() : false;
 	}
 	
+	public void setState(boolean active){
+		this.isActive = active;
+	}
+	
+	public void setSensorState(boolean state){
+		currentSensor.setState(state);
+	}
+	
 	
 }

@@ -15,11 +15,12 @@ public class ParGroup extends AbstractEvent {
 	protected long eventId;
 	protected ArrayList<Participant> currentParticipants;
 	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	protected DateFormat eventTimeFormat = new SimpleDateFormat(
-			"yyyy/MM/dd HH:mm:ss");
+	protected DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
+	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+
 
 	public ParGroup() {
 		this("");
@@ -39,9 +40,6 @@ public class ParGroup extends AbstractEvent {
 
 	public ParGroup(String name, EventType type, long eventTime, long eventId) {
 		super();
-		System.out.println("abstract eventid = " + eventId);
-		System.out.println("type= " + type);
-		System.out.println("name = " + name);
 		this.type = type;
 		this.name = name;
 		this.eventTime = eventTime;	}
@@ -93,7 +91,7 @@ public class ParGroup extends AbstractEvent {
 		this.name = name;
 	}
 	
-	void setParticipants(ArrayList<Participant> participants){
+	public void setParticipants(ArrayList<Participant> participants){
 		this.currentParticipants = participants;
 	}
 

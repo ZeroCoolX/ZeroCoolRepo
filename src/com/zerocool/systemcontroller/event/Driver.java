@@ -19,11 +19,13 @@ public class Driver {
 		//Calendar cal = Calendar.getInstance();
 		System.out.println("Testing each constructor: [String], [String, EventType], [String, EventType, Date], [String, EventType, Date, long]");
 
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss.lll");
-    	Date d;
+    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+    	Date d = new Date();
 		events[0] = new Individual("100M Sprint");
 		events[1] = new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP);
-		d = f.parse("2015/02/17 09:23:50.000");
+		d = f.parse( (""+(d.getYear()+1900)+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+".000") );
+		System.out.println(d.toLocaleString());
+		System.out.println("TIME2: " + d);
 		events[2] = new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime());
 		d = f.parse("2015/02/17 09:25:00.000");
 		events[3] = new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime(), 9000);	
