@@ -24,7 +24,6 @@ public class Driver {
 		events[0] = new Individual("100M Sprint");
 		events[1] = new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP);
 		d = f.parse( (""+(d.getYear()+1900)+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+".000") );
-		System.out.println(d.toLocaleString());
 		System.out.println("TIME2: " + d);
 		events[2] = new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime());
 		d = f.parse("2015/02/17 09:25:00.000");
