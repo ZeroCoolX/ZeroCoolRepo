@@ -1,5 +1,7 @@
 package com.zerocool.systemcontroller.timer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -12,9 +14,13 @@ import com.zerocool.systemcontroller.participant.Participant;
 public class Timer {
 	
 	private StopWatch stopwatch;
+	private Date sysTime;
 	private ArrayList<Participant> totalParticipants;
 	private AbstractEvent currentEvent;
 	private EventLog eventLogger;
+	
+	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+
 	
 	/*
 	 * Just a question, why are the constructors going in reverse?
@@ -67,26 +73,32 @@ public class Timer {
 	//if there is nothing given the constructors cascade UP giving the appropriate data for each level
 	//see this way no matter what data is given, they alwasy go from small to large so nothing is created twice and overwritten.
 	public Timer() {
-		this(new StopWatch());
+		this(new Date());
 	}
 	
-	public Timer(StopWatch time){
+	public Timer(Date time){
 		this(time, new Individual());
 	}
 	
-	public Timer(StopWatch time, AbstractEvent event){
+	public Timer(Date time, AbstractEvent event){
 		this(time, event, new ArrayList<Participant>());
 	}
 	
-	public Timer(StopWatch time, AbstractEvent event, ArrayList<Participant> participants){
+	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants){
 		this(time, event, participants, new EventLog());
 	}
 	
-	public Timer(StopWatch time, AbstractEvent event, ArrayList<Participant> participants, EventLog eventLog){
-		this.stopwatch = time;
+	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants, EventLog eventLog){
+		this.stopwatch = new StopWatch();
 		this.currentEvent = event;
 		this.totalParticipants = participants;
 		this.eventLogger = eventLog;
+		try{
+			time = f.parse( (""+(time.getYear()+1900)+"/"+(time.getMonth()+1)+"/"+time.getDate()+" "+time.getHours()+":"+time.getMinutes()+":"+time.getSeconds()+".000") );
+		}catch(Exception e){
+			System.out.println("ERROR!!!! " + e.getMessage());
+		}
+		this.sysTime = time;
 	}
 	
 	
@@ -115,6 +127,10 @@ public class Timer {
 	
 	public long getEventTime() { return stopwatch.getStartTime(); }
 	
+	public Date getSysTime(){
+		return this.sysTime;
+	}
+	
 	public ArrayList<Participant> getTotalParticipants() { return totalParticipants; }
 	
 	public AbstractEvent getCurrentEvent() { return currentEvent; }
@@ -125,5 +141,9 @@ public class Timer {
 	public void setEventLog(EventLog eventLog) { eventLogger=eventLog; }
 	
 	public void setEvent(AbstractEvent event) { currentEvent=event;}
+	
+	public void setSysTime(Date time){
+		this.sysTime = time;
+	}
 	
 }

@@ -1,7 +1,14 @@
 package com.zerocool.systemcontroller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+
+import org.apache.commons.lang3.time.StopWatch;
 
 import com.zerocool.systemcontroller.channel.Channel;
 import com.zerocool.systemcontroller.eventlog.EventLog;
@@ -38,17 +45,112 @@ public class SystemController {
  		this.channels = channels;
  	}
  	
+ 	//read in timestamp and commands from file
  	public EventLog readFile(File file) {
+ 		try{
+			Scanner inFile = new Scanner(new FileReader(file));
+			System.out.println("reading line in file");
+			while(inFile.hasNextLine()){
+				String line = inFile.nextLine();
+				int nextIndex = line.indexOf('>');
+				int previousIndex = (line.indexOf('<')+1);
+				int min = (int) (Integer.parseInt(line.substring(previousIndex+1,nextIndex)));
+				previousIndex = nextIndex;
+				nextIndex = line.indexOf('>', nextIndex+1);
+				int sec = (int) (Integer.parseInt(line.substring(previousIndex+3, nextIndex)));
+				previousIndex = nextIndex;
+				nextIndex = line.indexOf('>', nextIndex+1);
+				int milsec = (int) (Integer.parseInt(line.substring(previousIndex+3, nextIndex)));
+				
+				Date inTime = new Date();
+				inTime.setMinutes(min);
+				inTime.setSeconds(sec);
+				inTime.setTime(milsec);
+
+				
+				String cmd = line.substring(line.indexOf("\\w"));
+				//just for insurance reasons
+				cmd = cmd.toUpperCase();
+				executeCommand(inTime, cmd);
+			}
+ 		}catch (Exception e) {
+			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
+		}
  		
  		return null;
  	}
  	
  	public EventLog readInput(String[] args) {
- 		
+ 		//nothing yet!
+ 		//niet!
+ 		//hahahha
  		return null;
  	}
  	
- 	public void executeCommand(String cmd) {
+ 	public void executeCommand(Date time, String cmd) {
+ 		
+		switch(cmd){
+		case "ON":
+			//stuff
+			break;
+		case "OFF":
+			//stuff
+			break;
+		case "EXIT":
+			//stuff
+			break;
+		case "RESET":
+			//stuff
+			break;
+		case "TIME":
+			//stuff
+			break;
+		case "TOG":
+			//stuff
+			break;
+		case "CONN":
+			//stuff
+			break;
+		case "DISC":
+			//stuff
+			break;
+		case "EVENT":
+			//stuff
+			break;
+		case "NEWRUN":
+			//stuff
+			break;
+		case "ENDRUN":
+			//stuff
+			break;
+		case "PRINT":
+			//stuff
+			break;
+		case "EXPORT":
+			//stuff
+			break;
+		case "NUM":
+			//stuff
+			break;
+		case "CLR":
+			//stuff
+			break;
+		case "SWAP":
+			//stuff
+			break;
+		case "RCL":
+			//stuff
+			break;
+		case "START":
+			//stuff
+			break;
+		case "FINISH":
+			//stuff
+			break;
+		case "TRIG":
+			//stuff
+			break;
+	}
  		
  	}
  	
