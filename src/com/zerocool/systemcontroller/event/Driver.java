@@ -1,11 +1,13 @@
 package com.zerocool.systemcontroller.event;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.zerocool.systemcontroller.SystemController;
 import com.zerocool.systemcontroller.participant.Participant;
 
 
@@ -15,7 +17,11 @@ public class Driver {
 	public static void main (String [] args) throws ParseException{
 		
 		System.out.println("Testing...testing....");
-		AbstractEvent[] events = new AbstractEvent[8];
+		SystemController sysCont = new SystemController();
+		File file = new File("syscontrolFileTest.txt");
+		sysCont.readFile(file);
+		
+		/*AbstractEvent[] events = new AbstractEvent[8];
 		//Calendar cal = Calendar.getInstance();
 		System.out.println("Testing each constructor: [String], [String, EventType], [String, EventType, Date], [String, EventType, Date, long]");
 
@@ -67,7 +73,7 @@ public class Driver {
 				message += "\nisCompeting: "+par.getIsCompeting();
 				System.out.println(message);
 			}
-		}
+		}*/
 	}
 	
 

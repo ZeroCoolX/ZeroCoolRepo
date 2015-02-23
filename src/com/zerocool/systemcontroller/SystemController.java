@@ -59,16 +59,20 @@ public class SystemController {
 				int nextIndex = line.indexOf(':');
 				int previousIndex = 0;
 				//store minute from timestamp
+				System.out.println("reading minute: " + line.substring(
+						previousIndex, nextIndex));
 				int min = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				previousIndex = nextIndex+1;
 				nextIndex = line.indexOf('.', nextIndex);
 				//store second from timestamp
+				System.out.println("reading second");
 				int sec = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				previousIndex = nextIndex+1;
 				nextIndex = line.indexOf(',', nextIndex);
 				//store milisecond from timestamp
+				System.out.println("reading millisecond");
 				int milsec = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				//create new Date() object
@@ -76,6 +80,7 @@ public class SystemController {
 				//create formatter
 				SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
 				//format the new Date object to our format
+				System.out.println("Formatting date");
 				inTime = f.parse(("" + (inTime.getYear() + 1900) + "/"
 						+ (inTime.getMonth() + 1) + "/" + inTime.getDate()
 						+ " " + inTime.getHours() + ":" + inTime.getMinutes()
@@ -83,30 +88,39 @@ public class SystemController {
 				//set minutes, seconds, and miliseconds
 				inTime.setMinutes(min);
 				inTime.setSeconds(sec);
-				inTime.setTime(milsec);
-				
+				//inTime.setTime(milsec);
+				System.out.println("min = " + inTime.getMinutes());
+				System.out.println("sec = " + inTime.getSeconds());
+				//System.out.println("milsec = " + inTime.getTime());
+
 				previousIndex = nextIndex+1;
-				
+				nextIndex = line.indexOf(',', previousIndex);
 				//store command  line.indexOf("\\w")
 				String cmd = line.substring(previousIndex, nextIndex);
+				previousIndex = nextIndex+1;
 				// just for insurance reasons
 				cmd = cmd.toUpperCase();
+				System.out.println("cmd = " + cmd);
 				previousIndex = nextIndex+1;
 				boolean hasArgs = false;
 				boolean parseTime = false;
 				if(cmd.equals("TIME")){//the next character boundry for parsing is ':'
+					System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = true;
-					nextIndex = line.indexOf(':', nextIndex);
+					nextIndex = line.indexOf(':', previousIndex);
 				}else if(cmd.equals("TOG") || cmd.equals("CONN") || cmd.equals("DISC") 
 						|| cmd.equals("EVENT") || cmd.equals("PRINT") || cmd.equals("EXPORT")
 						|| cmd.equals("NUM") || cmd.equals("CLR") || cmd.equals("TRIG")){//the next character boundry for parsing is ','
+					System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = false;
-					nextIndex = line.indexOf(',', nextIndex);
+					nextIndex = line.indexOf(',', previousIndex);
+					System.out.println("nextIndex = " + nextIndex);
 				}else{//there is no args for the rest of cmds
 					hasArgs = false;
 				}
+				System.out.println("initializing arraylist");
 				ArrayList<String> args = new ArrayList<String>();
 				
 				if(hasArgs){
@@ -141,22 +155,39 @@ public class SystemController {
 
 					}else{
 						//store command  line.indexOf("\\w")
-						String arg = line.substring(previousIndex, nextIndex);
-						// just for insurance reasons
-						arg = arg.toUpperCase();
-						args.add(arg);
-						if(line.indexOf(',') != -1){
-							arg = line.substring(previousIndex, nextIndex);
+						String arg = "";
+						if(nextIndex == -1){
+							arg = line.substring(previousIndex);
 							// just for insurance reasons
 							arg = arg.toUpperCase();
 							args.add(arg);
+						}else{
+							arg = line.substring(previousIndex, nextIndex);
+							previousIndex = nextIndex+1;
+							// just for insurance reasons
+							arg = arg.toUpperCase();
+							args.add(arg);
+							if(line.indexOf(',', previousIndex) != -1){
+								arg = line.substring(previousIndex);
+								// just for insurance reasons
+								arg = arg.toUpperCase();
+								args.add(arg);
+							}
 						}
 					}
 					//not sure if this really makes sense..i mean it doesn't but in principle
-					eventLog = executeCommand(inTime, cmd, args);
+					//eventLog = executeCommand(inTime, cmd, args);
+					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					for(String arg: args){
+						System.out.println("arg = " + arg);
+					}
 				}else{
 					//not sure if this really makes sense..i mean it doesn't but in principle
-					eventLog = executeCommand(inTime, cmd, args);
+					//eventLog = executeCommand(inTime, cmd, args);
+					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					for(String arg: args){
+						System.out.println("arg = " + arg);
+					}
 				}
 			}
 		} catch (Exception e) {
