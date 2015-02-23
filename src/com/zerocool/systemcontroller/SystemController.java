@@ -125,17 +125,17 @@ public class SystemController {
 				
 				if(hasArgs){
 					if(parseTime){
-						min = (int) (Integer.parseInt(line.substring(
+						int hours = (int) (Integer.parseInt(line.substring(
 								previousIndex, nextIndex)));
 						previousIndex = nextIndex+1;
 						nextIndex = line.indexOf('.', nextIndex);
 						//store second from timestamp
-						sec = (int) (Integer.parseInt(line.substring(
+						min = (int) (Integer.parseInt(line.substring(
 								previousIndex, nextIndex)));
 						previousIndex = nextIndex+1;
 						nextIndex = line.indexOf(',', nextIndex);
 						//store milisecond from timestamp
-						milsec = (int) (Integer.parseInt(line.substring(
+						sec = (int) (Integer.parseInt(line.substring(
 								previousIndex)));//there is no more line to parse
 						
 						
@@ -146,9 +146,9 @@ public class SystemController {
 								+ " " + inTime.getHours() + ":" + inTime.getMinutes()
 								+ ":" + inTime.getSeconds() + ".000"));
 						//set minutes, seconds, and miliseconds
+						argTime.setHours(hours);
 						argTime.setMinutes(min);
 						argTime.setSeconds(sec);
-						argTime.setTime(milsec);
 						args.add((""+argTime.getHours()));
 						args.add((""+argTime.getMinutes()));
 						args.add((""+argTime.getSeconds()));
