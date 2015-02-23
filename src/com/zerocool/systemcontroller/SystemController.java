@@ -48,7 +48,7 @@ public class SystemController {
 	}
 
 	// read in timestamp and commands from file
-	public EventLog readFile(File file) {
+	public void readFile(File file) {
 		try {
 			Scanner inFile = new Scanner(new FileReader(file));
 			System.out.println("reading line in file");
@@ -152,16 +152,16 @@ public class SystemController {
 							args.add(arg);
 						}
 					}
-					executeCommand(inTime, cmd, args);
+					//not sure if this really makes sense..i mean it doesn't but in principle
+					eventLog = executeCommand(inTime, cmd, args);
 				}else{
-					executeCommand(inTime, cmd, args);
+					//not sure if this really makes sense..i mean it doesn't but in principle
+					eventLog = executeCommand(inTime, cmd, args);
 				}
 			}
 		} catch (Exception e) {
 			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
 		}
-
-		return null;
 	}
 
 	public EventLog readInput(String[] args) {
@@ -171,7 +171,7 @@ public class SystemController {
 		return null;
 	}
 
-	public void executeCommand(Date time, String cmd, ArrayList<String> args) {
+	public EventLog executeCommand(Date time, String cmd, ArrayList<String> args) {
 
 		switch (cmd) {
 		case "ON":
@@ -250,6 +250,7 @@ public class SystemController {
 			// stuff
 			break;
 		}
+		return new EventLog();
 
 	}
 

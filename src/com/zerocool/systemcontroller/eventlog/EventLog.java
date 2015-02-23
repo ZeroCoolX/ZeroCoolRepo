@@ -10,11 +10,13 @@ public class EventLog {
 	}
 	
 	public void logTime(long time) {
-		
 	}
 	
 	public void logEvent(AbstractEvent event, Timer timer) {
+		//write to file in FORMAT:
 		
+		//timer.getDate() event.getEventName()
+		//event.getEventId event.getEventType() event.getEventTime()
 	}
 	
 }
