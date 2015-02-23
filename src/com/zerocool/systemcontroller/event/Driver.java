@@ -19,6 +19,7 @@ public class Driver {
 		System.out.println("Testing...testing....");
 		SystemController sysCont = new SystemController();
 		File file = new File("syscontrolFileTest.txt");
+		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		sysCont.readFile(file);
 		
 		/*AbstractEvent[] events = new AbstractEvent[8];
