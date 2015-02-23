@@ -131,6 +131,10 @@ public class Timer {
 		return this.sysTime;
 	}
 	
+	public AbstractEvent getEvent(){
+		return this.currentEvent;
+	}
+	
 	public ArrayList<Participant> getTotalParticipants() { return totalParticipants; }
 	
 	public AbstractEvent getCurrentEvent() { return currentEvent; }

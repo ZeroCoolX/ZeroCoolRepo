@@ -12,6 +12,10 @@ import java.util.Scanner;
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.zerocool.systemcontroller.channel.Channel;
+import com.zerocool.systemcontroller.event.Group;
+import com.zerocool.systemcontroller.event.Individual;
+import com.zerocool.systemcontroller.event.ParGroup;
+import com.zerocool.systemcontroller.event.ParIndividual;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.timer.Timer;
 
@@ -22,6 +26,8 @@ public class SystemController {
 	public ArrayList<Channel> channels;
 	public boolean isPrinterOn;
 	public static long ID = 0;
+	public Date systemTime;
+	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
 
 	public SystemController() {
 		this(ID);
@@ -39,19 +45,27 @@ public class SystemController {
 		this(ID, currentTimer, eventLog, new ArrayList<Channel>());
 	}
 
-	public SystemController(long ID, Timer currentTimer, EventLog eventLog,
-			ArrayList<Channel> channels) {
+	public SystemController(long ID, Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels) {
 		this.ID = ID;
 		this.currentTimer = currentTimer;
 		this.eventLog = eventLog;
 		this.channels = channels;
+		this.systemTime = new Date();
+		try{
+			this.systemTime = f.parse(("" + (systemTime.getYear() + 1900) + "/"
+				+ (systemTime.getMonth() + 1) + "/" + systemTime.getDate()
+				+ " " + systemTime.getHours() + ":" + systemTime.getMinutes()
+				+ ":" + systemTime.getSeconds() + ".000"));
+		}catch(Exception e){
+			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
+		}
 	}
 
 	// read in timestamp and commands from file
 	public void readFile(File file) {
 		try {
 			Scanner inFile = new Scanner(new FileReader(file));
-			System.out.println("reading line in file");
+			//System.out.println("reading line in file");
 			
 			//while there is another line to read...read it 
 			while (inFile.hasNextLine()) {
@@ -59,28 +73,26 @@ public class SystemController {
 				int nextIndex = line.indexOf(':');
 				int previousIndex = 0;
 				//store minute from timestamp
-				System.out.println("reading minute: " + line.substring(
-						previousIndex, nextIndex));
+				//System.out.println("reading minute: " + line.substring(previousIndex, nextIndex));
 				int min = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				previousIndex = nextIndex+1;
 				nextIndex = line.indexOf('.', nextIndex);
 				//store second from timestamp
-				System.out.println("reading second");
+				//System.out.println("reading second");
 				int sec = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				previousIndex = nextIndex+1;
 				nextIndex = line.indexOf(',', nextIndex);
 				//store milisecond from timestamp
-				System.out.println("reading millisecond");
+				//System.out.println("reading millisecond");
 				int milsec = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
 				//create new Date() object
 				Date inTime = new Date();
 				//create formatter
-				SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
 				//format the new Date object to our format
-				System.out.println("Formatting date");
+				//System.out.println("Formatting date");
 				inTime = f.parse(("" + (inTime.getYear() + 1900) + "/"
 						+ (inTime.getMonth() + 1) + "/" + inTime.getDate()
 						+ " " + inTime.getHours() + ":" + inTime.getMinutes()
@@ -89,8 +101,8 @@ public class SystemController {
 				inTime.setMinutes(min);
 				inTime.setSeconds(sec);
 				//inTime.setTime(milsec);
-				System.out.println("min = " + inTime.getMinutes());
-				System.out.println("sec = " + inTime.getSeconds());
+				//System.out.println("min = " + inTime.getMinutes());
+				//System.out.println("sec = " + inTime.getSeconds());
 				//System.out.println("milsec = " + inTime.getTime());
 
 				previousIndex = nextIndex+1;
@@ -100,27 +112,27 @@ public class SystemController {
 				previousIndex = nextIndex+1;
 				// just for insurance reasons
 				cmd = cmd.toUpperCase();
-				System.out.println("cmd = " + cmd);
+				//System.out.println("cmd = " + cmd);
 				previousIndex = nextIndex+1;
 				boolean hasArgs = false;
 				boolean parseTime = false;
 				if(cmd.equals("TIME")){//the next character boundry for parsing is ':'
-					System.out.println("cmd = " + cmd);
+					//System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = true;
 					nextIndex = line.indexOf(':', previousIndex);
 				}else if(cmd.equals("TOG") || cmd.equals("CONN") || cmd.equals("DISC") 
 						|| cmd.equals("EVENT") || cmd.equals("PRINT") || cmd.equals("EXPORT")
 						|| cmd.equals("NUM") || cmd.equals("CLR") || cmd.equals("TRIG")){//the next character boundry for parsing is ','
-					System.out.println("cmd = " + cmd);
+					//System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = false;
 					nextIndex = line.indexOf(',', previousIndex);
-					System.out.println("nextIndex = " + nextIndex);
+					//System.out.println("nextIndex = " + nextIndex);
 				}else{//there is no args for the rest of cmds
 					hasArgs = false;
 				}
-				System.out.println("initializing arraylist");
+				//System.out.println("initializing arraylist");
 				ArrayList<String> args = new ArrayList<String>();
 				
 				if(hasArgs){
@@ -176,20 +188,24 @@ public class SystemController {
 						}
 					}
 					//not sure if this really makes sense..i mean it doesn't but in principle
-					//eventLog = executeCommand(inTime, cmd, args);
-					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					executeCommand(inTime, cmd, args);
+					/*System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
 					for(String arg: args){
 						System.out.println("arg = " + arg);
-					}
+					}*/
 				}else{
 					//not sure if this really makes sense..i mean it doesn't but in principle
-					//eventLog = executeCommand(inTime, cmd, args);
-					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					executeCommand(inTime, cmd, args);
+					/*System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
 					for(String arg: args){
 						System.out.println("arg = " + arg);
-					}
+					}*/
 				}
 			}
+			String message = "";
+			message += "\n"+systemTime;
+			message += "\n"+currentTimer.getCurrentEvent().getType();
+			System.out.println(message);
 		} catch (Exception e) {
 			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
 		}
@@ -202,7 +218,7 @@ public class SystemController {
 		return null;
 	}
 
-	public EventLog executeCommand(Date time, String cmd, ArrayList<String> args) {
+	public void executeCommand(Date time, String cmd, ArrayList<String> args) {
 
 		switch (cmd) {
 		case "ON":
@@ -233,7 +249,12 @@ public class SystemController {
 			// stuff
 			break;
 		case "TIME":
-			// stuff
+			/*
+			 * --Set the current time--
+			 * */
+			systemTime.setHours(Integer.parseInt(args.get(0)));
+			systemTime.setMinutes(Integer.parseInt(args.get(1)));
+			systemTime.setSeconds(Integer.parseInt(args.get(2)));
 			break;
 		case "TOG":
 			// stuff
@@ -245,7 +266,20 @@ public class SystemController {
 			// stuff
 			break;
 		case "EVENT":
-			// stuff
+			/* IND | PARIND | GRP | PARGRP
+			*
+			*--I guess this just creates a new Event? lets go with that --
+			* */
+			String eventType;
+			if(args.get(0).equals("IND")){
+				currentTimer.setEvent(new Individual());
+			}else if(args.get(0).equals("PARIND")){
+				currentTimer.setEvent(new ParIndividual());
+			}else if(args.get(0).equals("GRP")){
+				currentTimer.setEvent(new Group());
+			}else if(args.get(0).equals("PARGRP")){
+				currentTimer.setEvent(new ParGroup());   
+			}
 			break;
 		case "NEWRUN":
 			// stuff
@@ -281,8 +315,6 @@ public class SystemController {
 			// stuff
 			break;
 		}
-		return new EventLog();
-
 	}
 
 	// FOR THIS IMPLEMENTATION the channel supplied as a parameter's sensor's
