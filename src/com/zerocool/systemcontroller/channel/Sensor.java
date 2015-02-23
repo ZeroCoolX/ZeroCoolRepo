@@ -1,5 +1,16 @@
 package com.zerocool.systemcontroller.channel;
 
+/**
+ * 
+ * @author ZeroCool
+ * The Sensor Class
+ * 
+ * This class represents a sensor.  A sensor is 'triggered' either by 
+ * a participant or manually on the console.  The signal is to only be
+ * useful if the sensor is armed and is for starting/stopping times of
+ * participants.
+ *
+ */
 public class Sensor {
 
 	private int signal;

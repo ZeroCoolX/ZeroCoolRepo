@@ -10,6 +10,7 @@ public class EventLog {
 	}
 	
 	public void logTime(long time) {
+		
 	}
 	
 	public void logEvent(AbstractEvent event, Timer timer) {

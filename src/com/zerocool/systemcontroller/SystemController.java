@@ -1,15 +1,11 @@
 package com.zerocool.systemcontroller;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-
-import org.apache.commons.lang3.time.StopWatch;
 
 import com.zerocool.systemcontroller.channel.Channel;
 import com.zerocool.systemcontroller.event.Group;
@@ -61,7 +57,10 @@ public class SystemController {
 		}
 	}
 
-	// read in timestamp and commands from file
+	/**
+	 * Read in timestamp and commands from a file.
+	 * @param file - The file to read from.
+	 */
 	public void readFile(File file) {
 		try {
 			Scanner inFile = new Scanner(new FileReader(file));
@@ -76,13 +75,13 @@ public class SystemController {
 				//System.out.println("reading minute: " + line.substring(previousIndex, nextIndex));
 				int min = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
-				previousIndex = nextIndex+1;
+				previousIndex = nextIndex + 1;
 				nextIndex = line.indexOf('.', nextIndex);
 				//store second from timestamp
 				//System.out.println("reading second");
 				int sec = (int) (Integer.parseInt(line.substring(
 						previousIndex, nextIndex)));
-				previousIndex = nextIndex+1;
+				previousIndex = nextIndex + 1;
 				nextIndex = line.indexOf(',', nextIndex);
 				//store milisecond from timestamp
 				//System.out.println("reading millisecond");
@@ -105,46 +104,46 @@ public class SystemController {
 				//System.out.println("sec = " + inTime.getSeconds());
 				//System.out.println("milsec = " + inTime.getTime());
 
-				previousIndex = nextIndex+1;
+				previousIndex = nextIndex + 1;
 				nextIndex = line.indexOf(',', previousIndex);
 				//store command  line.indexOf("\\w")
 				String cmd = line.substring(previousIndex, nextIndex);
-				previousIndex = nextIndex+1;
+				previousIndex = nextIndex + 1;
 				// just for insurance reasons
 				cmd = cmd.toUpperCase();
 				//System.out.println("cmd = " + cmd);
-				previousIndex = nextIndex+1;
+				previousIndex = nextIndex + 1;
 				boolean hasArgs = false;
 				boolean parseTime = false;
-				if(cmd.equals("TIME")){//the next character boundry for parsing is ':'
+				if (cmd.equals("TIME")) {//the next character boundry for parsing is ':'
 					//System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = true;
 					nextIndex = line.indexOf(':', previousIndex);
-				}else if(cmd.equals("TOG") || cmd.equals("CONN") || cmd.equals("DISC") 
+				} else if (cmd.equals("TOG") || cmd.equals("CONN") || cmd.equals("DISC") 
 						|| cmd.equals("EVENT") || cmd.equals("PRINT") || cmd.equals("EXPORT")
-						|| cmd.equals("NUM") || cmd.equals("CLR") || cmd.equals("TRIG")){//the next character boundry for parsing is ','
+						|| cmd.equals("NUM") || cmd.equals("CLR") || cmd.equals("TRIG")) {//the next character boundry for parsing is ','
 					//System.out.println("cmd = " + cmd);
 					hasArgs = true;
 					parseTime = false;
 					nextIndex = line.indexOf(',', previousIndex);
 					//System.out.println("nextIndex = " + nextIndex);
-				}else{//there is no args for the rest of cmds
+				} else{//there is no args for the rest of cmds
 					hasArgs = false;
 				}
 				//System.out.println("initializing arraylist");
 				ArrayList<String> args = new ArrayList<String>();
 				
-				if(hasArgs){
-					if(parseTime){
+				if (hasArgs) {
+					if (parseTime) {
 						int hours = (int) (Integer.parseInt(line.substring(
 								previousIndex, nextIndex)));
-						previousIndex = nextIndex+1;
+						previousIndex = nextIndex + 1;
 						nextIndex = line.indexOf('.', nextIndex);
 						//store second from timestamp
 						min = (int) (Integer.parseInt(line.substring(
 								previousIndex, nextIndex)));
-						previousIndex = nextIndex+1;
+						previousIndex = nextIndex + 1;
 						nextIndex = line.indexOf(',', nextIndex);
 						//store milisecond from timestamp
 						sec = (int) (Integer.parseInt(line.substring(
@@ -161,25 +160,25 @@ public class SystemController {
 						argTime.setHours(hours);
 						argTime.setMinutes(min);
 						argTime.setSeconds(sec);
-						args.add((""+argTime.getHours()));
-						args.add((""+argTime.getMinutes()));
-						args.add((""+argTime.getSeconds()));
+						args.add(("" + argTime.getHours()));
+						args.add(("" + argTime.getMinutes()));
+						args.add(("" + argTime.getSeconds()));
 
-					}else{
+					} else {
 						//store command  line.indexOf("\\w")
 						String arg = "";
-						if(nextIndex == -1){
+						if (nextIndex == -1) {
 							arg = line.substring(previousIndex);
 							// just for insurance reasons
 							arg = arg.toUpperCase();
 							args.add(arg);
-						}else{
+						} else {
 							arg = line.substring(previousIndex, nextIndex);
-							previousIndex = nextIndex+1;
+							previousIndex = nextIndex + 1;
 							// just for insurance reasons
 							arg = arg.toUpperCase();
 							args.add(arg);
-							if(line.indexOf(',', previousIndex) != -1){
+							if (line.indexOf(',', previousIndex) != -1) {
 								arg = line.substring(previousIndex);
 								// just for insurance reasons
 								arg = arg.toUpperCase();
@@ -193,7 +192,7 @@ public class SystemController {
 					for(String arg: args){
 						System.out.println("arg = " + arg);
 					}*/
-				}else{
+				} else {
 					//not sure if this really makes sense..i mean it doesn't but in principle
 					executeCommand(inTime, cmd, args);
 					/*System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
@@ -211,6 +210,11 @@ public class SystemController {
 		}
 	}
 
+	/**
+	 * 
+	 * @param args
+	 * @return
+	 */
 	public EventLog readInput(String[] args) {
 		// nothing yet!
 		// niet!
@@ -218,6 +222,13 @@ public class SystemController {
 		return null;
 	}
 
+	
+	/**
+	 * Excute a command.
+	 * @param time - The current time ?
+	 * @param cmd - The command to excute.
+	 * @param args - Types of events to run.
+	 */
 	public void executeCommand(Date time, String cmd, ArrayList<String> args) {
 
 		switch (cmd) {
@@ -271,13 +282,13 @@ public class SystemController {
 			*--I guess this just creates a new Event? lets go with that --
 			* */
 			String eventType;
-			if(args.get(0).equals("IND")){
+			if (args.get(0).equals("IND")) {
 				currentTimer.setEvent(new Individual());
-			}else if(args.get(0).equals("PARIND")){
+			}else if (args.get(0).equals("PARIND")) {
 				currentTimer.setEvent(new ParIndividual());
-			}else if(args.get(0).equals("GRP")){
+			}else if (args.get(0).equals("GRP")) {
 				currentTimer.setEvent(new Group());
-			}else if(args.get(0).equals("PARGRP")){
+			}else if (args.get(0).equals("PARGRP")) {
 				currentTimer.setEvent(new ParGroup());   
 			}
 			break;
@@ -323,42 +334,82 @@ public class SystemController {
 		chosenChannel.setSensorState(sensorState);
 	}
 
+	/**
+	 * Set the ID of the system.
+	 * @param ID - The new ID of the system.
+	 */
 	public void setID(long ID) {
 		this.ID = ID;
 	}
 
+	/**
+	 * Set the Timer of the system.
+	 * @param timer - The Timer to set the system.
+	 */
 	public void setTimer(Timer timer) {
 		this.currentTimer = timer;
 	}
 
+	/**
+	 * Set the EventLog of the system.
+	 * @param eventLog - The EventLog to set to the system.
+	 */
 	public void setEventLog(EventLog eventLog) {
 		this.eventLog = eventLog;
 	}
 
+	/**
+	 * Set the Channels of the system.
+	 * @param channels - The ArrayList of Channels to set to the system.
+	 */
 	public void setChannels(ArrayList<Channel> channels) {
 		this.channels = channels;
 	}
 
+	/**
+	 * Get's the system's current Timer.
+	 * @return The current Timer.
+	 */
 	public Timer getTimer() {
 		return this.currentTimer;
 	}
 
+	/**
+	 * Get's the system's current EventLog.
+	 * @return The current EVentLog.
+	 */
 	public EventLog getEventLog() {
 		return this.eventLog;
 	}
 
+	/**
+	 * Get's the system's current ArrayList of Channels.
+	 * @return The current ArrayList of Channels.
+	 */
 	public ArrayList<Channel> getChannels() {
 		return this.channels;
 	}
 
+	/**
+	 * Get's the system's current ID.
+	 * @return The current ID.
+	 */
 	public long getId() {
 		return this.ID;
 	}
 
+	/**
+	 * Set's the Printer on or off.
+	 * @param isPrinterOn - True to turn on the printer else false.
+	 */
 	public void setIsPrinterOn(boolean isPrinterOn) {
 		this.isPrinterOn = isPrinterOn;
 	}
 
+	/**
+	 * Checks whether the Printer is on or off.
+	 * @return True if the printer is on else off.
+	 */
 	public boolean getIsPrinterOn() {
 		return this.isPrinterOn;
 	}

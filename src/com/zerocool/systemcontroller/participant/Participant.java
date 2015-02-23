@@ -27,6 +27,7 @@ public class Participant {
 	
 	
 	// ----- Functional ----- \\
+	
 	/**
 	 * Creates a new {@link #Record} for this {@link #Participant}.
 	 */
@@ -35,6 +36,7 @@ public class Participant {
 	}
 	
 	// ----- Access ----- \\
+	
 	/**
 	 * Returns the last {@link #Record} created for this {@link #Participant}.
 	 * If no {@link #Record} exists then it returns null
@@ -49,7 +51,8 @@ public class Participant {
 	}
 
 	/**
-	 * @return
+	 * Get's the ID of the particiapnt.
+	 * @return The id of the participant.
 	 */
 	public long getID() {
 		return this.id;
@@ -57,7 +60,7 @@ public class Participant {
 	
 	/**
 	 * Returns the number of Records that this {@link #Participant} has.
-	 * @return int
+	 * @return The number of records.
 	 */
 	public int getRecordCount() {
 		return this.records.size();
@@ -65,15 +68,15 @@ public class Participant {
 	
 	/**
 	 * Returns the {@link #Participant}'s name.
-	 * @return string
+	 * @return The name of the participant.
 	 */
 	public String getName() {
 		return this.name;
 	}
 	
 	/**
-	 * Get if this {@link #Participant} is competing
-	 * @return
+	 * Get if this {@link #Participant} is competing.
+	 * @return true if in an event else false.
 	 */
 	public boolean getIsCompeting() {
 		return this.isCompeting;
@@ -81,9 +84,10 @@ public class Participant {
 	
 	
 	// ----- Mutate ----- \\\	
+	
 	/**
-	 * Sets if this {@link #Participant} is competing in an {@link #Event}
-	 * @param isCompeting
+	 * Sets if this {@link #Participant} is competing in an {@link #Event}.
+	 * @param isCompeting - True if participant is in an event else false.
 	 */
 	public void setIsCompeting(boolean isCompeting) {
 		this.isCompeting = isCompeting;

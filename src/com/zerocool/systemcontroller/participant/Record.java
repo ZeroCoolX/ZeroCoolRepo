@@ -34,8 +34,7 @@ public class Record {
 	/**
 	 * Creates a new instance of the Record class without values
 	 */
-	public Record()
-	{
+	public Record() {
 		
 	}
 

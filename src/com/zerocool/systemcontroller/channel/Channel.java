@@ -1,5 +1,14 @@
 package com.zerocool.systemcontroller.channel;
 
+/**
+ * 
+ * @author ZeroCool
+ * The Channel Class
+ * 
+ * This class represents a channel for a sensor to be connected to.
+ * Each channel has exactly 0 or 1 sensors to trigger an event.
+ * 
+ */
 public class Channel {
 
 	private Sensor currentSensor;
@@ -70,13 +79,23 @@ public class Channel {
 		return currentSensor != null ? currentSensor.getState() : false;
 	}
 	
-	public void setState(boolean active){
+	
+	// ----- mutators ----- \\
+	
+	/**
+	 * Sets the state of the channel to active er naw.
+	 * @param active - The state to set the channel to.
+	 */
+	public void setState(boolean active) {
 		this.isActive = active;
 	}
 	
-	public void setSensorState(boolean state){
+	/**
+	 * Sets the state of the current sensor.
+	 * @param state - The state to set the sensor to.
+	 */
+	public void setSensorState(boolean state) {
 		currentSensor.setState(state);
 	}
-	
 	
 }

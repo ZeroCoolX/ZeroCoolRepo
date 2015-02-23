@@ -76,26 +76,26 @@ public class Timer {
 		this(new Date());
 	}
 	
-	public Timer(Date time){
+	public Timer(Date time) {
 		this(time, new Individual());
 	}
 	
-	public Timer(Date time, AbstractEvent event){
+	public Timer(Date time, AbstractEvent event) {
 		this(time, event, new ArrayList<Participant>());
 	}
 	
-	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants){
+	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants) {
 		this(time, event, participants, new EventLog());
 	}
 	
-	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants, EventLog eventLog){
+	public Timer(Date time, AbstractEvent event, ArrayList<Participant> participants, EventLog eventLog) {
 		this.stopwatch = new StopWatch();
 		this.currentEvent = event;
 		this.totalParticipants = participants;
 		this.eventLogger = eventLog;
-		try{
+		try {
 			time = f.parse( (""+(time.getYear()+1900)+"/"+(time.getMonth()+1)+"/"+time.getDate()+" "+time.getHours()+":"+time.getMinutes()+":"+time.getSeconds()+".000") );
-		}catch(Exception e){
+		} catch(Exception e) {
 			System.out.println("ERROR!!!! " + e.getMessage());
 		}
 		this.sysTime = time;
@@ -120,33 +120,45 @@ public class Timer {
 		currentEvent.finishParticipants();
 	}
 	
-	public void resetTime() { stopwatch.reset(); }
+	public void resetTime() { 
+		stopwatch.reset(); 
+	}
 	
 	
 	// ----- accessors ----- \\
 	
-	public long getEventTime() { return stopwatch.getStartTime(); }
+	public long getEventTime() { 
+		return stopwatch.getStartTime(); 
+	}
 	
-	public Date getSysTime(){
+	public Date getSysTime() {
 		return this.sysTime;
 	}
 	
-	public AbstractEvent getEvent(){
+	public AbstractEvent getEvent() {
 		return this.currentEvent;
 	}
 	
-	public ArrayList<Participant> getTotalParticipants() { return totalParticipants; }
+	public ArrayList<Participant> getTotalParticipants() { 
+		return totalParticipants; 
+	}
 	
-	public AbstractEvent getCurrentEvent() { return currentEvent; }
+	public AbstractEvent getCurrentEvent() { 
+		return currentEvent; 
+	}
 	
 	
 	// ----- mutators ----- \\
 	
-	public void setEventLog(EventLog eventLog) { eventLogger=eventLog; }
+	public void setEventLog(EventLog eventLog) { 
+		eventLogger = eventLog; 
+	}
 	
-	public void setEvent(AbstractEvent event) { currentEvent=event;}
+	public void setEvent(AbstractEvent event) { 
+		currentEvent = event;
+	}
 	
-	public void setSysTime(Date time){
+	public void setSysTime(Date time) {
 		this.sysTime = time;
 	}
 	
