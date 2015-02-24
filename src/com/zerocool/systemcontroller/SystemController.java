@@ -21,12 +21,12 @@ public class SystemController {
 	public EventLog eventLog;
 	public ArrayList<Channel> channels;
 	public boolean isPrinterOn;
-	public static long ID = 0;
+	public long ID = 0;
 	public Date systemTime;
 	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
 
 	public SystemController() {
-		this(ID);
+		this(0);
 	}
 
 	public SystemController(long ID) {
@@ -69,6 +69,14 @@ public class SystemController {
 			//while there is another line to read...read it 
 			while (inFile.hasNextLine()) {
 				String line = inFile.nextLine();
+				
+				//regex to split the line by colon, period, or space!
+				String[] parsedLine = line.split("[:. ]+");
+				for(String str: parsedLine){
+					System.out.println(str);
+				}
+			
+		/*
 				int nextIndex = line.indexOf(':');
 				int previousIndex = 0;
 				//store minute from timestamp
@@ -188,23 +196,26 @@ public class SystemController {
 					}
 					//not sure if this really makes sense..i mean it doesn't but in principle
 					executeCommand(inTime, cmd, args);
-					/*System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
 					for(String arg: args){
 						System.out.println("arg = " + arg);
-					}*/
+					}
 				} else {
 					//not sure if this really makes sense..i mean it doesn't but in principle
 					executeCommand(inTime, cmd, args);
-					/*System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
+					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
 					for(String arg: args){
 						System.out.println("arg = " + arg);
-					}*/
+					}
 				}
+				*/
 			}
+			/*
 			String message = "";
 			message += "\n"+systemTime;
 			message += "\n"+currentTimer.getCurrentEvent().getType();
-			System.out.println(message);
+			System.out.println(message);*/
+			
 		} catch (Exception e) {
 			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
 		}
