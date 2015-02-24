@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,14 +58,7 @@ public class SystemController {
 		// create a Queue collection to store each line in a FIFO
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<String[]>();
-		try{
-			this.systemTime = f.parse(("" + (systemTime.getYear() + 1900) + "/"
-				+ (systemTime.getMonth() + 1) + "/" + systemTime.getDate()
-				+ " " + systemTime.getHours() + ":" + systemTime.getMinutes()
-				+ ":" + systemTime.getSeconds() + ".000"));
-		}catch(Exception e){
-			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
-		}
+		this.systemTime = formatTime(this.systemTime);
 	}
 
 	/**
@@ -108,6 +102,19 @@ public class SystemController {
 	public String[] parse(String line, String regex){
 		return line.split(regex);
 	}
+	
+	public Date formatTime(Date date){
+		try {
+			date = f.parse(("" + (date.getYear() + 1900) + "/"
+					+ (date.getMonth() + 1) + "/" + date.getDate()
+					+ " " + date.getHours() + ":" + date.getMinutes()
+					+ ":" + date.getSeconds() + ".000"));
+		} catch (ParseException e) {
+			System.out.println("ERROR!!!\n" + e.getMessage());
+			e.printStackTrace();
+		}
+		return date;
+	}
 
 	/**
 	 * 
@@ -118,17 +125,26 @@ public class SystemController {
 		Scanner stdIn = new Scanner(System.in);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String [] parsedLine = null;
+		boolean exit = false;
 		do{
 	    try {
-	    	System.out.print(":>");
-	    	//call parsing method for line
-	    	String line = br.readLine();
-	        parsedLine = parse(line, "[:. ]+ \\n+\\t");
-	        
+	    	System.out.print("mainframe$ ");
 	        /*
 	         * Now in between parsing the command entered, and executing/storing it for now in the queue
-	         * we need to append a timestamp of when the use typed in said command in the format <min>:<sec>.<millisecond>
+	         * we need to append a timestamp of when the use typed in said command in the format <hour>:<min>:<second>.<millisecond>
 	         * */
+	        Date appendTime = new Date();
+	        appendTime = formatTime(appendTime);
+	        
+	        String input = br.readLine();
+	        if(input.equals("EXIT")){
+	        	exit = true;
+	        }
+	        
+	    	//call parsing method for line
+	    	String line = appendTime.getHours()+":"+appendTime.getMinutes()+":"+appendTime.getSeconds()+".00\t"+input;
+	        parsedLine = parse(line, "[:. ]+ \\n+\\t");
+
 	        
 			// add line to the queue
 			commandList.add(parsedLine);
@@ -139,16 +155,16 @@ public class SystemController {
 	         System.exit(1);
 	      }
 	    //keep reading in lines from the terminal until exit has been entered
-		}while(!parsedLine[0].equals("EXIT"));
+		}while(!exit);
 		
 		
-		/*
-		 * Uncomment to see the results of the input
+		
+		 //Uncomment to see the results of the input
 		while(!commandList.isEmpty()){
 			for(String str: commandList.remove()){
 				System.out.println("LNIE: " + str);
 			}
-		}*/
+		}
 	}
 
 	
