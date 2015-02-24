@@ -138,4 +138,13 @@ public class Record {
 	public void setEventId(long eventId){
 		this.eventId = eventId;
 	}
+	
+	public void exit(){
+		eventName = null;
+		eventId = -1;
+		startTime = -1;
+		finishTime = -1;
+		elapsedTime = -1;
+		dnf = false;
+	}
 }

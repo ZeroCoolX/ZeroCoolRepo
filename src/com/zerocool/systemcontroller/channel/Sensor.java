@@ -17,6 +17,12 @@ public class Sensor {
 	
 	private boolean isArmed;
 	
+	private SensorType sensorType;
+	
+	public enum SensorType {
+		EYE, GATE, PAD
+	};
+	
 	public Sensor() {
 		// do nothing
 	}
@@ -36,6 +42,24 @@ public class Sensor {
 		return isArmed;
 	}
 	
+	public String getType(){
+		return sensorType.toString();
+	}
+	
+	public void setSensorType(String type){
+		switch(type){
+		case "EYE":
+			sensorType = SensorType.EYE;
+		break;
+		case "GATE":
+			sensorType = SensorType.GATE;
+		break;
+		case "PAD":
+			sensorType = SensorType.PAD;
+		break;
+		}
+	}
+	
 	
 	// ----- mutators ----- \\
 	
@@ -45,6 +69,11 @@ public class Sensor {
 	 */
 	public void setState(boolean arm) {
 		isArmed = arm;
+	}
+	
+	public void exit(){
+		signal = -1;
+		isArmed = false;
 	}
 	
 }

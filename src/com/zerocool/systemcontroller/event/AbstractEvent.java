@@ -130,4 +130,16 @@ public abstract class AbstractEvent {
 	public ArrayList<Participant> getParticipants() {
 		return currentParticipants;
 	}
+	
+	public void exit(){
+		LASTID = -1;
+		type = null;
+		name = null;
+		eventId = -1;
+		for(Participant par: currentParticipants){
+			par.exit();
+		}
+		eventTime = -1;
+	}
+	
 }

@@ -71,12 +71,20 @@ public class Channel {
 		return isActive;
 	}
 	
+	public int getId(){
+		return id;
+	}
+	
 	/**
 	 * Check if the sensor is armed or not.
 	 * @return - true if the sensor is armed else false.
 	 */
 	public boolean getSensorState() {
 		return currentSensor != null ? currentSensor.getState() : false;
+	}
+	
+	public String getSensorType(){
+		return currentSensor != null ? currentSensor.getType() : null;
 	}
 	
 	
@@ -96,6 +104,17 @@ public class Channel {
 	 */
 	public void setSensorState(boolean state) {
 		currentSensor.setState(state);
+	}
+	
+	public void setSensorType(String type){
+		currentSensor.setSensorType(type);
+	}
+	
+	public void exit(){
+		id = -1;
+		isActive = false;
+		currentSensor.exit();
+		currentSensor = null;
 	}
 	
 }

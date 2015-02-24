@@ -16,6 +16,7 @@ public class Participant {
 	private long id;
 	
 	private boolean isCompeting;
+	private boolean isNext;
 	
 	/**
 	 * Creates a new instance of the Participant class
@@ -94,6 +95,10 @@ public class Participant {
 		return this.isCompeting;
 	}
 	
+	public boolean getIsNext(){
+		return this.isNext;
+	}
+	
 	
 	// ----- Mutate ----- \\\	
 	
@@ -105,4 +110,18 @@ public class Participant {
 		this.isCompeting = isCompeting;
 	}
 	
+	public void setIsNext(boolean next){
+		isNext = next;
+	}
+	
+	
+	public void exit(){
+		name = null;
+		id = -1;
+		isCompeting = false;
+		isNext = false;
+		while(!records.isEmpty()){
+			records.pop().exit();
+		}
+	}
 }

@@ -59,4 +59,8 @@ public class SystemTime extends StopWatch {
 		return formatTime(getTime());
 	}
 	
+	public void exit(){
+		offset = 000;
+	}
+	
 }

@@ -85,4 +85,13 @@ public class Timer {
 		currentEvent = event;
 	}
 	
+	public void exit(){
+		systemTime.exit();
+		for(Participant par: totalParticipants){
+			par.exit();
+		}
+		currentEvent.exit();
+		eventLog.exit();
+	}
+	
 }
