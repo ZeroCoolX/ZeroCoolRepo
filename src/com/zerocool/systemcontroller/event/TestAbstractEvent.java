@@ -8,8 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zerocool.systemcontroller.SystemTime.SystemTime;
 import com.zerocool.systemcontroller.participant.Participant;
+import com.zerocool.systemcontroller.systemtime.SystemTime;
 
 public class TestAbstractEvent { 
 

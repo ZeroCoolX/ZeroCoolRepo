@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller.SystemTime;
+package com.zerocool.systemcontroller.systemtime;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;

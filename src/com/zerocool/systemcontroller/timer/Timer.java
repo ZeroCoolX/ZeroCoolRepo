@@ -2,10 +2,10 @@ package com.zerocool.systemcontroller.timer;
 
 import java.util.ArrayList;
 
-import com.zerocool.systemcontroller.SystemTime.SystemTime;
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
+import com.zerocool.systemcontroller.systemtime.SystemTime;
 
 public class Timer {
 	

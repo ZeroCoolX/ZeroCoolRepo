@@ -11,13 +11,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import com.zerocool.systemcontroller.SystemTime.SystemTime;
 import com.zerocool.systemcontroller.channel.Channel;
 import com.zerocool.systemcontroller.event.Group;
 import com.zerocool.systemcontroller.event.Individual;
 import com.zerocool.systemcontroller.event.ParGroup;
 import com.zerocool.systemcontroller.event.ParIndividual;
 import com.zerocool.systemcontroller.eventlog.EventLog;
+import com.zerocool.systemcontroller.systemtime.SystemTime;
 import com.zerocool.systemcontroller.timer.Timer;
 
 public class SystemController {
