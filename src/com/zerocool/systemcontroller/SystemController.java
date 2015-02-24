@@ -1,7 +1,10 @@
 package com.zerocool.systemcontroller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,6 +54,9 @@ public class SystemController {
 		this.eventLog = eventLog;
 		this.channels = channels;
 		this.systemTime = new Date();
+		// create a Queue collection to store each line in a FIFO
+		// mentality using .add() and .remove()
+		commandList = new LinkedList<String[]>();
 		try{
 			this.systemTime = f.parse(("" + (systemTime.getYear() + 1900) + "/"
 				+ (systemTime.getMonth() + 1) + "/" + systemTime.getDate()
@@ -71,15 +77,15 @@ public class SystemController {
 		try {
 			//read in file from given path 
 			Scanner inFile = new Scanner(new FileReader(file));
+			String[] parsedLine = null;
+			
 			// while there is another line to read...read it
 			while (inFile.hasNextLine()) {
 				String line = inFile.nextLine();
-
-				// regex to split the line by colon, period, or space!
-				String[] parsedLine = line.split("[:. ]+");
-				// create a Queue collection to store each line in a FIFO
-				// mentality using .add() and .removeFirst()
-				commandList = new LinkedList<String[]>();
+				
+				//call parsing method
+				parsedLine = parse(line, "[:. ]+ +\\t");
+				
 				// add line to the queue
 				commandList.add(parsedLine);
 			}
@@ -87,7 +93,20 @@ public class SystemController {
 			System.out.println("ERROR!!!\n" + e.getMessage());
 			e.printStackTrace();
 		}
+		
+		
+		//Uncomment to see the results of the input
+		while(!commandList.isEmpty()){
+			for(String str: commandList.remove()){
+				System.out.println(str);
+			}
+		}
 
+	}
+	
+	// regex to split the line by colon, period, or space!
+	public String[] parse(String line, String regex){
+		return line.split(regex);
 	}
 
 	/**
@@ -95,11 +114,41 @@ public class SystemController {
 	 * @param args
 	 * @return
 	 */
-	public EventLog readInput(String[] args) {
-		// nothing yet!
-		// niet!
-		// hahahha
-		return null;
+	public void readInput() {
+		Scanner stdIn = new Scanner(System.in);
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String [] parsedLine = null;
+		do{
+	    try {
+	    	System.out.print(":>");
+	    	//call parsing method for line
+	    	String line = br.readLine();
+	        parsedLine = parse(line, "[:. ]+ \\n+\\t");
+	        
+	        /*
+	         * Now in between parsing the command entered, and executing/storing it for now in the queue
+	         * we need to append a timestamp of when the use typed in said command in the format <min>:<sec>.<millisecond>
+	         * */
+	        
+			// add line to the queue
+			commandList.add(parsedLine);
+	         
+	         
+	      } catch (IOException ioe) {
+	         System.out.println("IO error trying to read your name!");
+	         System.exit(1);
+	      }
+	    //keep reading in lines from the terminal until exit has been entered
+		}while(!parsedLine[0].equals("EXIT"));
+		
+		
+		/*
+		 * Uncomment to see the results of the input
+		while(!commandList.isEmpty()){
+			for(String str: commandList.remove()){
+				System.out.println("LNIE: " + str);
+			}
+		}*/
 	}
 
 	

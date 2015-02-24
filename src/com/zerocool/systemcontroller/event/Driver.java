@@ -21,6 +21,8 @@ public class Driver {
 		File file = new File("syscontrolFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		sysCont.readFile(file);
+		System.out.println("\n\nTesting readInput\n\n");
+		//sysCont.readInput();
 		
 		/*AbstractEvent[] events = new AbstractEvent[8];
 		//Calendar cal = Calendar.getInstance();
