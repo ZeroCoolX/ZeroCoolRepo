@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import com.zerocool.systemcontroller.channel.Channel;
@@ -63,162 +66,25 @@ public class SystemController {
 	 */
 	public void readFile(File file) {
 		try {
+			//read in file from given path 
 			Scanner inFile = new Scanner(new FileReader(file));
-			//System.out.println("reading line in file");
-			
-			//while there is another line to read...read it 
+			// while there is another line to read...read it
 			while (inFile.hasNextLine()) {
 				String line = inFile.nextLine();
-				
-				//regex to split the line by colon, period, or space!
+
+				// regex to split the line by colon, period, or space!
 				String[] parsedLine = line.split("[:. ]+");
-				for(String str: parsedLine){
-					System.out.println(str);
-				}
-			
-		/*
-				int nextIndex = line.indexOf(':');
-				int previousIndex = 0;
-				//store minute from timestamp
-				//System.out.println("reading minute: " + line.substring(previousIndex, nextIndex));
-				int min = (int) (Integer.parseInt(line.substring(
-						previousIndex, nextIndex)));
-				previousIndex = nextIndex + 1;
-				nextIndex = line.indexOf('.', nextIndex);
-				//store second from timestamp
-				//System.out.println("reading second");
-				int sec = (int) (Integer.parseInt(line.substring(
-						previousIndex, nextIndex)));
-				previousIndex = nextIndex + 1;
-				nextIndex = line.indexOf(',', nextIndex);
-				//store milisecond from timestamp
-				//System.out.println("reading millisecond");
-				int milsec = (int) (Integer.parseInt(line.substring(
-						previousIndex, nextIndex)));
-				//create new Date() object
-				Date inTime = new Date();
-				//create formatter
-				//format the new Date object to our format
-				//System.out.println("Formatting date");
-				inTime = f.parse(("" + (inTime.getYear() + 1900) + "/"
-						+ (inTime.getMonth() + 1) + "/" + inTime.getDate()
-						+ " " + inTime.getHours() + ":" + inTime.getMinutes()
-						+ ":" + inTime.getSeconds() + ".000"));
-				//set minutes, seconds, and miliseconds
-				inTime.setMinutes(min);
-				inTime.setSeconds(sec);
-				//inTime.setTime(milsec);
-				//System.out.println("min = " + inTime.getMinutes());
-				//System.out.println("sec = " + inTime.getSeconds());
-				//System.out.println("milsec = " + inTime.getTime());
-
-				previousIndex = nextIndex + 1;
-				nextIndex = line.indexOf(',', previousIndex);
-				//store command  line.indexOf("\\w")
-				String cmd = line.substring(previousIndex, nextIndex);
-				previousIndex = nextIndex + 1;
-				// just for insurance reasons
-				cmd = cmd.toUpperCase();
-				//System.out.println("cmd = " + cmd);
-				previousIndex = nextIndex + 1;
-				boolean hasArgs = false;
-				boolean parseTime = false;
-				if (cmd.equals("TIME")) {//the next character boundry for parsing is ':'
-					//System.out.println("cmd = " + cmd);
-					hasArgs = true;
-					parseTime = true;
-					nextIndex = line.indexOf(':', previousIndex);
-				} else if (cmd.equals("TOG") || cmd.equals("CONN") || cmd.equals("DISC") 
-						|| cmd.equals("EVENT") || cmd.equals("PRINT") || cmd.equals("EXPORT")
-						|| cmd.equals("NUM") || cmd.equals("CLR") || cmd.equals("TRIG")) {//the next character boundry for parsing is ','
-					//System.out.println("cmd = " + cmd);
-					hasArgs = true;
-					parseTime = false;
-					nextIndex = line.indexOf(',', previousIndex);
-					//System.out.println("nextIndex = " + nextIndex);
-				} else{//there is no args for the rest of cmds
-					hasArgs = false;
-				}
-				//System.out.println("initializing arraylist");
-				ArrayList<String> args = new ArrayList<String>();
-				
-				if (hasArgs) {
-					if (parseTime) {
-						int hours = (int) (Integer.parseInt(line.substring(
-								previousIndex, nextIndex)));
-						previousIndex = nextIndex + 1;
-						nextIndex = line.indexOf('.', nextIndex);
-						//store second from timestamp
-						min = (int) (Integer.parseInt(line.substring(
-								previousIndex, nextIndex)));
-						previousIndex = nextIndex + 1;
-						nextIndex = line.indexOf(',', nextIndex);
-						//store milisecond from timestamp
-						sec = (int) (Integer.parseInt(line.substring(
-								previousIndex)));//there is no more line to parse
-						
-						
-						//format the new Date object to our format
-						Date argTime = new Date();
-						argTime = f.parse(("" + (inTime.getYear() + 1900) + "/"
-								+ (inTime.getMonth() + 1) + "/" + inTime.getDate()
-								+ " " + inTime.getHours() + ":" + inTime.getMinutes()
-								+ ":" + inTime.getSeconds() + ".000"));
-						//set minutes, seconds, and miliseconds
-						argTime.setHours(hours);
-						argTime.setMinutes(min);
-						argTime.setSeconds(sec);
-						args.add(("" + argTime.getHours()));
-						args.add(("" + argTime.getMinutes()));
-						args.add(("" + argTime.getSeconds()));
-
-					} else {
-						//store command  line.indexOf("\\w")
-						String arg = "";
-						if (nextIndex == -1) {
-							arg = line.substring(previousIndex);
-							// just for insurance reasons
-							arg = arg.toUpperCase();
-							args.add(arg);
-						} else {
-							arg = line.substring(previousIndex, nextIndex);
-							previousIndex = nextIndex + 1;
-							// just for insurance reasons
-							arg = arg.toUpperCase();
-							args.add(arg);
-							if (line.indexOf(',', previousIndex) != -1) {
-								arg = line.substring(previousIndex);
-								// just for insurance reasons
-								arg = arg.toUpperCase();
-								args.add(arg);
-							}
-						}
-					}
-					//not sure if this really makes sense..i mean it doesn't but in principle
-					executeCommand(inTime, cmd, args);
-					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
-					for(String arg: args){
-						System.out.println("arg = " + arg);
-					}
-				} else {
-					//not sure if this really makes sense..i mean it doesn't but in principle
-					executeCommand(inTime, cmd, args);
-					System.out.println("inTime = " + inTime + "\ncmd = " + cmd);
-					for(String arg: args){
-						System.out.println("arg = " + arg);
-					}
-				}
-				*/
+				// create a Queue collection to store each line in a FIFO
+				// mentality using .add() and .removeFirst()
+				Queue<String[]> commandList = new LinkedList<String[]>();
+				// add line to the queue
+				commandList.add(parsedLine);
 			}
-			/*
-			String message = "";
-			message += "\n"+systemTime;
-			message += "\n"+currentTimer.getCurrentEvent().getType();
-			System.out.println(message);*/
-			
 		} catch (Exception e) {
-			System.out.println("ERROR!!!!!!!!\n" + e.getMessage());
+			System.out.println("ERROR!!!\n" + e.getMessage());
+			e.printStackTrace();
 		}
+
 	}
 
 	/**
