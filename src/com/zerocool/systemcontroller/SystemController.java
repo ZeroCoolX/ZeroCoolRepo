@@ -27,6 +27,7 @@ public class SystemController {
 	public long ID = 0;
 	public Date systemTime;
 	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+	public Queue<String[]> commandList;
 
 	public SystemController() {
 		this(0);
@@ -62,6 +63,8 @@ public class SystemController {
 
 	/**
 	 * Read in timestamp and commands from a file.
+	 * Each line is parsed into a String[] using String.split(regex) and then that array is pushed into a Queue.
+	 * The entire file will be read in and stored in the queue (FIFO mentality) before actual execution of each command takes place
 	 * @param file - The file to read from.
 	 */
 	public void readFile(File file) {
@@ -76,7 +79,7 @@ public class SystemController {
 				String[] parsedLine = line.split("[:. ]+");
 				// create a Queue collection to store each line in a FIFO
 				// mentality using .add() and .removeFirst()
-				Queue<String[]> commandList = new LinkedList<String[]>();
+				commandList = new LinkedList<String[]>();
 				// add line to the queue
 				commandList.add(parsedLine);
 			}
