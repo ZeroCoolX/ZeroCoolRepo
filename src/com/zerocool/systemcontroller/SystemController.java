@@ -435,7 +435,7 @@ public class SystemController {
 
 	/**
 	 * Get's the system's current EventLog.
-	 * @return The current EVentLog.
+	 * @return The current EventLog.
 	 */
 	public EventLog getEventLog() {
 		return this.eventLog;
