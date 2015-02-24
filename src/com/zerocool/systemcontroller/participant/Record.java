@@ -9,11 +9,31 @@ package com.zerocool.systemcontroller.participant;
  */
 public class Record {
 
-	private long eventId;
 	private String eventName;
+	
+	private long eventId;
 	private long startTime;
 	private long finishTime;
+	private long elapsedTime;
+	
 	private boolean dnf;
+	
+	/**
+	 * Creates a new instance of the Record class without values
+	 */
+	public Record() {
+		// do nothing
+	}
+	
+	/**
+	 * Create a new instance of the Record class with specified values.
+	 * @param eventName - The name of the event.
+	 * @param eventId - The ID of the event.
+	 */
+	public Record(String eventName, long eventId) {
+		this.eventName = eventName;
+		this.eventId = eventId;
+	}
 	
 	/**
 	 * Creates a new instance of the Record class with values
@@ -23,22 +43,16 @@ public class Record {
 	 * @param eventId The event's id number
 	 * @param eventName The name of the event
 	 */
-	public Record(long startTime, long finishTime, boolean dnf, long eventId, String eventName) {
+	public Record(String eventName, long eventId, long startTime, long finishTime, boolean dnf) {
+		this(eventName, eventId);
 		this.startTime = startTime;
 		this.finishTime = finishTime;
 		this.dnf = dnf;
-		this.eventId = eventId;
-		this.eventName = eventName;
-	}
-	
-	/**
-	 * Creates a new instance of the Record class without values
-	 */
-	public Record() {
-		
 	}
 
+	
 	// ----- Access ----- \\
+	
 	/**
 	 * @return If the participant finished the event
 	 */
@@ -61,6 +75,14 @@ public class Record {
 	}
 	
 	/**
+	 * Gets the time it took to complete the race.
+	 * @return The total time from start to finish of the race.
+	 */
+	public long getElpasedTime() {
+		return elapsedTime;
+	}
+	
+	/**
 	 * @return The event name this record is for
 	 */
 	public String getEventName() {
@@ -74,7 +96,9 @@ public class Record {
 		return this.eventId;
 	}
 
+	
 	// ----- Mutate ----- \\
+	
 	/**
 	 * Sets the event's name
 	 * @param eventName
@@ -97,6 +121,7 @@ public class Record {
 	 */
 	public void setFinishTime(long finishTime) {
 		this.finishTime = finishTime;
+		elapsedTime = startTime - finishTime;
 	}
 	
 	/**

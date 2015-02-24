@@ -9,9 +9,12 @@ import java.util.*;
  * {@link #Participant} in any timed Event
  */
 public class Participant {
-	private long id;
+	
 	private String name;
 	private Stack<Record> records;
+	
+	private long id;
+	
 	private boolean isCompeting;
 	
 	/**
@@ -33,6 +36,15 @@ public class Participant {
 	 */
 	public void createNewRecord() {
 		records.push(new Record());
+	}
+	
+	/**
+	 * Overload createNewRecord to simplify implementation later on.  (In event class!)
+	 * @param eventName - The name of the event.
+	 * @param eventId - The ID of the event.
+	 */
+	public void createNewRecord(String eventName, long eventId) {
+		records.push(new Record(eventName, eventId));
 	}
 	
 	// ----- Access ----- \\

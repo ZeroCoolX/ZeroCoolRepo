@@ -1,0 +1,100 @@
+----------------- Change Log - 2/24/2015 -----------------
+
+So I made LOTS of changes and figured it'd be best to write them all down in this new handy dandy change log.
+
+** Removed Participant.txt & Record.txt 
+	
+	- I figured everyone is up-to-date on it and many changes have been made since Cooper added that so it was pointless to continue to have it.
+
+
+** Added a new Class!  SystemTime Class
+
+	- This class is meant to keep track of the System's time.  Since Date was clunky and messy with all the depreciated methods and such, I wanted
+		to use something cleaner and StopWatch works perfect since we just start the time when the SystemController is instantiated.
+		
+	- It has an offset method which is used to set the System time to a specific time.
+	
+	- There is a method to format the output to <hours>:<minutes>:<seconds> and has a precison greater than needed.
+	
+	
+** Changes to Timer Class
+
+	- Removed Cooper's Comments
+	
+	- Modified the constructors
+	
+	- I do not believe this class should have it's own SystemTime, it should be the SystemTime from SystemController since we need to print out
+		the TimeStamps based off of the SystemController's SystemTime.  Events deal with adding the Records to Participants and is therefore
+		responsible for making sure that information is stored correctly.
+		
+	- This means I removed the Getters & Setters for SystemTime/StopWatch and also the resetTime because if we reset the time in this class,
+		we would be messing up the whole systems time.
+		
+	- Tidied up code.
+		
+		
+** Changes to Participant Class
+
+	- Overloaded createNewRecord() with createNewRecord(String eventName, long eventId); to help simplify code in event classes.
+	
+	- Tidied up code.
+
+
+** Changes to Record Class
+
+	- Modified the constructors to better suit needs in other classes.
+	
+	- Added a new variable elapsedTime which is just calculated by taking the startTime - finishTime.  Seemed like it'd be useful.
+	
+	- Tidied up code.
+	
+
+** Changes to TestAbstractEvent Class
+
+	- Added a SystemTime to help test participants and such.
+	
+	- Mostly modified the Tests to comply with all the changes done in the Event classes and removed Tests that became redundant.
+	
+	- Tidied up code.
+	
+
+** Changes to ALL Event Classes
+
+	- So the biggest thing here was that you had pretty much everything copied & pasted from the AbstractEvent which is ok, but unnecessary since
+		all the event classes extend AbstractEvent, there is no need to rewrite all the variables/methods.  So all of the duplicate variables
+		and methods I removed.
+		
+	- All of the abstract methods are the same for every class, but we (may?) need to make them more specific at a later date so I deceided to
+		leave them.
+		
+	- Added two new abstract methods startOneParticipant(); and finishOneParticipant(); to start and finish the race for a specific participant.
+		Since this is the first sprint it doesn't matter yet but will be needed later.
+		
+	- Added startTime and finishTime o respected methods so we can store the correct time in the Participant's records.
+	
+	- Modified the constructors as well.  We do not need a constructor to set the EventType since we have specific classes for the EventType this
+		should never be modified.  We don't want to have the ParIndividual class have an EventType of GRP and so on.  I also did this for the 
+		eventID since that should not be able to be modified as well.
+		
+	- I created a Static variable LASTID to help keep track of the previous eventID and increment them by 1 every time a new event is created.  The
+		first event starts as 0 and increments from there.
+		
+	- Tidied up code.
+	
+	
+** Changes to SystemController class
+	
+	- Modified the constructors a bit.
+	
+	- Replaced Date with SystemTime.  SystemTime starts right when the class is instantiated.
+	
+	- Replaced the few lines that still used Date to allow Cooper's moethods to work with SystemTime.
+	
+	- Tidied up code.
+	
+	
+This is the gist of all the changes I made.  Feel free to e-mail questions, concerns, comments whatever!  None of this is set in stone and subject
+to change.  I want to hear your opinions on it and if I missed something or screwed something up we can always switch back to something you prefer,
+but I think this is really going in the right direction.  Thanks guys!  =D
+
+----------------- End Change Log - 2/24/2015 ----------------- 

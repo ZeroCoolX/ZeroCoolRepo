@@ -2,185 +2,138 @@ package com.zerocool.systemcontroller.event;
 
 import static org.junit.Assert.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zerocool.systemcontroller.SystemTime.SystemTime;
 import com.zerocool.systemcontroller.participant.Participant;
 
 public class TestAbstractEvent { 
-	
-	private ArrayList<AbstractEvent> Events;
-	private ArrayList<Participant> partic;
-	
-    @Before
-    public void setUp() throws Exception {
-    	Events = new ArrayList<AbstractEvent>();
-    	partic = new  ArrayList<Participant>();
-    }
-    
-    public void addEvents(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
-    	Date d;
-		try {
-			d = f.parse("2015/02/17 09:23:50.000");
-			System.out.println(d.getTime());
-	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime(), 1111));
-	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime(), 2222));
-	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime(), 3333));
-	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime(), 4444));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    public void addParticipants(int numPartic){
-    	for(int i = 0; i < numPartic; ++i){
-    		partic.add(new Participant(1234, "test"));
-    		partic.get(i).createNewRecord();
-    	}
-    }
-    
-    public void link(int num){
-    	for(int i = 0; i < num; ++i){
-    		Events.get(i).setParticipants(partic);
-    	}
-    }
- 
-    @After
-    public void tearDown() throws Exception {
-    	System.out.println("Aaaaaaand we're done here.");
-    }
-    
-    @Test
-    public void testEmptyParamConstructor(){
-    	Events.add(new Individual());
-    	Events.add(new Group());
-    	Events.add(new ParIndividual());
-    	Events.add(new ParGroup());
-    }
-    
-    @Test
-    public void testOneParamConstructor(){
-    	Events.add(new Individual("100M Sprint"));
-    	System.out.println(Events.get(0).getName());
-    	Events.add(new Group("CrossCountry Skiing"));
-    	Events.add(new ParIndividual("Marathon"));
-    	Events.add(new ParGroup("Swimming"));
-    }
-    
-    @Test
-    public void testTwoParamConstructor(){
-    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND));
-    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP));
-    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND));
-    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP));
-    }
-    
-    @Test
-	@SuppressWarnings("deprecation")
-    public void testThreeParamConstructor(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
-    	Date d;
-		try {
-			d = f.parse("2015/02/17 09:23:50.000");
-	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime()));
-	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime()));
-	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime()));
-	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime()));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    @Test
-	@SuppressWarnings("deprecation")
-    public void testFourParamConstructor(){
-    	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
-    	Date d;
-		try {
-			d = f.parse("2015/02/17 09:23:50.000");
-	    	Events.add( new Individual("100M Sprint", AbstractEvent.EventType.IND, d.getTime(), 1111));
-	    	Events.add( new Group("CrossCountry Skiiing", AbstractEvent.EventType.GRP, d.getTime(), 2222));
-	    	Events.add( new ParIndividual("Marathon", AbstractEvent.EventType.PARIND, d.getTime(), 3333));
-	    	Events.add( new ParGroup("Swimming", AbstractEvent.EventType.PARGRP, d.getTime(), 4444));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    @Test
-    public void testGetParticipants(){
-    	addEvents();
-    	//add participants for testing
-    	addParticipants(1);
 
-    	for(AbstractEvent eve: Events){
-    		eve.initializeEvent(partic);
-    		assertNotNull(eve.getParticipants());
-    		assertEquals(1, eve.getParticipants().size());
-    	}
-    }
-    
-    @Test
-    public void testInitialEvent(){
-    	addEvents();
-    	//add participants for testing
-    	addParticipants(1);	
-    	for(AbstractEvent eve: Events){
-    		eve.initializeEvent(partic);
-    		assertNotNull(eve.getParticipants());
-    		assertEquals(1, eve.getParticipants().size());
-    		assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventName());
-    		assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventID());
-    	}
-    }
-    
-    @Test
-    public void startParticipant(){
-    	addEvents();
-    	//add participants for testing
-    	addParticipants(1);	
-    	for(AbstractEvent eve: Events){
-    		eve.initializeEvent(partic);
-    		eve.startParticipants();
-    		assertTrue(eve.getParticipants().get(0).getIsCompeting());
-    		if(eve.getType().equals(AbstractEvent.EventType.IND)){
-    			assertEquals(3399,eve.getParticipants().get(0).getLastRecord().getStartTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.GRP)){
-    			assertEquals(2132,eve.getParticipants().get(0).getLastRecord().getStartTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.PARIND)){
-    			assertEquals(3425,eve.getParticipants().get(0).getLastRecord().getStartTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.PARGRP)){
-    			assertEquals(22222,eve.getParticipants().get(0).getLastRecord().getStartTime());
-    		}
-    	}
-    }
-    
-    @Test
-    public void finishParticipant(){
-    	addEvents();
-    	//add participants for testing
-    	addParticipants(1);	
-    	for(AbstractEvent eve: Events){
-    		eve.initializeEvent(partic);
-    		eve.finishParticipants();
-    		assertFalse(eve.getParticipants().get(0).getIsCompeting());
-    		if(eve.getType().equals(AbstractEvent.EventType.IND)){
-    			assertEquals(3,eve.getParticipants().get(0).getLastRecord().getFinishTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.GRP)){
-    			assertEquals(9999,eve.getParticipants().get(0).getLastRecord().getFinishTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.PARIND)){
-        		assertEquals(1123,eve.getParticipants().get(0).getLastRecord().getFinishTime());
-    		}else if(eve.getType().equals(AbstractEvent.EventType.PARGRP)){
-        		assertEquals(9922,eve.getParticipants().get(0).getLastRecord().getFinishTime());
-    		}
-    	}
-    }
-    
+	private ArrayList<AbstractEvent> events;
+	private ArrayList<Participant> participants;
+
+	SystemTime stopWatch;
+
+	@Before
+	public void setUp() throws Exception {
+		events = new ArrayList<AbstractEvent>();
+		participants = new  ArrayList<Participant>();
+
+		stopWatch = new SystemTime();
+		stopWatch.start();
+
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		events = null;
+		participants = null;
+
+		stopWatch = null;
+	}
+	
+	public void addEvents() {
+		events.add(new Individual("100M Sprint"));
+		events.add(new Group("CrossCountry Skiiing"));
+		events.add(new ParIndividual("Marathon"));
+		events.add(new ParGroup("Swimming"));
+	}
+
+	public void addParticipants(int numParticipants) {
+		for(int i = 0; i < numParticipants; ++i) {
+			participants.add(new Participant(i, "Joe [" + i + "]"));
+		}
+	}
+
+	public void link(int num) {
+		for(int i = 0; i < num; ++i){
+			events.get(i).setParticipants(participants);
+		}
+	}
+
+	@Test
+	public void testConstructor() {
+		events.add(new Individual("100M Sprint"));
+		assertTrue(events.get(0).getName().equals("100M Sprint"));
+		assertTrue(events.get(0).getType().equals(AbstractEvent.EventType.IND));
+		events.add(new Group("CrossCountry Skiing"));
+		assertTrue(events.get(1).getName().equals("CrossCountry Skiing"));
+		assertTrue(events.get(1).getType().equals(AbstractEvent.EventType.GRP));
+		events.add(new ParIndividual("Marathon"));
+		assertTrue(events.get(2).getName().equals("Marathon"));
+		assertTrue(events.get(2).getType().equals(AbstractEvent.EventType.PARIND));
+		events.add(new ParGroup("Swimming"));
+		assertTrue(events.get(3).getName().equals("Swimming"));
+		assertTrue(events.get(3).getType().equals(AbstractEvent.EventType.PARGRP));
+	}
+
+
+	@Test
+	public void testGetParticipants() {
+		addEvents();
+		//add participants for testing
+		addParticipants(1);
+
+		for (AbstractEvent eve: events) {
+			eve.initializeEvent(participants);
+			assertNotNull(eve.getParticipants());
+			assertEquals(1, eve.getParticipants().size());
+		}
+	}
+
+	@Test
+	public void testInitialEvent() {
+		addEvents();
+		//add participants for testing
+		addParticipants(1);	
+
+		for (AbstractEvent eve: events) {
+			eve.initializeEvent(participants);
+			assertNotNull(eve.getParticipants());
+			assertEquals(1, eve.getParticipants().size());
+			assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventName());
+			assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventID());
+		}
+	}
+
+	@Test
+	public void testRace() {
+		addEvents();
+		//add participants for testing
+		addParticipants(1);
+
+		for (AbstractEvent eve: events) {
+			eve.initializeEvent(participants);
+
+			// wait 1 second so the start times are staggered.
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) { };
+
+			long startTime = stopWatch.getTime();
+			System.out.println("Start: " + SystemTime.formatTime(startTime));
+
+			eve.startAllParticipants(startTime);
+			assertTrue(eve.getParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getParticipants().get(0).getLastRecord().getStartTime(), startTime);
+
+			// waits 1 second showing our participant ran the race.
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) { };
+			
+			long finishTime = stopWatch.getTime();
+			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
+			
+			eve.finishAllParticipants(finishTime);
+			assertFalse(eve.getParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
+			assertEquals(eve.getParticipants().get(0).getLastRecord().getElpasedTime(), startTime - finishTime);
+		}
+	}
+
 }

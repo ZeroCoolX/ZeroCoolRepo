@@ -5,15 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import com.zerocool.systemcontroller.SystemTime.SystemTime;
 import com.zerocool.systemcontroller.channel.Channel;
 import com.zerocool.systemcontroller.event.Group;
 import com.zerocool.systemcontroller.event.Individual;
@@ -24,41 +22,45 @@ import com.zerocool.systemcontroller.timer.Timer;
 
 public class SystemController {
 
-	public Timer currentTimer;
-	public EventLog eventLog;
 	public ArrayList<Channel> channels;
-	public boolean isPrinterOn;
-	public long ID = 0;
-	public Date systemTime;
-	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
+
 	public Queue<String[]> commandList;
 
+	public SystemTime systemTime;
+	public Timer currentTimer;
+	public EventLog eventLog;
+
+	public long id;
+
+	public boolean isPrinterOn;
+
 	public SystemController() {
-		this(0);
-	}
-
-	public SystemController(long ID) {
-		this(ID, new Timer());
-	}
-
-	public SystemController(long ID, Timer currentTimer) {
-		this(ID, currentTimer, new EventLog());
-	}
-
-	public SystemController(long ID, Timer currentTimer, EventLog eventLog) {
-		this(ID, currentTimer, eventLog, new ArrayList<Channel>());
-	}
-
-	public SystemController(long ID, Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels) {
-		this.ID = ID;
-		this.currentTimer = currentTimer;
-		this.eventLog = eventLog;
-		this.channels = channels;
-		this.systemTime = new Date();
 		// create a Queue collection to store each line in a FIFO
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<String[]>();
-		this.systemTime = formatTime(this.systemTime);
+		
+		systemTime = new SystemTime();
+		systemTime.start();
+	}
+
+	public SystemController(long id) {
+		this();
+		this.id = id;
+	}
+
+	public SystemController(Timer currentTimer, long id) {
+		this(id);
+		this.currentTimer = currentTimer;
+	}
+
+	public SystemController(Timer currentTimer, EventLog eventLog, long id) {
+		this(currentTimer, id);
+		this.eventLog = eventLog;
+	}
+
+	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, long id) {
+		this(currentTimer, eventLog, id);
+		this.channels = channels;
 	}
 
 	/**
@@ -72,14 +74,14 @@ public class SystemController {
 			//read in file from given path 
 			Scanner inFile = new Scanner(new FileReader(file));
 			String[] parsedLine = null;
-			
+
 			// while there is another line to read...read it
 			while (inFile.hasNextLine()) {
 				String line = inFile.nextLine();
-				
+
 				//call parsing method
 				parsedLine = parse(line, "[:. ]+ +\\t");
-				
+
 				// add line to the queue
 				commandList.add(parsedLine);
 			}
@@ -87,33 +89,20 @@ public class SystemController {
 			System.out.println("ERROR!!!\n" + e.getMessage());
 			e.printStackTrace();
 		}
-		
-		
+
+
 		//Uncomment to see the results of the input
-		while(!commandList.isEmpty()){
-			for(String str: commandList.remove()){
+		while(!commandList.isEmpty()) {
+			for(String str: commandList.remove()) {
 				System.out.println(str);
 			}
 		}
 
 	}
-	
+
 	// regex to split the line by colon, period, or space!
-	public String[] parse(String line, String regex){
+	public String[] parse(String line, String regex) {
 		return line.split(regex);
-	}
-	
-	public Date formatTime(Date date){
-		try {
-			date = f.parse(("" + (date.getYear() + 1900) + "/"
-					+ (date.getMonth() + 1) + "/" + date.getDate()
-					+ " " + date.getHours() + ":" + date.getMinutes()
-					+ ":" + date.getSeconds() + ".000"));
-		} catch (ParseException e) {
-			System.out.println("ERROR!!!\n" + e.getMessage());
-			e.printStackTrace();
-		}
-		return date;
 	}
 
 	/**
@@ -126,40 +115,37 @@ public class SystemController {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String [] parsedLine = null;
 		boolean exit = false;
-		do{
-	    try {
-	    	System.out.print("mainframe$ ");
-	        /*
-	         * Now in between parsing the command entered, and executing/storing it for now in the queue
-	         * we need to append a timestamp of when the use typed in said command in the format <hour>:<min>:<second>.<millisecond>
-	         * */
-	        Date appendTime = new Date();
-	        appendTime = formatTime(appendTime);
-	        
-	        String input = br.readLine();
-	        if(input.equals("EXIT")){
-	        	exit = true;
-	        }
-	        
-	    	//call parsing method for line
-	    	String line = appendTime.getHours()+":"+appendTime.getMinutes()+":"+appendTime.getSeconds()+".00\t"+input;
-	        parsedLine = parse(line, "[:. ]+ \\n+\\t");
+		do {
+			try {
+				System.out.print("mainframe$ ");
+				/*
+				 * Now in between parsing the command entered, and executing/storing it for now in the queue
+				 * we need to append a timestamp of when the use typed in said command in the format <hour>:<min>:<second>.<millisecond>
+				 * */
 
-	        
-			// add line to the queue
-			commandList.add(parsedLine);
-	         
-	         
-	      } catch (IOException ioe) {
-	         System.out.println("IO error trying to read your name!");
-	         System.exit(1);
-	      }
-	    //keep reading in lines from the terminal until exit has been entered
+				String input = br.readLine();
+				if(input.equals("EXIT")){
+					exit = true;
+				}
+
+				//call parsing method for line
+				parsedLine = parse(systemTime.toString(), "[:. ]+ \\n+\\t");
+
+
+				// add line to the queue
+				commandList.add(parsedLine);
+
+
+			} catch (IOException ioe) {
+				System.out.println("IO error trying to read your name!");
+				System.exit(1);
+			}
+			//keep reading in lines from the terminal until exit has been entered
 		}while(!exit);
-		
-		
-		
-		 //Uncomment to see the results of the input
+
+
+
+		//Uncomment to see the results of the input
 		while(!commandList.isEmpty()){
 			for(String str: commandList.remove()){
 				System.out.println("LNIE: " + str);
@@ -167,7 +153,7 @@ public class SystemController {
 		}
 	}
 
-	
+
 	/**
 	 * Excute a command.
 	 * @param time - The current time ?
@@ -208,9 +194,8 @@ public class SystemController {
 			/*
 			 * --Set the current time--
 			 * */
-			systemTime.setHours(Integer.parseInt(args.get(0)));
-			systemTime.setMinutes(Integer.parseInt(args.get(1)));
-			systemTime.setSeconds(Integer.parseInt(args.get(2)));
+			
+			systemTime.setOffset(Integer.parseInt(args.get(0)) * 3600000 + Integer.parseInt(args.get(1)) * 60000 + Integer.parseInt(args.get(2)) * 1000);
 			break;
 		case "TOG":
 			// stuff
@@ -223,9 +208,9 @@ public class SystemController {
 			break;
 		case "EVENT":
 			/* IND | PARIND | GRP | PARGRP
-			*
-			*--I guess this just creates a new Event? lets go with that --
-			* */
+			 *
+			 *--I guess this just creates a new Event? lets go with that --
+			 * */
 			String eventType;
 			if (args.get(0).equals("IND")) {
 				currentTimer.setEvent(new Individual());
@@ -277,14 +262,6 @@ public class SystemController {
 	// state = true
 	public void triggerSensor(int id, boolean sensorState, Channel chosenChannel) {
 		chosenChannel.setSensorState(sensorState);
-	}
-
-	/**
-	 * Set the ID of the system.
-	 * @param ID - The new ID of the system.
-	 */
-	public void setID(long ID) {
-		this.ID = ID;
 	}
 
 	/**
@@ -340,7 +317,7 @@ public class SystemController {
 	 * @return The current ID.
 	 */
 	public long getId() {
-		return this.ID;
+		return this.id;
 	}
 
 	/**

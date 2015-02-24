@@ -1,34 +1,30 @@
 package com.zerocool.systemcontroller.event;
 
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.zerocool.systemcontroller.participant.Participant;
 
 public abstract class AbstractEvent {
+	
+	// First event will be 0 then 1, 2... so on.
+	protected static int LASTID;
+	
 	// just doing this for a test
 	// type of this event
 	protected EventType type;
+	
 	// name of this event
 	protected String name;
+	
 	// sequentially increasing unique identifier
 	protected long eventId;
+	
 	// participants actually competing in this event
 	protected  ArrayList<Participant> currentParticipants;
-	/*
-	 * TOTALLY subject to change. Depends on what Jeremy is using in his Timer
-	 * class. I also like Calendar. System.Time. Doesn't matter to me.
-	 */
-	// dateFormat.format(date) prints (example) 2014/08/06 15:59:48
-	protected DateFormat eventTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
-	SimpleDateFormat f = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
-
 
 	/**
 	 * Type Descriptions:
@@ -52,10 +48,11 @@ public abstract class AbstractEvent {
 	 * testing purposes multilevel constructors exist as well
 	 * **/
 	protected AbstractEvent() {
-		this.eventId += 1;
+		eventId = LASTID++;
 	}
 
-	// ----- functional methods ----- \\
+	
+	// ----- abstract functional methods ----- \\
 
 	/**
 	 * initializeEvent:
@@ -65,46 +62,53 @@ public abstract class AbstractEvent {
 	 * participants and their respective Records setting the eventName and
 	 * eventId
 	 **/
-	public abstract void initializeEvent( ArrayList<Participant> participants);
+	public abstract void initializeEvent(ArrayList<Participant> participants);
 
 	/**
-	 * startParticipant
-	 * 
-	 * function: Goes through list of participants setting isCompeting to true
-	 * and sets the participants Record's startTime
-	 ***/
-	public abstract void startParticipants();
+	 * Goes through all the current Participants and sets them to be competing
+	 * and set's their start time.
+	 * @param startTime - The start time of the race.
+	 */
+	public abstract void startAllParticipants(long startTime);
+	
+	/**
+	 * Starts a specified Participant since some races not all Participants will be
+	 * starting at the same time.
+	 * @param participant - The Participant to start.
+	 * @param startTime - The start time of the specific participant.
+	 */
+	public abstract void startOneParticipant(Participant participant, long startTime);
 
 	/**
-	 * finishParticipant
-	 * 
-	 * function: Goes through list of participants setting isCompeting to false
-	 * and sets the participants Record's finishTime
-	 ***/
-	public abstract void finishParticipants();
+	 * Goes through all the current Participants and sets them to not be
+	 * competing and set's their finish time.
+	 * @param finishTime - The finish time of the race.
+	 */
+	public abstract void finishAllParticipants(long finishTime);
+	
+	/**
+	 * Finishes a specified Participant because it is unlikely that all of them will tie.  >.<
+	 * @param participant - The Participant to finish.
+	 * @param finishTime - The finish time of the specific participant.
+	 */
+	public abstract void finishOneParticipant(Participant participant, long finishTime);
 
+	
 	// ----- functional methods ----- \\
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setType(EventType type) {
-		this.type = type;
-	}
-
 	public void setEventTime(long eventTime) {
 		this.eventTime = eventTime;
-	}
-
-	public void setEventId(long eventId) {
-		this.eventId = eventId;
 	}
 	
 	public void setParticipants(ArrayList<Participant> participants){
 		this.currentParticipants = participants;
 	}
 
+	
 	// ----- accessors ----- \\
 
 	public String getName() {
