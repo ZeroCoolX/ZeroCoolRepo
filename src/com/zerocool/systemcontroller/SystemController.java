@@ -17,6 +17,7 @@ import com.zerocool.systemcontroller.event.Group;
 import com.zerocool.systemcontroller.event.Individual;
 import com.zerocool.systemcontroller.event.ParGroup;
 import com.zerocool.systemcontroller.event.ParIndividual;
+import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
@@ -327,7 +328,7 @@ public class SystemController {
 		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
 		//printer set to false for default state
 		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, new Individual(), new ArrayList<Participant>(), eventLog);
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString(), new ArrayList<Participant>());
 		channels = new ArrayList<Channel>();
 		//printer set to false for insurance
 		isPrinterOn = false;
@@ -354,13 +355,13 @@ public class SystemController {
 	 * * **/
 	public void cmdEvent(ArrayList<String> args) {
 		if (args.get(5).equals("IND")) {
-			currentTimer.setEvent(new Individual());
+			currentTimer.createEvent(EventType.IND, EventType.IND.toString());
 		} else if (args.get(5).equals("PARIND")) {
-			currentTimer.setEvent(new ParIndividual());
+			currentTimer.createEvent(EventType.PARIND, EventType.PARIND.toString());
 		} else if (args.get(5).equals("GRP")) {
-			currentTimer.setEvent(new Group());
+			currentTimer.createEvent(EventType.GRP, EventType.GRP.toString());
 		} else if (args.get(5).equals("PARGRP")) {
-			currentTimer.setEvent(new ParGroup());   
+			currentTimer.createEvent(EventType.PARGRP, EventType.PARGRP.toString());
 		}
 	}
 	
@@ -370,7 +371,7 @@ public class SystemController {
 	 * **/
 	public void cmdReset() {
 		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, new Individual(), new ArrayList<Participant>(), eventLog);
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString(), new ArrayList<Participant>());
 		channels = new ArrayList<Channel>();
 		//printer set to false for insurance
 		isPrinterOn = false;
