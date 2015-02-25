@@ -92,7 +92,6 @@ public class SystemController {
 			e.printStackTrace();
 		}
 
-
 		//Uncomment to see the results of the input
 		while (!commandList.isEmpty()) {
 			for (String str: commandList.remove()) {
@@ -157,9 +156,9 @@ public class SystemController {
 
 
 	/**
-	 * Excute a command.
+	 * Execute a command.
 	 * @param time - The current time ?
-	 * @param cmd - The command to excute.
+	 * @param cmd - The command to execute.
 	 * @param args - Types of events to run.
 	 */
 	public void executeCommand(Date time, String cmd, ArrayList<String> args) {

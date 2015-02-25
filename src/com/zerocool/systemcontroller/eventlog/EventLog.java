@@ -13,18 +13,31 @@ import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
 import com.zerocool.systemcontroller.timer.Timer;
 
+/**
+ * @author ZeroCool
+ * The class that is in charge of taking Event information and
+ * creating output based on Event information
+ */
 public class EventLog {
 	
 	private File file;
 
+	/**
+	 * Creates a new instance of the {@link #EventLog} class
+	 */
 	public EventLog() {
 		file = new File("eventOutput.txt");
 	}
 	
+	/**
+	 * Logs an Event into an output file
+	 * @param event The event to log
+	 * @param systemTime the system time
+	 */
 	public void logEvent(AbstractEvent event, SystemTime systemTime) {
 		
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))) {
-			String s = systemTime.toString() + event.getName() +"\n" 
+			String s = systemTime.toString() + " " + event.getName() +"\n" 
 					+ event.getEventId() + " " + event.getType() + " " 
 					+ systemTime.formatTime(event.getEventTime());
 			writer.println(s);
@@ -34,6 +47,10 @@ public class EventLog {
 		}
 	}
 	
+	/**
+	 * Gets the output file of the logged Event
+	 * @return a File
+	 */
 	public File getFile(){
 		return file;
 	}
