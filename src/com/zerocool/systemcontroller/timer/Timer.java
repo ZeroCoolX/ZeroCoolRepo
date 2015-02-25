@@ -54,10 +54,6 @@ public class Timer {
 		currentEvent.finishAllParticipants(systemTime.getTime());
 	}
 	
-	public void addNewParticipant(int id){
-		totalParticipants.add(new Participant(id, ""+id));
-	}
-	
 	
 	// ----- accessors ----- \\
 	
@@ -76,10 +72,6 @@ public class Timer {
 	
 	public AbstractEvent getCurrentEvent() { 
 		return currentEvent; 
-	}
-	
-	public EventLog getEventLog(){
-		return eventLog;
 	}
 	
 	
