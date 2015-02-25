@@ -23,7 +23,7 @@ public class Driver {
 		System.out.println("\n\nTesting readFile\n\n");
 		sysCont.readFile(file);
 		System.out.println("\n\nTesting readInput\n\n");
-		sysCont.readInput();
+		//sysCont.readInput();
 		
 		/*AbstractEvent[] events = new AbstractEvent[8];
 		//Calendar cal = Calendar.getInstance();

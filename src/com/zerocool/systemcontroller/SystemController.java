@@ -26,9 +26,9 @@ public class SystemController {
 
 	public ArrayList<Channel> channels;
 
-	public Queue<String[]> commandList;
+	public Queue<ArrayList<String>> commandList;
 
-	public SystemTime systemTime;
+	public SystemTime systemTime = null;
 	public Timer currentTimer;
 	public EventLog eventLog;
 
@@ -39,7 +39,7 @@ public class SystemController {
 	public SystemController() {
 		// create a Queue collection to store each line in a FIFO
 		// mentality using .add() and .remove()
-		commandList = new LinkedList<String[]>();
+		commandList = new LinkedList<ArrayList<String>>();
 		
 		systemTime = new SystemTime();
 		systemTime.start();
@@ -82,10 +82,19 @@ public class SystemController {
 				String line = inFile.nextLine();
 
 				//call parsing method
-				parsedLine = parse(line, "[:. ]+ +\\t");
-
-				// add line to the queue
-				commandList.add(parsedLine);
+				parsedLine = parse(line, "[:. \\t]");
+				ArrayList<String> parsedList = new ArrayList<String>();
+				for(String str: parsedLine){
+					parsedList.add(str);
+				}
+				
+				//check to see if the cmd is TIME, if it is Execute that immediately
+				if(parsedList.get(4).equals("TIME")){
+					executeCommand(parsedList.get(4), parsedList);
+				}else{
+					// add line to the queue
+					commandList.add(parsedList);
+				}
 			}
 		} catch (Exception e) {
 			System.out.println("ERROR!!!\n" + e.getMessage());
@@ -95,15 +104,29 @@ public class SystemController {
 		//Uncomment to see the results of the input
 		while (!commandList.isEmpty()) {
 			for (String str: commandList.remove()) {
+				String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
+				System.out.println("Just cehcking: " + systemTime.toString());
 				System.out.println(str);
 			}
 		}
+		
+		/*
+		//pop off each command and execute it
+		while (!commandList.isEmpty()) {
+			for (String str: commandList.remove()) {
+				//while the system time does not equal this timestamp keep looping. the moment it does break out and execute command
+				while(){
+					
+				}
+			}
+		}*/
 
 	}
 
 	// regex to split the line by colon, period, or space!
 	public String[] parse(String line, String regex) {
-		return line.split(regex);
+		String [] newLine =  line.split(regex);
+		return newLine;
 	}
 
 	/**
@@ -130,11 +153,14 @@ public class SystemController {
 				}
 
 				//call parsing method for line
-				parsedLine = parse((systemTime.toString()+"\t"+input), "[:. ]+ \\n+\\t");
+				parsedLine = parse((systemTime.toString()+"\t"+input), "[:. \\t]");
+				ArrayList<String> parsedList = new ArrayList<String>();
+				for(String str: parsedLine){
+					parsedList.add(str);
+				}
 
-
-				// add line to the queue
-				commandList.add(parsedLine);
+				//check to see if the cmd is TIME, if it is Execute that immediately
+				executeCommand(parsedList.get(4), parsedList);
 
 
 			} catch (IOException ioe) {
@@ -161,7 +187,7 @@ public class SystemController {
 	 * @param cmd - The command to execute.
 	 * @param args - Types of events to run.
 	 */
-	public void executeCommand(Date time, String cmd, ArrayList<String> args) {
+	public void executeCommand(String cmd, ArrayList<String> args) {
 
 		switch (cmd) {
 		case "ON":
@@ -203,15 +229,15 @@ public class SystemController {
 			break;
 		case "TOG":
 			// stuff
-				cmdTog(Integer.parseInt(args.get(6)));
+				cmdTog(Integer.parseInt(args.get(5)));
 			break;
 		case "CONN":
 			// stuff
-				cmdConn(args.get(6), Integer.parseInt(args.get(7)));
+				cmdConn(args.get(5), Integer.parseInt(args.get(6)));
 			break;
 		case "DISC":
 			// stuff
-				cmdDisc(Integer.parseInt(args.get(6)));
+				cmdDisc(Integer.parseInt(args.get(5)));
 			break;
 		case "EVENT":
 			/* IND | PARIND | GRP | PARGRP
@@ -235,7 +261,7 @@ public class SystemController {
 			break;
 		case "NUM":
 			// stuff
-				cmdNum(Integer.parseInt(args.get(6)));
+				cmdNum(Integer.parseInt(args.get(5)));
 			break;
 		case "CLR":
 			// stuff
@@ -282,19 +308,19 @@ public class SystemController {
 	}
 	
 	public void cmdEvent(ArrayList<String> args) {
-		if (args.get(0).equals("IND")) {
+		if (args.get(5).equals("IND")) {
 			currentTimer.setEvent(new Individual());
-		} else if (args.get(0).equals("PARIND")) {
+		} else if (args.get(5).equals("PARIND")) {
 			currentTimer.setEvent(new ParIndividual());
-		} else if (args.get(0).equals("GRP")) {
+		} else if (args.get(5).equals("GRP")) {
 			currentTimer.setEvent(new Group());
-		} else if (args.get(0).equals("PARGRP")) {
+		} else if (args.get(5).equals("PARGRP")) {
 			currentTimer.setEvent(new ParGroup());   
 		}
 	}
 	
 	public void cmdReset() {
-		commandList = new LinkedList<String[]>();
+		commandList = new LinkedList<ArrayList<String>>();
 		for (Channel chnl: channels) {
 			chnl.setSensorState(false);
 			chnl.setState(false);
@@ -308,7 +334,8 @@ public class SystemController {
 	
 	public void cmdTime(ArrayList<String> args) {
 		//set the current time
-		systemTime.setTime(Integer.parseInt(args.get(0)) * 3600000 + Integer.parseInt(args.get(1)) * 60000 + Integer.parseInt(args.get(2)) * 1000);
+		systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000 + Integer.parseInt(args.get(6)) * 60000 + Integer.parseInt(args.get(7)) * 1000);
+		systemTime.start();
 	}
 	
 	public void cmdTog(int channel) {
