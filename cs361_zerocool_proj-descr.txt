@@ -1,0 +1,93 @@
+* GUI Interface
+	[Not yet specified]
+
+* SystemController
+	- Has ArrayList<Channel>
+	- Has commandList (Que<ArrayList<String>>)
+	- Has SystemTime
+	- Has currentTimer
+	- Has EventLog
+	- Has id (PROBABLY USELESS)
+	- Has isPrinterOn (printer is for CONSOLE)
+	# readFile(File file): Parses each line into commands
+	# parse(String line, String reggae): Splits line acc’d to regex
+	# readInput(): Reads input from console
+	# executeCommand(String cmd, ArrayList<String> args): Uses switch case to run correct method
+	# triggerSensor(): TESTING PURPOSES; mimics triggering of sensor
+	# cmdOn(): Resumes SystemTime, sets isPrinterOn to false for default setting
+	# cmdOff(): Suspends systemTime, sets isPrinterOn to false
+	# cmdEvent(): Sets currentTimer.currentEvent to arg, if applicable
+	# cmdReset(): creates new objects for pointers
+	# cmdTime(): Parses time argument into long, sets systemTime’s offset to that, starts systemTime
+	# cmdTog(int): Arms specified channel
+	# cmdConn(String sensorType, int channel): Adds sensor of specified type to specified channel
+	# cmdDisc(int): Inactivates specified sensor
+	# cmdPrint(): Prints eventLog to console
+	# cmdNum(int): Sets next participant to start
+	# cmdStart(): Starts all participants through current event (WORKS FOR INDIVIDUAL ONLY)
+	# cmdFinish(): Finishes all participants through current event (WORKS FOR INDIVIDUAL ONLY)
+	# findParticipant(int): Finds participant of specified id through currentTimer
+	# findChannel(int): Finds channel of specified id through channels
+
+* EventLog: Logs results for every ON duration for SystemController
+	- Only attribute is file
+	# getFile(): acc.
+	# logEvent(AbstractEvent, SystemTime): Writes output to file for event; WILL INCLUDE PARTICIPANT
+
+* Channel
+	- Has a Sensor, id, and isActive flag
+	& There is an enum for the different sensor types
+	# Accs/muts; can get sensor Type from sensor
+
+* Sensor
+	- Has signal (int), isArmed, and SensorType enum
+	& SensorType enum has three types; apparently, it can automatically cast enum names to strings
+	# Accs/muts; 
+
+* SystemTime
+	- Extends StopWatch
+	- Stores offset of time, received from SystemController, received from command file (or console): This is the time that the program thinks it actually is
+	# formatTime(long): formats long time as string
+	# setTime(long): sets offset
+	# reset(): resets watch, sets offset to 0
+	# getTime(): returns timer’s value plus offset
+	# exit(): clears everything
+
+* Timer: Handles timing for a single event
+	- Points to SystemTime, which extends StopWatch
+	- Points to ArrayList<Participant>
+	- Points to current AbstractEvent
+	- Points to an EventLog
+	# startEvent(): initializes all participants in event; starts all participants using current time
+	# endEvent(): finishes all participants in event
+	# addNewParticipant(long): Adds newly created participant to totalParticipants
+
+* AbstractEvent
+	* Individual
+		# initializeEvent(ArrayList<Participant>): Sets event’s participants to input, creates a new record for each Participant
+		# startAllParticipants(ArrayList<Participant>): Sets starting time for all participants’ most recent stack entry (i.e. this event’s); sets participant’s competing flag to true
+		# startOneParticipant(Participant,long): Sets time for single participant, similar to startAllParticipants()
+		# finishAllParticipants(long): Sets end time for all participants’ most recent stack entry; sets competing flag to false
+		# finishOneParticipant(Participant,long): Sets end time for single participant, similar to finishAllParticipants()
+
+* Participant
+	- Has name, id
+	- Has a stack of records
+	- Has flags for whether they are competing or next
+	? What does isNext do?
+	# createNewRecord([String,long]): Pushes new record to stack, possibly with name/id
+	# Accs/muts
+	# exit(): deletes records for this participant; facilitates OFF command
+
+* Record
+	- Records one performance
+	- Participants have records
+	- Stores elapsedTime; setFinishTime sets the variable
+	# Methods are simple accs/muts
+
+
+
+NOTES:
+
+* cmdTog() should probably switch between arming and disarming sensor, rather than just setting it to true
+* cmdDisc() should probably disconnect the channel from the sensor, rather than just disarming the sensor
