@@ -6,19 +6,15 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 public class ParGroup extends AbstractEvent {
 
-	public ParGroup() {
+	public ParGroup(String eventName, long eventTime) {
 		super();
-		type = EventType.PARGRP;
-	}
-
-	public ParGroup(String name) {
-		this();
-		this.name = name;
-	}
-
-	public ParGroup(String name, long eventTime) {
-		this(name);
+		this.eventName = eventName;
 		this.eventTime = eventTime;
+	}
+	
+	public ParGroup(String eventName, long eventTime, ArrayList<Participant> participants) {
+		this(eventName, eventTime);
+		initializeEvent(participants);
 	}
 
 	@Override
@@ -32,7 +28,7 @@ public class ParGroup extends AbstractEvent {
 
 		// go through each participant and set their eventId and event name
 		for (Participant curPar : currentParticipants) {
-			curPar.createNewRecord(name, eventId);
+			curPar.createNewRecord(eventName, eventId);
 		}
 	}
 

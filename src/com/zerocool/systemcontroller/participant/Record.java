@@ -11,7 +11,8 @@ public class Record {
 
 	private String eventName;
 	
-	private long eventId;
+	private int eventId;
+	
 	private long startTime;
 	private long finishTime;
 	private long elapsedTime;
@@ -22,7 +23,7 @@ public class Record {
 	 * Creates a new instance of the Record class without values
 	 */
 	public Record() {
-		// do nothing
+		elapsedTime = -1;
 	}
 	
 	/**
@@ -30,7 +31,7 @@ public class Record {
 	 * @param eventName - The name of the event.
 	 * @param eventId - The ID of the event.
 	 */
-	public Record(String eventName, long eventId) {
+	public Record(String eventName, int eventId) {
 		this.eventName = eventName;
 		this.eventId = eventId;
 	}
@@ -43,7 +44,7 @@ public class Record {
 	 * @param eventId The event's id number
 	 * @param eventName The name of the event
 	 */
-	public Record(String eventName, long eventId, long startTime, long finishTime, boolean dnf) {
+	public Record(String eventName, int eventId, long startTime, long finishTime, boolean dnf) {
 		this(eventName, eventId);
 		this.startTime = startTime;
 		this.finishTime = finishTime;
@@ -76,7 +77,7 @@ public class Record {
 	
 	/**
 	 * Gets the time it took to complete the race.
-	 * @return The total time from start to finish of the race.
+	 * @return The total time from start to finish of the race or -1 if DNF or not finished.
 	 */
 	public long getElpasedTime() {
 		return elapsedTime;
@@ -135,11 +136,14 @@ public class Record {
 	/**
 	 * @param eventId
 	 */
-	public void setEventId(long eventId){
+	public void setEventId(int eventId){
 		this.eventId = eventId;
 	}
 	
-	public void exit(){
+	/**
+	 * Resets all the variables to 'gracefully exit'.
+	 */
+	public void exit() {
 		eventName = null;
 		eventId = -1;
 		startTime = -1;
@@ -147,4 +151,5 @@ public class Record {
 		elapsedTime = -1;
 		dnf = false;
 	}
+	
 }

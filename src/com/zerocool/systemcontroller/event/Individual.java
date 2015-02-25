@@ -6,23 +6,19 @@ import com.zerocool.systemcontroller.participant.Participant;
 
 public class Individual extends AbstractEvent {
 
-	public Individual() {
+	public Individual(String eventName, long eventTime) {
 		super();
-		type = EventType.IND;
-	}
-
-	public Individual(String name) {
-		this();
-		this.name = name;
-	}
-
-	public Individual(String name, long eventTime) {
-		this(name);
+		this.eventName = eventName;
 		this.eventTime = eventTime;
+	}
+	
+	public Individual(String eventName, long eventTime, ArrayList<Participant> participants) {
+		this(eventName, eventTime);
+		initializeEvent(participants);
 	}
 
 	@Override
-	public void initializeEvent( ArrayList<Participant> participants) {
+	public void initializeEvent(ArrayList<Participant> participants) {
 		// must check for null parameter
 		if (participants == null) {
 			throw new IllegalArgumentException("List of participants can't be null!");
@@ -32,7 +28,7 @@ public class Individual extends AbstractEvent {
 
 		// go through each participant and set their eventId and event name
 		for (Participant curPar : currentParticipants) {
-			curPar.createNewRecord(name, eventId);
+			curPar.createNewRecord(eventName, eventId);
 		}
 	}
 

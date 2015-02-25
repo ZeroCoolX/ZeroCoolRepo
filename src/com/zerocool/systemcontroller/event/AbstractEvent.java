@@ -14,7 +14,7 @@ public abstract class AbstractEvent {
 	protected EventType type;
 	
 	// name of this event
-	protected String name;
+	protected String eventName;
 	
 	// sequentially increasing unique identifier
 	protected int eventId;
@@ -96,8 +96,8 @@ public abstract class AbstractEvent {
 	
 	// ----- functional methods ----- \\
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String eventName) {
+		this.eventName = eventName;
 	}
 
 	public void setEventTime(long eventTime) {
@@ -111,8 +111,8 @@ public abstract class AbstractEvent {
 	
 	// ----- accessors ----- \\
 
-	public String getName() {
-		return name;
+	public String getEventName() {
+		return eventName;
 	}
 
 	public EventType getType() {
@@ -131,10 +131,10 @@ public abstract class AbstractEvent {
 		return currentParticipants;
 	}
 	
-	public void exit(){
+	public void exit() {
 		LASTID = -1;
 		type = null;
-		name = null;
+		eventName = null;
 		eventId = -1;
 		for(Participant par: currentParticipants){
 			par.exit();

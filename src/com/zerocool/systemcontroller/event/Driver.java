@@ -40,18 +40,18 @@ public class Driver {
 		pars.add(par2);
 		pars.add(par3);
 		
-		Individual ind = new Individual();
+		Individual ind = new Individual("test", 0);
 
 		
 		EventLog eventLog = new EventLog();
 		
-		Timer time = new Timer(new SystemTime(), ind, pars, eventLog);
-		SystemController sysCont = new SystemController(time, time.getEventLog(), chnls, 1);
+	//	Timer time = new Timer(new SystemTime(), ind, pars, eventLog);
+	//	SystemController sysCont = new SystemController(time, time.getEventLog(), chnls, 1);
 		
 		File file = new File("syscontrolFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		System.out.println("\n\nTesting readFile\n\n");
-		sysCont.readFile(file);
+	//	sysCont.readFile(file);
 		System.out.println("\n\nTesting readInput\n\n");
 		//sysCont.readInput();
 		

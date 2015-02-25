@@ -3,40 +3,35 @@ package com.zerocool.systemcontroller.timer;
 import java.util.ArrayList;
 
 import com.zerocool.systemcontroller.event.AbstractEvent;
+import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
+import com.zerocool.systemcontroller.event.Group;
+import com.zerocool.systemcontroller.event.Individual;
+import com.zerocool.systemcontroller.event.ParGroup;
+import com.zerocool.systemcontroller.event.ParIndividual;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
 
 public class Timer {
 	
-	private SystemTime systemTime;
 	private ArrayList<Participant> totalParticipants;
+	private SystemTime systemTime;
 	private AbstractEvent currentEvent;
-	private EventLog eventLog;
-
-	public Timer() {
-		// do nothing
-	}
 	
 	public Timer(SystemTime systemTime) {
 		this.systemTime = systemTime;
 	}
 	
-	public Timer(SystemTime systemTime, AbstractEvent event) {
+	public Timer(SystemTime systemTime, EventType type, String eventName) {
 		this(systemTime);
-		currentEvent = event;
+		createEvent(type, eventName);
 	}
 	
-	public Timer(SystemTime systemTime, AbstractEvent event, ArrayList<Participant> participants) {
-		this(systemTime, event);
+	public Timer(SystemTime systemTime, EventType type, String eventName, ArrayList<Participant> participants) {
+		this(systemTime);
+		createEvent(type, eventName, participants);
 		totalParticipants = participants;
-	}
-	
-	public Timer(SystemTime systemTime, AbstractEvent event, ArrayList<Participant> participants, EventLog eventLog) {
-		this(systemTime, event, participants);
-		this.eventLog = eventLog;
-	}
-	
+	}	
 	
 	
 	// ----- functional methods ----- \\
@@ -65,11 +60,6 @@ public class Timer {
 		return currentEvent.getEventTime();
 	}
 	
-	
-	public AbstractEvent getEvent() {
-		return currentEvent;
-	}
-	
 	public ArrayList<Participant> getTotalParticipants() { 
 		return totalParticipants; 
 	}
@@ -78,28 +68,36 @@ public class Timer {
 		return currentEvent; 
 	}
 	
-	public EventLog getEventLog(){
-		return eventLog;
-	}
-	
 	
 	// ----- mutators ----- \\
 	
-	public void setEventLog(EventLog eventLog) { 
-		this.eventLog = eventLog; 
+	public void createEvent(EventType type, String eventName) {
+		//IND, PARIND, GRP, PARGRP
+		switch(type) {
+		case IND:
+			currentEvent = new Individual(eventName, systemTime.getTime());
+		case PARIND:
+			currentEvent = new ParIndividual(eventName, systemTime.getTime());
+		case GRP:
+			currentEvent = new Group(eventName, systemTime.getTime());
+		case PARGRP:
+			currentEvent = new ParGroup(eventName, systemTime.getTime());
+		default:
+			throw new IllegalArgumentException("Invalid Event Type");
+		}
 	}
 	
-	public void setEvent(AbstractEvent event) { 
-		currentEvent = event;
+	public void createEvent(EventType type, String eventName, ArrayList<Participant> participants) {
+		createEvent(type, eventName);
+		currentEvent.initializeEvent(participants);
 	}
 	
-	public void exit(){
+	public void exit() {
 		systemTime.exit();
 		for(Participant par: totalParticipants){
 			par.exit();
 		}
 		currentEvent.exit();
-		eventLog.exit();
 	}
 	
 }
