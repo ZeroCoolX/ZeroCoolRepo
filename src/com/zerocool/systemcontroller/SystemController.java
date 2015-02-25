@@ -94,8 +94,8 @@ public class SystemController {
 
 
 		//Uncomment to see the results of the input
-		while(!commandList.isEmpty()) {
-			for(String str: commandList.remove()) {
+		while (!commandList.isEmpty()) {
+			for (String str: commandList.remove()) {
 				System.out.println(str);
 			}
 		}
@@ -143,13 +143,13 @@ public class SystemController {
 				System.exit(1);
 			}
 			//keep reading in lines from the terminal until exit has been entered
-		}while(!exit);
+		} while (!exit);
 
 
 
 		//Uncomment to see the results of the input
-		while(!commandList.isEmpty()){
-			for(String str: commandList.remove()){
+		while (!commandList.isEmpty()) {
+			for (String str: commandList.remove()) {
 				System.out.println("LINE: " + str);
 			}
 		}
@@ -267,7 +267,7 @@ public class SystemController {
 		chosenChannel.setSensorState(sensorState);
 	}
 	
-	public void cmdOn(){
+	public void cmdOn() {
 		//When the command ON is entered/read then the time needs to start. As of now upon instantiation of this class the systemTime is started...not sure if that should happen HERE or THERE
 		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
 		systemTime.resume();
@@ -275,28 +275,28 @@ public class SystemController {
 		isPrinterOn = false;
 	}
 	
-	public void cmdOff(){
+	public void cmdOff() {
 		//When the command OFF is entered/read then the time needs to stop.
 		systemTime.suspend();
 		//printer set to false for insurance
 		isPrinterOn = false;
 	}
 	
-	public void cmdEvent(ArrayList<String> args){
+	public void cmdEvent(ArrayList<String> args) {
 		if (args.get(0).equals("IND")) {
 			currentTimer.setEvent(new Individual());
-		}else if (args.get(0).equals("PARIND")) {
+		} else if (args.get(0).equals("PARIND")) {
 			currentTimer.setEvent(new ParIndividual());
-		}else if (args.get(0).equals("GRP")) {
+		} else if (args.get(0).equals("GRP")) {
 			currentTimer.setEvent(new Group());
-		}else if (args.get(0).equals("PARGRP")) {
+		} else if (args.get(0).equals("PARGRP")) {
 			currentTimer.setEvent(new ParGroup());   
 		}
 	}
 	
-	public void cmdReset(){
+	public void cmdReset() {
 		commandList = new LinkedList<String[]>();
-		for(Channel chnl: channels){
+		for (Channel chnl: channels) {
 			chnl.setSensorState(false);
 			chnl.setState(false);
 		}
@@ -307,63 +307,65 @@ public class SystemController {
 		systemTime.start();
 	}
 	
-	public void cmdTime(ArrayList<String> args){
+	public void cmdTime(ArrayList<String> args) {
 		//set the current time
-		systemTime.setOffset(Integer.parseInt(args.get(0)) * 3600000 + Integer.parseInt(args.get(1)) * 60000 + Integer.parseInt(args.get(2)) * 1000);
+		systemTime.setTime(Integer.parseInt(args.get(0)) * 3600000 + Integer.parseInt(args.get(1)) * 60000 + Integer.parseInt(args.get(2)) * 1000);
 	}
 	
-	public void cmdTog(int channel){
+	public void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
-		if(toggle != null){
+		if (toggle != null) {
 			toggle.setState(true);
 		}
 	}
 	
-	public void cmdConn(String sensorType, int channel){
+	public void cmdConn(String sensorType, int channel) {
 		Channel connect = findChannel(channel);
-		if(connect != null){
+		if (connect != null) {
 			connect.setSensorType(sensorType);
 		}
 	}
 	
-	public void cmdDisc(int channel){
+	public void cmdDisc(int channel) {
 		Channel disc = findChannel(channel);
-		if(disc != null){
+		if (disc != null) {
 			disc.setSensorState(false);
 		}
 	}
 	
-	public void cmdPrint(){
+	public void cmdPrint() {
 		try {
 			Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
+			
 			// while there is another line to read...print it
 			while (inFile.hasNextLine()) {
 				System.out.println(inFile.nextLine());
 			}
 			
+			inFile.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void cmdNum(int participant){
+	public void cmdNum(int participant) {
 		Participant par = findParticipant((long)id);
-		if(par!=null){
+		if (par != null) {
 			par.setIsNext(true);
 		}
 	}
 	
-	public void cmdStart(){
+	public void cmdStart() {
 		//for now...
 		currentTimer.getEvent().startAllParticipants(systemTime.getTime());
 	}
 	
-	public void cmdFinish(){
+	public void cmdFinish() {
 		//for now...
 		currentTimer.getEvent().finishAllParticipants(systemTime.getTime());
 	}
 	
-	public void cmdExit(){
+	public void cmdExit() {
 		//when the command EXIT is entered/read then the time needs to completely die
 		systemTime.exit();
 		systemTime = null;
@@ -371,29 +373,29 @@ public class SystemController {
 		commandList = null;
 		currentTimer.exit();
 		currentTimer = null;
-		while(!commandList.isEmpty()){
+		while (!commandList.isEmpty()) {
 			commandList.remove();
 		}
 		commandList = null;
-		for(Channel chnl: channels){
+		for (Channel chnl: channels) {
 			chnl.exit();
 		}
 		id = -1;
 		eventLog.exit();
 	}
 	
-	public Participant findParticipant(long id){
-		for(Participant par: currentTimer.getTotalParticipants()){
-			if(par.getID() == id){
+	public Participant findParticipant(long id) {
+		for (Participant par: currentTimer.getTotalParticipants()) {
+			if (par.getID() == id) {
 				return par;
 			}
 		}
 		return null;
 	}
 	
-	public Channel findChannel(int id){
-		for(Channel chnl: channels){
-			if(chnl.getId() == id){
+	public Channel findChannel(int id) {
+		for (Channel chnl: channels) {
+			if (chnl.getId() == id) {
 				return chnl;
 			}
 		}

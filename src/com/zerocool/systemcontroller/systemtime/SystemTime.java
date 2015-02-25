@@ -12,9 +12,9 @@ public class SystemTime extends StopWatch {
 		super();
 	}
 	
-	public SystemTime(long offset) {
+	public SystemTime(long startTime) {
 		this();
-		this.offset = offset;
+		offset = startTime;
 	}
 	
 	/**
@@ -27,19 +27,21 @@ public class SystemTime extends StopWatch {
 	}
 	
 	/**
-	 * Gets the offset.
-	 * @return The offset of the time.
+	 * Resets and sets the time.
+	 * @param startTime - The time in milliseconds to set the time to.
 	 */
-	public long getOffset() {
-		return offset;
+	public void setTime(long startTime) {
+		reset();
+		offset = startTime;
 	}
 	
 	/**
-	 * Set the offset of the time.
-	 * @param millis - How many milliseconds to offset by.
+	 * Overrides the reset method to remove the offset so the time starts at 0 again.
 	 */
-	public void setOffset(long millis) {
-		offset = millis;
+	@Override
+	public void reset() {
+		super.reset();
+		offset = 0;
 	}
 	
 	/**
@@ -59,8 +61,12 @@ public class SystemTime extends StopWatch {
 		return formatTime(getTime());
 	}
 	
-	public void exit(){
-		offset = 000;
+	/**
+	 * Exit method to 'end gracefully'.
+	 */
+	public void exit() {
+		stop();
+		reset();
 	}
 	
 }
