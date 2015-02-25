@@ -59,6 +59,10 @@ public class Channel {
 		currentSensor.setSensorType(type);
 	}
 	
+	public void disconnectSensor(){
+		currentSensor = null;
+	}
+	
 	
 	
 	/**

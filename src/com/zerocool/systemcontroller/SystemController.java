@@ -72,6 +72,7 @@ public class SystemController {
 	 * @param file - The file to read from.
 	 */
 	public void readFile(File file) {
+
 		try {
 			//read in file from given path 
 			Scanner inFile = new Scanner(new FileReader(file));
@@ -105,6 +106,7 @@ public class SystemController {
 		while (!commandList.isEmpty()) {
 			ArrayList<String> currentLine = commandList.remove();
 			String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
+			
 				
 			while(  !( currentLine.get(0).equals(systemTimeArr[0]) 
 					&& currentLine.get(1).equals(systemTimeArr[1]) 
@@ -112,7 +114,8 @@ public class SystemController {
 				//KEEP CHECKING!!!!!!!!!!
 				systemTimeArr = parse(systemTime.toString(), "[:.]");
 				}
-			System.out.println("made it out...NEXT!");
+			System.out.println(systemTime.toString()+"EXECUTING CMD: " + currentLine.get(4));
+			executeCommand(currentLine.get(4), currentLine);
 		}
 
 	}
@@ -316,25 +319,39 @@ public class SystemController {
 		chosenChannel.setSensorState(sensorState);
 	}
 	
+	/**
+	 * Instantiates all the variables to initial states
+	 * **/
 	public void cmdOn() {
 		//When the command ON is entered/read then the time needs to start. As of now upon instantiation of this class the systemTime is started...not sure if that should happen HERE or THERE
 		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
-		if(systemTime.isSuspended()){
-			systemTime.resume();
-		}
 		//printer set to false for default state
-		isPrinterOn = false;
-	}
-	
-	public void cmdOff() {
-		//When the command OFF is entered/read then the time needs to stop.
-		if(!systemTime.isSuspended()){
-			systemTime.suspend();
-		}
+		eventLog = new EventLog();
+		currentTimer = new Timer(systemTime, new Individual(), new ArrayList<Participant>(), eventLog);
+		channels = new ArrayList<Channel>();
 		//printer set to false for insurance
 		isPrinterOn = false;
 	}
 	
+	/**
+	 * KEEP THE systemTime running
+	 * set everything else to null
+	 * **/
+	public void cmdOff() {
+		//When the command OFF is entered/read then the time needs to stop.
+		eventLog = null;
+		currentTimer = null;
+		channels = null;
+		//printer set to false for insurance
+		isPrinterOn = false;
+	}
+	
+	/**
+	 * Sets the currentTimer event to a new instance of the type of method given from index(5)
+	 * 
+	 * @param args - ArrayList containing the line from the file looking like: HR:MIN:SEC.MIL	EVENT ARG   **which will either be (IND, PARIND, GRP, PARGRP)**
+	 * 																 args:     0   1   2  3       4   5  	 
+	 * * **/
 	public void cmdEvent(ArrayList<String> args) {
 		if (args.get(5).equals("IND")) {
 			currentTimer.setEvent(new Individual());
@@ -347,32 +364,61 @@ public class SystemController {
 		}
 	}
 	
+	
+	/**
+	 * Instantiates all the variables to initial states
+	 * **/
 	public void cmdReset() {
-		commandList = new LinkedList<ArrayList<String>>();
-		for (Channel chnl: channels) {
-			chnl.setSensorState(false);
-			chnl.setState(false);
-		}
-		currentTimer = new Timer();
 		eventLog = new EventLog();
+		currentTimer = new Timer(systemTime, new Individual(), new ArrayList<Participant>(), eventLog);
+		channels = new ArrayList<Channel>();
+		//printer set to false for insurance
 		isPrinterOn = false;
-		systemTime = new SystemTime();
-		systemTime.start();
 	}
 	
+	
+	/**
+	 * Sets the systemTime variable to the given hour, minute, and second denoted by the indicies (5,6,7) from the ArrayList
+	 * 
+	 * @param args - ArrayList containing the line from the file looking like: HR:MIN:SEC.MIL	TIME HR:MIN:SEC
+	 * 															args:     0   1   2  3       4   5  6   7
+	 * **/
 	public void cmdTime(ArrayList<String> args) {
 		//set the current time
 		systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000 + Integer.parseInt(args.get(6)) * 60000 + Integer.parseInt(args.get(7)) * 1000);
 		systemTime.start();
 	}
 	
+	
+	/**
+	 * Finds the channel within the ArrayList with id of the paramenter.
+	 * If there is a channel found this channels sensor state is set to the opposite of whatever it is
+	 * If there isn't a channel found then a new channel is created and added to the ArrayList
+	 * 
+	 * @param channel - the channel ID to either set state or create new instance of
+	 * **/
 	public void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
-			toggle.setState(true);
+			toggle.setState( (toggle.getState()==true?false:true)  );
+		}else{
+			Channel chnl = new Channel();
+			chnl.setID(channel);
+			chnl.setState(true);
+			channels.add(chnl);
 		}
 	}
 	
+	/**
+	 * Finds the given channel within the global ArrayList channels that matches the ID field given as the int parameter "channel"
+	 * If the channel is matched and returned from the helper findChannel(Channel) method, then a new sensor of whatever type the 
+	 * sensorType parameter is is created and assigned to the channel.
+	 * If the channel does not exist, then a new channel is created and added to the global ArrayList channels (with the given ID field) 
+	 * and still a sensor of type sensorType is created and added to the channel
+	 * 
+	 * @param sensorType - type of sensor (EYE, GATE, PAD) to add to the given channel 
+	 * @param channel - ID field for a channel to connect a sensor too
+	 * **/
 	public void cmdConn(String sensorType, int channel) {
 		Channel connect = findChannel(channel);
 		if (connect != null) {
@@ -380,13 +426,24 @@ public class SystemController {
 		}
 	}
 	
+	/**
+	 * Finds the given channel within the global ArrayList channels that matches the ID field given as the int parameter "channel"
+	 * If the channel is found, then the sensor associated with that channel is set to a false state (off or disconnected)
+	 * If the channel is not AN ERROR WILL BE THROWN IN THE FUTURE. NOT IMPLEMENTED YET
+	 * 
+	 * @param channel - the channel ID with which to set the sensor state
+	 */
 	public void cmdDisc(int channel) {
 		Channel disc = findChannel(channel);
 		if (disc != null) {
 			disc.setSensorState(false);
+			disc.disconnectSensor();
 		}
 	}
 	
+	/**
+	 * Calls the EventLog's print(may not be named this after Adam changes stuff) method to output stats to the console
+	 * **/
 	public void cmdPrint() {
 		try {
 			Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
@@ -402,6 +459,14 @@ public class SystemController {
 		}
 	}
 	
+	
+	/**
+	 * Finds the given Participant within the global Timer time's ArrayList of participants that matches the ID field given as the int parameter "participant
+	 * If the participant is found then that participant's isNext field is set to true
+	 * If the participant is NOT found then a new participant is created, added to the ArrayList or Participants wihtin currentTimer, and isNext state is set to true
+	 * 
+	 * @param participant - ID field of the participant
+	 * **/
 	public void cmdNum(int participant) {
 		Participant par = findParticipant(participant);
 		if (par != null) {
@@ -413,12 +478,12 @@ public class SystemController {
 	
 	public void cmdStart() {
 		//for now...
-		currentTimer.getEvent().startAllParticipants(systemTime.getTime());
+		//currentTimer.getEvent().startAllParticipants(systemTime.getTime());
 	}
 	
 	public void cmdFinish() {
 		//for now...
-		currentTimer.getEvent().finishAllParticipants(systemTime.getTime());
+		//currentTimer.getEvent().finishAllParticipants(systemTime.getTime());
 	}
 	
 	public void cmdExit() {
@@ -427,17 +492,25 @@ public class SystemController {
 		systemTime = null;
 		isPrinterOn = false;
 		commandList = null;
-		currentTimer.exit();
+		if(currentTimer != null){
+			currentTimer.exit();
+		}
 		currentTimer = null;
-		while (!commandList.isEmpty()) {
-			commandList.remove();
+		if(commandList != null){
+			while (!commandList.isEmpty()) {
+				commandList.remove();
+			}
 		}
 		commandList = null;
-		for (Channel chnl: channels) {
-			chnl.exit();
+		if(channels != null){
+			for (Channel chnl: channels) {
+				chnl.exit();
+			}
 		}
 		id = -1;
-		eventLog.exit();
+		if(eventLog != null){
+			eventLog.exit();
+		}
 	}
 	
 	public Participant findParticipant(int id) {
@@ -450,9 +523,11 @@ public class SystemController {
 	}
 	
 	public Channel findChannel(int id) {
-		for (Channel chnl: channels) {
-			if (chnl.getId() == id) {
-				return chnl;
+		if(channels != null){
+			for (Channel chnl: channels) {
+				if (chnl.getId() == id) {
+					return chnl;
+				}
 			}
 		}
 		return null;

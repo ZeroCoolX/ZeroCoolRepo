@@ -95,5 +95,10 @@ public class Timer {
 		}
 		currentEvent.exit();
 	}
+
+	public void addNewParticipant(int participant) {
+		totalParticipants.add(new Participant(participant, ""+participant));
+		
+	}
 	
 }
