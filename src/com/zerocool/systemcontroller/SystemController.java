@@ -180,6 +180,36 @@ public class SystemController {
 	 * @param time - The current time ?
 	 * @param cmd - The command to execute.
 	 * @param args - Types of events to run.
+	 * 
+	 * Note for the different indexes used!
+	 * 
+	 * whenever you see something like "args.get(5)" or any number in the parens its grabbing a 
+	 * specific CONSTANT value from the line in the file.
+	 * 
+	 * The reason I say constant is because we have a CONSTANT file format like below:
+	 * 	12:00:00.0	TIME 12:01:00
+		12:01:02.0	ON
+		12:01:12.0	CONN GATE 1
+		12:02:00.0	TOGGLE 1
+		12:02:10.0	NUM 234
+		
+		This allows us to ALWAYS know that the index 0 = hour, 1 = minute, 2 = second, 3 = milisecond
+		because every line is preceeded by a timestamp.
+		
+		This also allows us to ALWAYS KNOW that the 4th index is the command. always. everytime. no matter what.
+		
+		
+		This also allows us to make other assumptions like for example the line below:
+				12:01:12.0	CONN GATE 1
+		index   0  1  2  3   4    5   6
+		
+		since we know the 4th index is the command, ALL indicies after the 4th are the args. so for the line above which would have its
+		own Case statement in the actual executeCommand() method we know that the 5th index is the type of sensor and the
+		6th index is the channel id.
+		
+		Using these known assumptions about the format of the file is the reason for specific indecies being used in each individual case statement
+		body.
+	 * 
 	 */
 	public void executeCommand(String cmd, ArrayList<String> args) {
 
@@ -346,7 +376,7 @@ public class SystemController {
 	public void cmdConn(String sensorType, int channel) {
 		Channel connect = findChannel(channel);
 		if (connect != null) {
-			connect.setSensorType(sensorType);
+			connect.addSensor(sensorType);
 		}
 	}
 	

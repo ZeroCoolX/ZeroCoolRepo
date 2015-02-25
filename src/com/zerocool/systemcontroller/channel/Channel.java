@@ -1,5 +1,6 @@
 package com.zerocool.systemcontroller.channel;
 
+
 /**
  * 
  * @author ZeroCool
@@ -53,6 +54,13 @@ public class Channel {
 		currentSensor = sensor;
 	}
 	
+	public void addSensor(String type) {
+		currentSensor = new Sensor();
+		currentSensor.setSensorType(type);
+	}
+	
+	
+	
 	/**
 	 * Removes the channel's current sensor.
 	 */
@@ -71,9 +79,6 @@ public class Channel {
 		return isActive;
 	}
 	
-	public int getId(){
-		return id;
-	}
 	
 	/**
 	 * Check if the sensor is armed or not.
@@ -85,6 +90,10 @@ public class Channel {
 	
 	public String getSensorType(){
 		return currentSensor != null ? currentSensor.getType() : null;
+	}
+	
+	public int getId(){
+		return id;
 	}
 	
 	
@@ -108,6 +117,10 @@ public class Channel {
 	
 	public void setSensorType(String type){
 		currentSensor.setSensorType(type);
+	}
+	
+	public void setID(int id){
+		this.id = id;
 	}
 	
 	public void exit(){
