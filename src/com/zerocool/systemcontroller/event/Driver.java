@@ -9,7 +9,9 @@ import java.util.Date;
 
 import com.zerocool.systemcontroller.SystemController;
 import com.zerocool.systemcontroller.channel.Channel;
+import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
+import com.zerocool.systemcontroller.systemtime.SystemTime;
 import com.zerocool.systemcontroller.timer.Timer;
 
 
@@ -19,25 +21,33 @@ public class Driver {
 	public static void main (String [] args) throws ParseException{
 		
 		System.out.println("Testing...testing....\n\n");
-		SystemController sysCont = new SystemController();
-		ArrayList<Channel> chnls = new ArrayList<Channel>();
 		
 		Channel chnl1 = new Channel();
 		Channel chnl2 = new Channel();
 		chnl1.setID(1);
 		chnl2.setID(2);
 		
+		ArrayList<Channel> chnls = new ArrayList<Channel>();
+		chnls.add(chnl1);
+		chnls.add(chnl2);
+		
 		Participant par1 = new Participant(234, "Test par 1");
 		Participant par2 = new Participant(315, "Test par 2");
 		Participant par3 = new Participant(435, "Test par 3");
 		
-		//EventLog eventLog = new EventLog();
+		ArrayList<Participant> pars = new ArrayList<Participant>();
+		pars.add(par1);
+		pars.add(par2);
+		pars.add(par3);
 		
-		Timer time = new Timer();
-		
+		Individual ind = new Individual();
 
 		
-		//sysCont.setChannels(channels)
+		EventLog eventLog = new EventLog();
+		
+		Timer time = new Timer(new SystemTime(), ind, pars, eventLog);
+		SystemController sysCont = new SystemController(time, time.getEventLog(), chnls, 1);
+		
 		File file = new File("syscontrolFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		System.out.println("\n\nTesting readFile\n\n");

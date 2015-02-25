@@ -13,7 +13,7 @@ public class Participant {
 	private String name;
 	private Stack<Record> records;
 	
-	private long id;
+	private int id;
 	
 	private boolean isCompeting;
 	private boolean isNext;
@@ -23,7 +23,7 @@ public class Participant {
 	 * @param id
 	 * @param name
 	 */
-	public Participant(long id, String name) {
+	public Participant(int id, String name) {
 		this.id = id;
 		this.name = name;
 		this.records = new Stack<Record>();
@@ -44,7 +44,7 @@ public class Participant {
 	 * @param eventName - The name of the event.
 	 * @param eventId - The ID of the event.
 	 */
-	public void createNewRecord(String eventName, long eventId) {
+	public void createNewRecord(String eventName, int eventId) {
 		records.push(new Record(eventName, eventId));
 	}
 	
@@ -59,7 +59,7 @@ public class Participant {
 		return this.records.isEmpty() ? null : this.records.peek();
 	}
 	
-	public String getFormattedData(long eventID) {
+	public String getFormattedData(int eventID) {
 		return null;
 	}
 
@@ -67,7 +67,7 @@ public class Participant {
 	 * Get's the ID of the particiapnt.
 	 * @return The id of the participant.
 	 */
-	public long getID() {
+	public int getID() {
 		return this.id;
 	}
 	

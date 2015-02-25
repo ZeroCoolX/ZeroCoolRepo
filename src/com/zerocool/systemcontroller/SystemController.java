@@ -32,7 +32,7 @@ public class SystemController {
 	public Timer currentTimer;
 	public EventLog eventLog;
 
-	public long id;
+	public int id;
 
 	public boolean isPrinterOn;
 
@@ -45,22 +45,22 @@ public class SystemController {
 		systemTime.start();
 	}
 
-	public SystemController(long id) {
+	public SystemController(int id) {
 		this();
 		this.id = id;
 	}
 
-	public SystemController(Timer currentTimer, long id) {
+	public SystemController(Timer currentTimer, int id) {
 		this(id);
 		this.currentTimer = currentTimer;
 	}
 
-	public SystemController(Timer currentTimer, EventLog eventLog, long id) {
+	public SystemController(Timer currentTimer, EventLog eventLog, int id) {
 		this(currentTimer, id);
 		this.eventLog = eventLog;
 	}
 
-	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, long id) {
+	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, int id) {
 		this(currentTimer, eventLog, id);
 		this.channels = channels;
 	}
@@ -403,9 +403,11 @@ public class SystemController {
 	}
 	
 	public void cmdNum(int participant) {
-		Participant par = findParticipant((long)id);
+		Participant par = findParticipant(participant);
 		if (par != null) {
 			par.setIsNext(true);
+		}else{
+			currentTimer.addNewParticipant(participant);
 		}
 	}
 	
@@ -438,7 +440,7 @@ public class SystemController {
 		eventLog.exit();
 	}
 	
-	public Participant findParticipant(long id) {
+	public Participant findParticipant(int id) {
 		for (Participant par: currentTimer.getTotalParticipants()) {
 			if (par.getID() == id) {
 				return par;
@@ -527,6 +529,10 @@ public class SystemController {
 	 */
 	public boolean getIsPrinterOn() {
 		return this.isPrinterOn;
+	}
+	
+	public SystemTime getSystemTime(){
+		return systemTime;
 	}
 
 }

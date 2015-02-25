@@ -17,7 +17,7 @@ public abstract class AbstractEvent {
 	protected String name;
 	
 	// sequentially increasing unique identifier
-	protected long eventId;
+	protected int eventId;
 	
 	// participants actually competing in this event
 	protected  ArrayList<Participant> currentParticipants;
@@ -48,7 +48,7 @@ public abstract class AbstractEvent {
 	 * testing purposes multilevel constructors exist as well
 	 * **/
 	protected AbstractEvent() {
-		eventId = LASTID++;
+		eventId = ++LASTID;
 	}
 
 	
@@ -123,7 +123,7 @@ public abstract class AbstractEvent {
 		return eventTime;
 	}
 
-	public long getEventId() {
+	public int getEventId() {
 		return eventId;
 	}
 
