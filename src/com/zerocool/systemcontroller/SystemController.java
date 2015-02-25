@@ -103,23 +103,17 @@ public class SystemController {
 
 		//Uncomment to see the results of the input
 		while (!commandList.isEmpty()) {
-			for (String str: commandList.remove()) {
-				String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
-				System.out.println("Just cehcking: " + systemTime.toString());
-				System.out.println(str);
-			}
-		}
-		
-		/*
-		//pop off each command and execute it
-		while (!commandList.isEmpty()) {
-			for (String str: commandList.remove()) {
-				//while the system time does not equal this timestamp keep looping. the moment it does break out and execute command
-				while(){
-					
+			ArrayList<String> currentLine = commandList.remove();
+			String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
+				
+			while(  !( currentLine.get(0).equals(systemTimeArr[0]) 
+					&& currentLine.get(1).equals(systemTimeArr[1]) 
+					&& currentLine.get(2).equals(systemTimeArr[2]) )   ){
+				//KEEP CHECKING!!!!!!!!!!
+				systemTimeArr = parse(systemTime.toString(), "[:.]");
 				}
-			}
-		}*/
+			System.out.println("made it out...NEXT!");
+		}
 
 	}
 
@@ -295,14 +289,18 @@ public class SystemController {
 	public void cmdOn() {
 		//When the command ON is entered/read then the time needs to start. As of now upon instantiation of this class the systemTime is started...not sure if that should happen HERE or THERE
 		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
-		systemTime.resume();
+		if(systemTime.isSuspended()){
+			systemTime.resume();
+		}
 		//printer set to false for default state
 		isPrinterOn = false;
 	}
 	
 	public void cmdOff() {
 		//When the command OFF is entered/read then the time needs to stop.
-		systemTime.suspend();
+		if(!systemTime.isSuspended()){
+			systemTime.suspend();
+		}
 		//printer set to false for insurance
 		isPrinterOn = false;
 	}
