@@ -22,32 +22,6 @@ public class Driver {
 		
 		System.out.println("Testing...testing....\n\n");
 		
-		/*Channel chnl1 = new Channel();
-		Channel chnl2 = new Channel();
-		chnl1.setID(1);
-		chnl2.setID(2);
-		
-		ArrayList<Channel> chnls = new ArrayList<Channel>();
-		chnls.add(chnl1);
-		chnls.add(chnl2);
-		
-		Participant par1 = new Participant(234, "Test par 1");
-		Participant par2 = new Participant(315, "Test par 2");
-		Participant par3 = new Participant(435, "Test par 3");
-		
-		ArrayList<Participant> pars = new ArrayList<Participant>();
-		pars.add(par1);
-		pars.add(par2);
-		pars.add(par3);
-		
-		Individual ind = new Individual("test", 0);
-
-		
-		EventLog eventLog = new EventLog();
-		
-	//	Timer time = new Timer(new SystemTime(), ind, pars, eventLog);
-	//	SystemController sysCont = new SystemController(time, time.getEventLog(), chnls, 1);
-		*/
 		SystemController sysCont = new SystemController();
 		File file = new File("syscontrolFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");

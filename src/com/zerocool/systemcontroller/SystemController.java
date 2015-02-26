@@ -41,7 +41,7 @@ public class SystemController {
 		// create a Queue collection to store each line in a FIFO
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<ArrayList<String>>();
-		
+
 		systemTime = new SystemTime();
 		systemTime.start();
 	}
@@ -61,62 +61,74 @@ public class SystemController {
 		this.eventLog = eventLog;
 	}
 
-	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, int id) {
+	public SystemController(Timer currentTimer, EventLog eventLog,
+			ArrayList<Channel> channels, int id) {
 		this(currentTimer, eventLog, id);
 		this.channels = channels;
 	}
 
 	/**
-	 * Read in timestamp and commands from a file.
-	 * Each line is parsed into a String[] using String.split(regex) and then that array is pushed into a Queue.
-	 * The entire file will be read in and stored in the queue (FIFO mentality) before actual execution of each command takes place
-	 * @param file - The file to read from.
+	 * Read in timestamp and commands from a file. Each line is parsed into a
+	 * String[] using String.split(regex) and then that array is pushed into a
+	 * Queue. The entire file will be read in and stored in the queue (FIFO
+	 * mentality) before actual execution of each command takes place
+	 * 
+	 * @param file
+	 *            - The file to read from.
 	 */
 	public void readFile(File file) {
 
 		try {
-			//read in file from given path 
-			Scanner inFile = new Scanner(new FileReader(file));
-			String[] parsedLine = null;
 
-			// while there is another line to read...read it
-			while (inFile.hasNextLine()) {
-				String line = inFile.nextLine();
+			try {
+				// read in file from given path
+				Scanner inFile = new Scanner(new FileReader(file));
+				String[] parsedLine = null;
 
-				//call parsing method
-				parsedLine = parse(line, "[:. \\t]");
-				ArrayList<String> parsedList = new ArrayList<String>();
-				for(String str: parsedLine){
-					parsedList.add(str);
+				// while there is another line to read...read it
+				while (inFile.hasNextLine()) {
+					String line = inFile.nextLine();
+
+					// call parsing method
+					parsedLine = parse(line, "[:. \\t]");
+					ArrayList<String> parsedList = new ArrayList<String>();
+					for (String str : parsedLine) {
+						parsedList.add(str);
+					}
+
+					// check to see if the cmd is TIME, if it is Execute that
+					// immediately
+					if (parsedList.get(4).equals("TIME")) {
+						executeCommand(parsedList.get(4), parsedList);
+					} else {
+						// add line to the queue
+						commandList.add(parsedList);
+					}
 				}
-				
-				//check to see if the cmd is TIME, if it is Execute that immediately
-				if(parsedList.get(4).equals("TIME")){
-					executeCommand(parsedList.get(4), parsedList);
-				}else{
-					// add line to the queue
-					commandList.add(parsedList);
-				}
+			} catch (Exception e) {
+				throw e;
 			}
-		} catch (Exception e) {
-			System.out.println("ERROR!!!\n" + e.getMessage());
-			e.printStackTrace();
-		}
 
-		//Uncomment to see the results of the input
-		while (!commandList.isEmpty()) {
-			ArrayList<String> currentLine = commandList.remove();
-			String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
-			
-				
-			while(  !( currentLine.get(0).equals(systemTimeArr[0]) 
-					&& currentLine.get(1).equals(systemTimeArr[1]) 
-					&& currentLine.get(2).equals(systemTimeArr[2]) )   ){
-				//KEEP CHECKING!!!!!!!!!!
-				systemTimeArr = parse(systemTime.toString(), "[:.]");
+			// Uncomment to see the results of the input
+			while (!commandList.isEmpty()) {
+				ArrayList<String> currentLine = commandList.remove();
+				String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
+
+				while (!(currentLine.get(0).equals(systemTimeArr[0])
+						&& currentLine.get(1).equals(systemTimeArr[1]) && currentLine
+						.get(2).equals(systemTimeArr[2]))) {
+					// KEEP CHECKING!!!!!!!!!!
+					systemTimeArr = parse(systemTime.toString(), "[:.]");
 				}
-			System.out.println(systemTime.toString()+"EXECUTING CMD: " + currentLine.get(4));
-			executeCommand(currentLine.get(4), currentLine);
+				System.out.println(systemTime.toString() + "\t"
+						+ currentLine.get(4));
+				executeCommand(currentLine.get(4), currentLine);
+			}
+
+		} catch (Exception e) {
+			System.err.println("ERROR: " + e.getMessage());
+			e.getStackTrace();			
+			System.exit(1);
 		}
 
 	}
@@ -124,12 +136,14 @@ public class SystemController {
 	/**
 	 * Helper method that parses the given string by the given regex
 	 * 
-	 * @param line - String that needs parsing
-	 * @param regex - Regular Expression which determines how to parse the String
+	 * @param line
+	 *            - String that needs parsing
+	 * @param regex
+	 *            - Regular Expression which determines how to parse the String
 	 * @return newLine - String array of parsed string
 	 * **/
 	public String[] parse(String line, String regex) {
-		String [] newLine =  line.split(regex);
+		String[] newLine = line.split(regex);
 		return newLine;
 	}
 
@@ -139,185 +153,204 @@ public class SystemController {
 	 * @return
 	 */
 	public void readInput() {
-		Scanner stdIn = new Scanner(System.in);
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String [] parsedLine = null;
-		boolean exit = false;
-		do {
-			try {
-				System.out.print("mainframe$ ");
-				/*
-				 * Now in between parsing the command entered, and executing/storing it for now in the queue
-				 * we need to append a timestamp of when the use typed in said command in the format <hour>:<min>:<second>.<millisecond>
-				 * */
 
-				String input = br.readLine();
-				if(input.equals("EXIT")){
-					exit = true;
+		try {
+
+			Scanner stdIn = new Scanner(System.in);
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			String[] parsedLine = null;
+			boolean exit = false;
+			do {
+				try {
+					System.out.print("mainframe$ ");
+					/*
+					 * Now in between parsing the command entered, and
+					 * executing/storing it for now in the queue we need to
+					 * append a timestamp of when the use typed in said command
+					 * in the format <hour>:<min>:<second>.<millisecond>
+					 */
+
+					String input = br.readLine();
+					if (input.equals("EXIT")) {
+						exit = true;
+					}
+
+					// call parsing method for line
+					parsedLine = parse((systemTime.toString() + "\t" + input),
+							"[:. \\t]");
+					ArrayList<String> parsedList = new ArrayList<String>();
+					for (String str : parsedLine) {
+						parsedList.add(str);
+					}
+
+					// check to see if the cmd is TIME, if it is Execute that
+					// immediately
+					executeCommand(parsedList.get(4), parsedList);
+
+				} catch (IOException ioe) {
+					throw ioe;
 				}
+				// keep reading in lines from the terminal until exit has been
+				// entered
+			} while (!exit);
 
-				//call parsing method for line
-				parsedLine = parse((systemTime.toString()+"\t"+input), "[:. \\t]");
-				ArrayList<String> parsedList = new ArrayList<String>();
-				for(String str: parsedLine){
-					parsedList.add(str);
+			// Uncomment to see the results of the input
+			while (!commandList.isEmpty()) {
+				for (String str : commandList.remove()) {
+					System.out.println("LINE: " + str);
 				}
-
-				//check to see if the cmd is TIME, if it is Execute that immediately
-				executeCommand(parsedList.get(4), parsedList);
-
-
-			} catch (IOException ioe) {
-				System.out.println("IO error trying command!");
-				System.exit(1);
 			}
-			//keep reading in lines from the terminal until exit has been entered
-		} while (!exit);
 
-
-
-		//Uncomment to see the results of the input
-		while (!commandList.isEmpty()) {
-			for (String str: commandList.remove()) {
-				System.out.println("LINE: " + str);
-			}
+		} catch (Exception e) {
+			System.err.println("ERROR: " + e.getMessage());
+			e.getStackTrace();
+			System.exit(1);
 		}
-	}
 
+	}
 
 	/**
 	 * Execute a command.
-	 * @param time - The current time ?
-	 * @param cmd - The command to execute.
-	 * @param args - Types of events to run.
 	 * 
-	 * Note for the different indexes used!
+	 * @param time
+	 *            - The current time ?
+	 * @param cmd
+	 *            - The command to execute.
+	 * @param args
+	 *            - Types of events to run.
 	 * 
-	 * whenever you see something like "args.get(5)" or any number in the parens its grabbing a 
-	 * specific CONSTANT value from the line in the file.
+	 *            Note for the different indexes used!
 	 * 
-	 * The reason I say constant is because we have a CONSTANT file format like below:
-	 * 	12:00:00.0	TIME 12:01:00
-	 *	12:01:02.0	ON
-	 *	12:01:12.0	CONN GATE 1
-	12:02:00.0	TOGGLE 1
-		12:02:10.0	NUM 234
-		
-		This allows us to ALWAYS know that the index 0 = hour, 1 = minute, 2 = second, 3 = milisecond
-		because every line is preceeded by a timestamp.
-		
-		This also allows us to ALWAYS KNOW that the 4th index is the command. always. everytime. no matter what.
-		
-		
-		This also allows us to make other assumptions like for example the line below:
-				12:01:12.0	CONN GATE 1
-		index   0  1  2  3   4    5   6
-		
-		since we know the 4th index is the command, ALL indicies after the 4th are the args. so for the line above which would have its
-		own Case statement in the actual executeCommand() method we know that the 5th index is the type of sensor and the
-		6th index is the channel id.
-		
-		Using these known assumptions about the format of the file is the reason for specific indecies being used in each individual case statement
-		body.
+	 *            whenever you see something like "args.get(5)" or any number in
+	 *            the parens its grabbing a specific CONSTANT value from the
+	 *            line in the file.
+	 * 
+	 *            The reason I say constant is because we have a CONSTANT file
+	 *            format like below: 12:00:00.0 TIME 12:01:00 12:01:02.0 ON
+	 *            12:01:12.0 CONN GATE 1 12:02:00.0 TOGGLE 1 12:02:10.0 NUM 234
+	 * 
+	 *            This allows us to ALWAYS know that the index 0 = hour, 1 =
+	 *            minute, 2 = second, 3 = milisecond because every line is
+	 *            preceeded by a timestamp.
+	 * 
+	 *            This also allows us to ALWAYS KNOW that the 4th index is the
+	 *            command. always. everytime. no matter what.
+	 * 
+	 * 
+	 *            This also allows us to make other assumptions like for example
+	 *            the line below: 12:01:12.0 CONN GATE 1 index 0 1 2 3 4 5 6
+	 * 
+	 *            since we know the 4th index is the command, ALL indicies after
+	 *            the 4th are the args. so for the line above which would have
+	 *            its own Case statement in the actual executeCommand() method
+	 *            we know that the 5th index is the type of sensor and the 6th
+	 *            index is the channel id.
+	 * 
+	 *            Using these known assumptions about the format of the file is
+	 *            the reason for specific indecies being used in each individual
+	 *            case statement body.
 	 * 
 	 */
-	public void executeCommand(String cmd, ArrayList<String> args) {
+	public void executeCommand(String cmd, ArrayList<String> args) throws Exception {
+		try {
 
-		switch (cmd) {
-		case "ON":
-			/*
-			 * --Turn system on--
-			 * create new Timer 
-			 * create new EventLog 
-			 * create new ArrayList<Channel>
-			 * set isPrinterOn = false (default state)
-			 * set ID = 0 (default state)
-			 * */
+			switch (cmd) {
+			case "ON":
+				/*
+				 * --Turn system on-- create new Timer create new EventLog
+				 * create new ArrayList<Channel> set isPrinterOn = false
+				 * (default state) set ID = 0 (default state)
+				 */
 				cmdOn();
-			break;
-		case "OFF":
-			/*
-			 *--Turn system off (stay in simulator)--
-			 *set currentTimer = null
-			 *set all channels within ArrayList<Channel> and sensors associated with such to inactive states
-			 *set isPrinterOn = false
-			 *(I think the ID is kept...not sure)
-			 * */
+				break;
+			case "OFF":
+				/*
+				 * --Turn system off (stay in simulator)--set currentTimer =
+				 * nullset all channels within ArrayList<Channel> and sensors
+				 * associated with such to inactive statesset isPrinterOn =
+				 * false(I think the ID is kept...not sure)
+				 */
 				cmdOff();
-			break;
-		case "EXIT":
-			/*
-			 * --Turn system off (kill everything)--
-			 * */
+				break;
+			case "EXIT":
+				/*
+				 * --Turn system off (kill everything)--
+				 */
 				cmdExit();
-			break;
-		case "RESET":
-			// stuff
+				break;
+			case "RESET":
+				// stuff
 				cmdReset();
-			break;
-		case "TIME":
-			/*
-			 * --Set the current time--
-			 * */
+				break;
+			case "TIME":
+				/*
+				 * --Set the current time--
+				 */
 				cmdTime(args);
-			break;
-		case "TOG":
-			// stuff
+				break;
+			case "TOG":
+				// stuff
 				cmdTog(Integer.parseInt(args.get(5)));
-			break;
-		case "CONN":
-			// stuff
+				break;
+			case "CONN":
+				// stuff
 				cmdConn(args.get(5), Integer.parseInt(args.get(6)));
-			break;
-		case "DISC":
-			// stuff
+				break;
+			case "DISC":
+				// stuff
 				cmdDisc(Integer.parseInt(args.get(5)));
-			break;
-		case "EVENT":
-			/* IND | PARIND | GRP | PARGRP
-			 *
-			 *--I guess this just creates a new Event? lets go with that --
-			 * */
+				break;
+			case "EVENT":
+				/*
+				 * IND | PARIND | GRP | PARGRP
+				 * 
+				 * --I guess this just creates a new Event? lets go with that --
+				 */
 				cmdEvent(args);
-			break;
-		case "NEWRUN":
-			// stuff
-			break;
-		case "ENDRUN":
-			// stuff
-			break;
-		case "PRINT":
-			// stuff
+				break;
+			case "NEWRUN":
+				// stuff
+				break;
+			case "ENDRUN":
+				// stuff
+				break;
+			case "PRINT":
+				// stuff
 				cmdPrint();
-			break;
-		case "EXPORT":
-			// stuff
-			break;
-		case "NUM":
-			// stuff
+				break;
+			case "EXPORT":
+				// stuff
+				break;
+			case "NUM":
+				// stuff
 				cmdNum(Integer.parseInt(args.get(5)));
-			break;
-		case "CLR":
-			// stuff
-			break;
-		case "SWAP":
-			// stuff
-			break;
-		case "RCL":
-			// stuff
-			break;
-		case "START":
-			// stuff
+				break;
+			case "CLR":
+				// stuff
+				break;
+			case "SWAP":
+				// stuff
+				break;
+			case "RCL":
+				// stuff
+				break;
+			case "START":
+				// stuff
 				cmdStart();
-			break;
-		case "FINISH":
-			// stuff
+				break;
+			case "FINISH":
+				// stuff
 				cmdFinish();
-			break;
-		case "TRIG":
-			// stuff
-			break;
+				break;
+			case "TRIG":
+				// stuff
+				break;
+			}
+
+		} catch (Exception e) {
+			throw e;
 		}
+
 	}
 
 	// FOR THIS IMPLEMENTATION the channel supplied as a parameter's sensor's
@@ -325,237 +358,314 @@ public class SystemController {
 	public void triggerSensor(int id, boolean sensorState, Channel chosenChannel) {
 		chosenChannel.setSensorState(sensorState);
 	}
-	
+
 	/**
 	 * Instantiates all the variables to initial states
 	 * **/
-	public void cmdOn() {
-		//When the command ON is entered/read then the time needs to start. As of now upon instantiation of this class the systemTime is started...not sure if that should happen HERE or THERE
-		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
-		//printer set to false for default state
-		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
-		channels = new ArrayList<Channel>();
-		//printer set to false for insurance
-		isPrinterOn = false;
-	}
-	
-	/**
-	 * KEEP THE systemTime running
-	 * set everything else to null
-	 * **/
-	public void cmdOff() {
-		//When the command OFF is entered/read then the time needs to stop.
-		eventLog = null;
-		currentTimer = null;
-		channels = null;
-		//printer set to false for insurance
-		isPrinterOn = false;
-	}
-	
-	/**
-	 * Sets the currentTimer event to a new instance of the type of method given from index(5)
-	 * 
-	 * @param args - ArrayList containing the line from the file looking like: HR:MIN:SEC.MIL	EVENT ARG   **which will either be (IND, PARIND, GRP, PARGRP)**
-	 * 																 args:     0   1   2  3       4   5  	 
-	 * * **/
-	public void cmdEvent(ArrayList<String> args) {
-		if (args.get(5).equals("IND")) {
-			currentTimer.createEvent(EventType.IND, EventType.IND.toString());
-		} else if (args.get(5).equals("PARIND")) {
-			currentTimer.createEvent(EventType.PARIND, EventType.PARIND.toString());
-		} else if (args.get(5).equals("GRP")) {
-			currentTimer.createEvent(EventType.GRP, EventType.GRP.toString());
-		} else if (args.get(5).equals("PARGRP")) {
-			currentTimer.createEvent(EventType.PARGRP, EventType.PARGRP.toString());
+	public void cmdOn() throws Exception {
+		try {
+			// When the command ON is entered/read then the time needs to start.
+			// As
+			// of now upon instantiation of this class the systemTime is
+			// started...not sure if that should happen HERE or THERE
+			// What happens when OFF is entered...then ON again right after it?
+			// IDK
+			// we need to converse on this
+			// printer set to false for default state
+			eventLog = new EventLog();
+			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
+					+ "", new ArrayList<Participant>());
+			channels = new ArrayList<Channel>();
+			// printer set to false for insurance
+			isPrinterOn = false;
+		} catch (Exception e) {
+			throw e;
 		}
 	}
-	
-	
+
+	/**
+	 * KEEP THE systemTime running set everything else to null
+	 * **/
+	public void cmdOff() throws Exception {
+		try {
+			// When the command OFF is entered/read then the time needs to stop.
+			eventLog = null;
+			currentTimer = null;
+			channels = null;
+			// printer set to false for insurance
+			isPrinterOn = false;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Sets the currentTimer event to a new instance of the type of method given
+	 * from index(5)
+	 * 
+	 * @param args
+	 *            - ArrayList containing the line from the file looking like:
+	 *            HR:MIN:SEC.MIL EVENT ARG **which will either be (IND, PARIND,
+	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
+	 **/
+	public void cmdEvent(ArrayList<String> args) throws Exception {
+		try {
+			if (args.get(5).equals("IND")) {
+				currentTimer.createEvent(EventType.IND,
+						EventType.IND.toString());
+			} else if (args.get(5).equals("PARIND")) {
+				currentTimer.createEvent(EventType.PARIND,
+						EventType.PARIND.toString());
+			} else if (args.get(5).equals("GRP")) {
+				currentTimer.createEvent(EventType.GRP,
+						EventType.GRP.toString());
+			} else if (args.get(5).equals("PARGRP")) {
+				currentTimer.createEvent(EventType.PARGRP,
+						EventType.PARGRP.toString());
+			}
+		} catch (Exception e) {
+
+		}
+	}
+
 	/**
 	 * Instantiates all the variables to initial states
 	 * **/
-	public void cmdReset() {
-		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
-		channels = new ArrayList<Channel>();
-		//printer set to false for insurance
-		isPrinterOn = false;
-	}
-	
-	
-	/**
-	 * Sets the systemTime variable to the given hour, minute, and second denoted by the indicies (5,6,7) from the ArrayList
-	 * 
-	 * @param args - ArrayList containing the line from the file looking like: HR:MIN:SEC.MIL	TIME HR:MIN:SEC
-	 * 															args:     0   1   2  3       4   5  6   7
-	 * **/
-	public void cmdTime(ArrayList<String> args) {
-		//set the current time
-		systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000 + Integer.parseInt(args.get(6)) * 60000 + Integer.parseInt(args.get(7)) * 1000);
-		systemTime.start();
-	}
-	
-	
-	/**
-	 * Finds the channel within the ArrayList with id of the paramenter.
-	 * If there is a channel found this channels sensor state is set to the opposite of whatever it is
-	 * If there isn't a channel found then a new channel is created and added to the ArrayList
-	 * 
-	 * @param channel - the channel ID to either set state or create new instance of
-	 * **/
-	public void cmdTog(int channel) {
-		Channel toggle = findChannel(channel);
-		if (toggle != null) {
-			toggle.setState( (toggle.getState()==true?false:true)  );
-		}else{
-			Channel chnl = new Channel();
-			chnl.setID(channel);
-			chnl.setState(true);
-			channels.add(chnl);
+	public void cmdReset() throws Exception {
+		try {
+			eventLog = new EventLog();
+			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
+					+ "", new ArrayList<Participant>());
+			channels = new ArrayList<Channel>();
+			// printer set to false for insurance
+			isPrinterOn = false;
+		} catch (Exception e) {
+			throw e;
 		}
 	}
-	
+
 	/**
-	 * Finds the given channel within the global ArrayList channels that matches the ID field given as the int parameter "channel"
-	 * If the channel is matched and returned from the helper findChannel(Channel) method, then a new sensor of whatever type the 
-	 * sensorType parameter is is created and assigned to the channel.
-	 * If the channel does not exist, then a new channel is created and added to the global ArrayList channels (with the given ID field) 
-	 * and still a sensor of type sensorType is created and added to the channel
+	 * Sets the systemTime variable to the given hour, minute, and second
+	 * denoted by the indicies (5,6,7) from the ArrayList
 	 * 
-	 * @param sensorType - type of sensor (EYE, GATE, PAD) to add to the given channel 
-	 * @param channel - ID field for a channel to connect a sensor too
+	 * @param args
+	 *            - ArrayList containing the line from the file looking like:
+	 *            HR:MIN:SEC.MIL TIME HR:MIN:SEC args: 0 1 2 3 4 5 6 7
 	 * **/
-	public void cmdConn(String sensorType, int channel) {
-		Channel connect = findChannel(channel);
-		if (connect != null) {
-			connect.addSensor(sensorType);
+	public void cmdTime(ArrayList<String> args) throws Exception {
+		try {
+			// set the current time
+			systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000
+					+ Integer.parseInt(args.get(6)) * 60000
+					+ Integer.parseInt(args.get(7)) * 1000);
+			systemTime.start();
+		} catch (Exception e) {
+			throw e;
 		}
 	}
-	
+
 	/**
-	 * Finds the given channel within the global ArrayList channels that matches the ID field given as the int parameter "channel"
-	 * If the channel is found, then the sensor associated with that channel is set to a false state (off or disconnected)
-	 * If the channel is not AN ERROR WILL BE THROWN IN THE FUTURE. NOT IMPLEMENTED YET
+	 * Finds the channel within the ArrayList with id of the paramenter. If
+	 * there is a channel found this channels sensor state is set to the
+	 * opposite of whatever it is If there isn't a channel found then a new
+	 * channel is created and added to the ArrayList
 	 * 
-	 * @param channel - the channel ID with which to set the sensor state
+	 * @param channel
+	 *            - the channel ID to either set state or create new instance of
+	 * **/
+	public void cmdTog(int channel) throws Exception {
+		try {
+			Channel toggle = findChannel(channel);
+			if (toggle != null) {
+				toggle.setState((toggle.getState() == true ? false : true));
+			} else {
+				Channel chnl = new Channel();
+				chnl.setID(channel);
+				chnl.setState(true);
+				channels.add(chnl);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Finds the given channel within the global ArrayList channels that matches
+	 * the ID field given as the int parameter "channel" If the channel is
+	 * matched and returned from the helper findChannel(Channel) method, then a
+	 * new sensor of whatever type the sensorType parameter is is created and
+	 * assigned to the channel. If the channel does not exist, then a new
+	 * channel is created and added to the global ArrayList channels (with the
+	 * given ID field) and still a sensor of type sensorType is created and
+	 * added to the channel
+	 * 
+	 * @param sensorType
+	 *            - type of sensor (EYE, GATE, PAD) to add to the given channel
+	 * @param channel
+	 *            - ID field for a channel to connect a sensor too
+	 * **/
+	public void cmdConn(String sensorType, int channel) throws Exception {
+		try{
+			Channel connect = findChannel(channel);
+			if (connect != null) {
+				connect.addSensor(sensorType);
+			}
+		}catch(Exception e){
+			throw e;
+		}
+	}
+
+	/**
+	 * Finds the given channel within the global ArrayList channels that matches
+	 * the ID field given as the int parameter "channel" If the channel is
+	 * found, then the sensor associated with that channel is set to a false
+	 * state (off or disconnected) If the channel is not AN ERROR WILL BE THROWN
+	 * IN THE FUTURE. NOT IMPLEMENTED YET
+	 * 
+	 * @param channel
+	 *            - the channel ID with which to set the sensor state
 	 */
-	public void cmdDisc(int channel) {
-		Channel disc = findChannel(channel);
-		if (disc != null) {
-			disc.setSensorState(false);
-			disc.disconnectSensor();
+	public void cmdDisc(int channel) throws Exception {
+		try{
+			Channel disc = findChannel(channel);
+			if (disc != null) {
+				disc.setSensorState(false);
+				disc.disconnectSensor();
+			}
+		}catch(Exception e){
+			throw e;
 		}
 	}
-	
+
 	/**
-	 * Calls the EventLog's print(may not be named this after Adam changes stuff) method to output stats to the console
+	 * Calls the EventLog's print(may not be named this after Adam changes
+	 * stuff) method to output stats to the console
 	 * **/
-	public void cmdPrint() {
+	public void cmdPrint() throws Exception {
 		try {
 			Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
-			
+
 			// while there is another line to read...print it
 			while (inFile.hasNextLine()) {
 				System.out.println(inFile.nextLine());
 			}
-			
+
 			inFile.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			throw e;
 		}
 	}
-	
-	
+
 	/**
-	 * Finds the given Participant within the global Timer time's ArrayList of participants that matches the ID field given as the int parameter "participant
-	 * If the participant is found then that participant's isNext field is set to true
-	 * If the participant is NOT found then a new participant is created, added to the ArrayList or Participants wihtin currentTimer, and isNext state is set to true
+	 * Finds the given Participant within the global Timer time's ArrayList of
+	 * participants that matches the ID field given as the int parameter
+	 * "participant If the participant is found then that participant's isNext
+	 * field is set to true If the participant is NOT found then a new
+	 * participant is created, added to the ArrayList or Participants wihtin
+	 * currentTimer, and isNext state is set to true
 	 * 
-	 * @param participant - ID field of the participant
+	 * @param participant
+	 *            - ID field of the participant
 	 * **/
-	public void cmdNum(int participant) {
-		Participant par = findParticipant(participant);
-		if (par != null) {
-			par.setIsNext(true);
-		}else{
-			currentTimer.addNewParticipant(participant);
+	public void cmdNum(int participant) throws Exception {
+		try{
+			Participant par = findParticipant(participant);
+			if (par != null) {
+				par.setIsNext(true);
+			} else {
+				currentTimer.addNewParticipant(participant);
+			}
+		}catch(Exception e){
+			throw e;
 		}
 	}
-	
-	
+
 	/**
 	 * start the event within currentTimer
 	 * **/
-	public void cmdStart() {
-		currentTimer.startEvent();
+	public void cmdStart() throws Exception {
+		try{
+			currentTimer.startEvent();
+		}catch(Exception e){
+			throw e;
+		}
 	}
-	
-	
+
 	/**
 	 * End the event within currentTimer
 	 * **/
-	public void cmdFinish() {
-		currentTimer.endEvent();
+	public void cmdFinish() throws Exception {
+		try{
+			currentTimer.endEvent();
+		}catch(Exception e){
+			throw e;
+		}
 	}
-	
+
 	/**
-	 * Exit the entire system.
-	 * Go through all global variables calling their .exit() function and/or set themto null
+	 * Exit the entire system. Go through all global variables calling their
+	 * .exit() function and/or set themto null
 	 * **/
-	public void cmdExit() {
-		//when the command EXIT is entered/read then the time needs to completely die
-		systemTime.exit();
-		systemTime = null;
-		isPrinterOn = false;
-		commandList = null;
-		if(currentTimer != null){
-			currentTimer.exit();
-		}
-		currentTimer = null;
-		if(commandList != null){
-			while (!commandList.isEmpty()) {
-				commandList.remove();
+	public void cmdExit() throws Exception {
+		// when the command EXIT is entered/read then the time needs to
+		// completely die
+		try {
+			systemTime.exit();
+			systemTime = null;
+			isPrinterOn = false;
+			commandList = null;
+			if (currentTimer != null) {
+				currentTimer.exit();
 			}
-		}
-		commandList = null;
-		if(channels != null){
-			for (Channel chnl: channels) {
-				chnl.exit();
+			currentTimer = null;
+			if (commandList != null) {
+				while (!commandList.isEmpty()) {
+					commandList.remove();
+				}
 			}
-		}
-		id = -1;
-		if(eventLog != null){
-			eventLog.exit();
+			commandList = null;
+			if (channels != null) {
+				for (Channel chnl : channels) {
+					chnl.exit();
+				}
+			}
+			id = -1;
+			if (eventLog != null) {
+				eventLog.exit();
+			}
+		} catch (Exception e) {
+			throw e;
 		}
 	}
-	
-	
+
 	/**
-	 * Helper method that goes through all participants in currentTimer looking for a matching ID field as the parameter id
+	 * Helper method that goes through all participants in currentTimer looking
+	 * for a matching ID field as the parameter id
 	 * 
-	 * @param id - the ID field for the saught after Participant
+	 * @param id
+	 *            - the ID field for the saught after Participant
 	 * @return par - the Participant with ID field that matches parameter id
 	 * **/
 	public Participant findParticipant(int id) {
-		for (Participant par: currentTimer.getTotalParticipants()) {
+		for (Participant par : currentTimer.getTotalParticipants()) {
 			if (par.getID() == id) {
 				return par;
 			}
 		}
 		return null;
 	}
-	
-	
+
 	/**
-	 * Helper method that goes through all channels in channels looking for a matching ID field as the parameter id
+	 * Helper method that goes through all channels in channels looking for a
+	 * matching ID field as the parameter id
 	 * 
-	 * @param id - the ID field for the saught after Channel
+	 * @param id
+	 *            - the ID field for the saught after Channel
 	 * @return chnl - the Channel with ID field that matches parameter id
 	 * **/
 	public Channel findChannel(int id) {
-		if(channels != null){
-			for (Channel chnl: channels) {
+		if (channels != null) {
+			for (Channel chnl : channels) {
 				if (chnl.getId() == id) {
 					return chnl;
 				}
@@ -563,11 +673,12 @@ public class SystemController {
 		}
 		return null;
 	}
-	
 
 	/**
 	 * Set the Timer of the system.
-	 * @param timer - The Timer to set the system.
+	 * 
+	 * @param timer
+	 *            - The Timer to set the system.
 	 */
 	public void setTimer(Timer timer) {
 		this.currentTimer = timer;
@@ -575,7 +686,9 @@ public class SystemController {
 
 	/**
 	 * Set the EventLog of the system.
-	 * @param eventLog - The EventLog to set to the system.
+	 * 
+	 * @param eventLog
+	 *            - The EventLog to set to the system.
 	 */
 	public void setEventLog(EventLog eventLog) {
 		this.eventLog = eventLog;
@@ -583,7 +696,9 @@ public class SystemController {
 
 	/**
 	 * Set the Channels of the system.
-	 * @param channels - The ArrayList of Channels to set to the system.
+	 * 
+	 * @param channels
+	 *            - The ArrayList of Channels to set to the system.
 	 */
 	public void setChannels(ArrayList<Channel> channels) {
 		this.channels = channels;
@@ -591,6 +706,7 @@ public class SystemController {
 
 	/**
 	 * Get's the system's current Timer.
+	 * 
 	 * @return The current Timer.
 	 */
 	public Timer getTimer() {
@@ -599,6 +715,7 @@ public class SystemController {
 
 	/**
 	 * Get's the system's current EventLog.
+	 * 
 	 * @return The current EventLog.
 	 */
 	public EventLog getEventLog() {
@@ -607,6 +724,7 @@ public class SystemController {
 
 	/**
 	 * Get's the system's current ArrayList of Channels.
+	 * 
 	 * @return The current ArrayList of Channels.
 	 */
 	public ArrayList<Channel> getChannels() {
@@ -615,6 +733,7 @@ public class SystemController {
 
 	/**
 	 * Get's the system's current ID.
+	 * 
 	 * @return The current ID.
 	 */
 	public long getId() {
@@ -623,7 +742,9 @@ public class SystemController {
 
 	/**
 	 * Set's the Printer on or off.
-	 * @param isPrinterOn - True to turn on the printer else false.
+	 * 
+	 * @param isPrinterOn
+	 *            - True to turn on the printer else false.
 	 */
 	public void setIsPrinterOn(boolean isPrinterOn) {
 		this.isPrinterOn = isPrinterOn;
@@ -631,13 +752,14 @@ public class SystemController {
 
 	/**
 	 * Checks whether the Printer is on or off.
+	 * 
 	 * @return True if the printer is on else off.
 	 */
 	public boolean getIsPrinterOn() {
 		return this.isPrinterOn;
 	}
-	
-	public SystemTime getSystemTime(){
+
+	public SystemTime getSystemTime() {
 		return systemTime;
 	}
 
