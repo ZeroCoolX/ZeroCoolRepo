@@ -1,5 +1,11 @@
 package com.zerocool.systemcontroller;
 
+/*
+ * AWESOME WORK SO FAR GUYS!!! ^___^
+ * 
+ * KEEP UP THE GREAT WORK!!!!!
+ * */
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
