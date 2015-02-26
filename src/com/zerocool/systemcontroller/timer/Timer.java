@@ -72,12 +72,16 @@ public class Timer {
 		switch(type) {
 		case IND:
 			currentEvent = new Individual(eventName, systemTime.getTime());
+			break;
 		case PARIND:
 			currentEvent = new ParIndividual(eventName, systemTime.getTime());
+			break;
 		case GRP:
 			currentEvent = new Group(eventName, systemTime.getTime());
+			break;
 		case PARGRP:
 			currentEvent = new ParGroup(eventName, systemTime.getTime());
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid Event Type");
 		}

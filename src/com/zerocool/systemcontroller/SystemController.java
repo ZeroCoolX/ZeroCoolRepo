@@ -121,7 +121,13 @@ public class SystemController {
 
 	}
 
-	// regex to split the line by colon, period, or space!
+	/**
+	 * Helper method that parses the given string by the given regex
+	 * 
+	 * @param line - String that needs parsing
+	 * @param regex - Regular Expression which determines how to parse the String
+	 * @return newLine - String array of parsed string
+	 * **/
 	public String[] parse(String line, String regex) {
 		String [] newLine =  line.split(regex);
 		return newLine;
@@ -192,9 +198,9 @@ public class SystemController {
 	 * 
 	 * The reason I say constant is because we have a CONSTANT file format like below:
 	 * 	12:00:00.0	TIME 12:01:00
-		12:01:02.0	ON
-		12:01:12.0	CONN GATE 1
-		12:02:00.0	TOGGLE 1
+	 *	12:01:02.0	ON
+	 *	12:01:12.0	CONN GATE 1
+	12:02:00.0	TOGGLE 1
 		12:02:10.0	NUM 234
 		
 		This allows us to ALWAYS know that the index 0 = hour, 1 = minute, 2 = second, 3 = milisecond
@@ -328,7 +334,7 @@ public class SystemController {
 		//What happens when OFF is entered...then ON again right after it? IDK we need to converse on this
 		//printer set to false for default state
 		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString(), new ArrayList<Participant>());
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
 		channels = new ArrayList<Channel>();
 		//printer set to false for insurance
 		isPrinterOn = false;
@@ -371,7 +377,7 @@ public class SystemController {
 	 * **/
 	public void cmdReset() {
 		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString(), new ArrayList<Participant>());
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
 		channels = new ArrayList<Channel>();
 		//printer set to false for insurance
 		isPrinterOn = false;

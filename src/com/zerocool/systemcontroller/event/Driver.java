@@ -22,7 +22,7 @@ public class Driver {
 		
 		System.out.println("Testing...testing....\n\n");
 		
-		Channel chnl1 = new Channel();
+		/*Channel chnl1 = new Channel();
 		Channel chnl2 = new Channel();
 		chnl1.setID(1);
 		chnl2.setID(2);
@@ -47,11 +47,12 @@ public class Driver {
 		
 	//	Timer time = new Timer(new SystemTime(), ind, pars, eventLog);
 	//	SystemController sysCont = new SystemController(time, time.getEventLog(), chnls, 1);
-		
+		*/
+		SystemController sysCont = new SystemController();
 		File file = new File("syscontrolFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		System.out.println("\n\nTesting readFile\n\n");
-	//	sysCont.readFile(file);
+		sysCont.readFile(file);
 		System.out.println("\n\nTesting readInput\n\n");
 		//sysCont.readInput();
 		
