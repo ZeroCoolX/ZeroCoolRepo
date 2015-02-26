@@ -1,6 +1,8 @@
 package com.zerocool.systemcontroller.timer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
@@ -8,7 +10,6 @@ import com.zerocool.systemcontroller.event.Group;
 import com.zerocool.systemcontroller.event.Individual;
 import com.zerocool.systemcontroller.event.ParGroup;
 import com.zerocool.systemcontroller.event.ParIndividual;
-import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
 
@@ -63,8 +64,7 @@ public class Timer {
 	public AbstractEvent getCurrentEvent() { 
 		return currentEvent; 
 	}
-	
-	
+		
 	// ----- mutators ----- \\
 	
 	public void createEvent(EventType type, String eventName) {
@@ -93,16 +93,18 @@ public class Timer {
 	}
 	
 	public void exit() {
-		systemTime.exit();
+		System.out.println("exiting timer");
 		for(Participant par: totalParticipants){
 			par.exit();
 		}
 		currentEvent.exit();
+		System.out.println("exiting timer");
 	}
 
 	public void addNewParticipant(int participant) {
-		totalParticipants.add(new Participant(participant, ""+participant));
-		
+		Participant newPar = new Participant(participant, ""+participant);
+		totalParticipants.add(newPar);
+		currentEvent.addNewParticipant(newPar);
 	}
 	
 }

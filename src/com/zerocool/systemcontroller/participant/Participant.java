@@ -116,6 +116,7 @@ public class Participant {
 	
 	
 	public void exit(){
+		System.out.println("exiting par");
 		name = null;
 		id = -1;
 		isCompeting = false;
@@ -123,5 +124,6 @@ public class Participant {
 		while(!records.isEmpty()){
 			records.pop().exit();
 		}
+		System.out.println("exiting par");
 	}
 }

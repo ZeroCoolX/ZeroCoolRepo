@@ -31,9 +31,9 @@ public class ChronoTimerSystemTests {
 		// Arrange
 		SystemTime time = new SystemTime(System.currentTimeMillis());
 		EventLog log = new EventLog();
-		AbstractEvent event1 = new Individual();
-		AbstractEvent event = new Individual();
-		Timer timer = new Timer();
+		AbstractEvent event1 = new Individual("Indy500", 1);
+		AbstractEvent event = new Individual("Indy600", 2);
+		Timer timer = new Timer(time);
 		SystemController controller = new SystemController(timer, log, 1);
 		time.start();
 		event1.setName("another event");
@@ -45,7 +45,12 @@ public class ChronoTimerSystemTests {
 		log.logEvent(event, time);
 		// log.logEvent(event1, time);
 		// Assert
-		controller.cmdPrint();
+		try {
+			controller.cmdPrint();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 //		SystemController controller = new SystemController(timer, log, 1);
 //		// set the time and name of event and test to see if 

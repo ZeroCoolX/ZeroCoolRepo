@@ -35,8 +35,8 @@ public class EventLog {
 	 * @param systemTime the system time
 	 */
 	public void logEvent(AbstractEvent event, SystemTime systemTime) {
-		
-		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)))) {
+		try{
+		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			String s = systemTime.toString() + " " + event.getEventName() +"\n" 
 					+ event.getEventId() + " " + event.getType() + " " 
 					+ systemTime.formatTime(event.getEventTime());

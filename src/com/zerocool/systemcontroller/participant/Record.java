@@ -144,12 +144,14 @@ public class Record {
 	 * Resets all the variables to 'gracefully exit'.
 	 */
 	public void exit() {
+		System.out.println("exiting rec");
 		eventName = null;
 		eventId = -1;
 		startTime = -1;
 		finishTime = -1;
 		elapsedTime = -1;
 		dnf = false;
+		System.out.println("exiting rec");
 	}
 	
 }

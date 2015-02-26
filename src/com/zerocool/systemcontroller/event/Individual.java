@@ -14,7 +14,6 @@ public class Individual extends AbstractEvent {
 	
 	public Individual(String eventName, long eventTime, ArrayList<Participant> participants) {
 		this(eventName, eventTime);
-		initializeEvent(participants);
 	}
 
 	@Override
@@ -23,7 +22,6 @@ public class Individual extends AbstractEvent {
 		if (participants == null) {
 			throw new IllegalArgumentException("List of participants can't be null!");
 		}
-
 		currentParticipants = participants;
 
 		// go through each participant and set their eventId and event name
@@ -34,12 +32,10 @@ public class Individual extends AbstractEvent {
 
 	@Override
 	public void startAllParticipants(long startTime) {
-		System.out.println("Starting Individual Participants");
 		// go through each participant and set the start time
-		for (Participant curPar : currentParticipants) {
-			curPar.setIsCompeting(true);
-			curPar.getLastRecord().setStartTime(startTime);
-		}
+		competingPar = startingQueue.remove();
+		competingPar.setIsCompeting(true);
+		competingPar.getLastRecord().setStartTime(startTime);
 	}
 
 	@Override
@@ -50,11 +46,8 @@ public class Individual extends AbstractEvent {
 
 	@Override
 	public void finishAllParticipants(long finishTime) {
-		System.out.println("Finishing Individual Participants");
-		for (Participant curPar : currentParticipants) {
-			curPar.setIsCompeting(false);
-			curPar.getLastRecord().setFinishTime(finishTime);
-		}
+		competingPar.setIsCompeting(false);
+		competingPar.getLastRecord().setFinishTime(finishTime);
 	}
 
 	@Override

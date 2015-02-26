@@ -1,6 +1,8 @@
 package com.zerocool.systemcontroller.event;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.zerocool.systemcontroller.participant.Participant;
 
@@ -25,6 +27,9 @@ public abstract class AbstractEvent {
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
+	
+	protected Queue<Participant> startingQueue;
+	protected Participant competingPar;
 
 	/**
 	 * Type Descriptions:
@@ -49,6 +54,7 @@ public abstract class AbstractEvent {
 	 * **/
 	protected AbstractEvent() {
 		eventId = ++LASTID;
+		startingQueue = new LinkedList<Participant>();
 	}
 
 	
@@ -131,15 +137,18 @@ public abstract class AbstractEvent {
 		return currentParticipants;
 	}
 	
+	public void addNewParticipant(Participant par){
+		startingQueue.add(par);
+	}
+	
 	public void exit() {
+		System.out.println("exiting event");
 		LASTID = -1;
 		type = null;
 		eventName = null;
 		eventId = -1;
-		for(Participant par: currentParticipants){
-			par.exit();
-		}
 		eventTime = -1;
+		System.out.println("done event");
 	}
 	
 }

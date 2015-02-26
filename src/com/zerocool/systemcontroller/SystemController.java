@@ -120,8 +120,7 @@ public class SystemController {
 					// KEEP CHECKING!!!!!!!!!!
 					systemTimeArr = parse(systemTime.toString(), "[:.]");
 				}
-				System.out.println(systemTime.toString() + "\t"
-						+ currentLine.get(4));
+				System.out.println(systemTime.toString() + "\t"+ currentLine.get(4));
 				executeCommand(currentLine.get(4), currentLine);
 			}
 
@@ -336,14 +335,18 @@ public class SystemController {
 				break;
 			case "START":
 				// stuff
-				cmdStart();
+					cmdStart();
 				break;
-			case "FINISH":
+			case "FIN":
 				// stuff
-				cmdFinish();
+					cmdFinish();
 				break;
 			case "TRIG":
 				// stuff
+				break;
+			case "DNF":
+				// stuff
+					cmdDnf();
 				break;
 			}
 
@@ -372,10 +375,15 @@ public class SystemController {
 			// IDK
 			// we need to converse on this
 			// printer set to false for default state
-			eventLog = new EventLog();
-			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
-					+ "", new ArrayList<Participant>());
-			channels = new ArrayList<Channel>();
+			if(eventLog == null){
+				eventLog = new EventLog();
+			}
+			if(currentTimer == null){
+				currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
+			}
+			if(channels == null){
+				channels = new ArrayList<Channel>();
+			}
 			// printer set to false for insurance
 			isPrinterOn = false;
 		} catch (Exception e) {
@@ -564,8 +572,7 @@ public class SystemController {
 	 * participant is created, added to the ArrayList or Participants wihtin
 	 * currentTimer, and isNext state is set to true
 	 * 
-	 * @param participant
-	 *            - ID field of the participant
+	 * @param participant - ID field of the participant
 	 * **/
 	public void cmdNum(int participant) throws Exception {
 		try{
@@ -581,7 +588,7 @@ public class SystemController {
 	}
 
 	/**
-	 * start the event within currentTimer
+	 * start the participant within event
 	 * **/
 	public void cmdStart() throws Exception {
 		try{
@@ -592,11 +599,25 @@ public class SystemController {
 	}
 
 	/**
-	 * End the event within currentTimer
+	 * End the participant within event
 	 * **/
 	public void cmdFinish() throws Exception {
 		try{
 			currentTimer.endEvent();
+			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
+		}catch(Exception e){
+			throw e;
+		}
+	}
+	
+	/**
+	 * End the participant within event..but...not as cool as the REGULAR finish.
+	 * **/
+	public void cmdDnf() throws Exception {
+		try{
+			//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
+			currentTimer.endEvent();
+			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 		}catch(Exception e){
 			throw e;
 		}
@@ -604,7 +625,7 @@ public class SystemController {
 
 	/**
 	 * Exit the entire system. Go through all global variables calling their
-	 * .exit() function and/or set themto null
+	 * .exit() function and/or set them to null
 	 * **/
 	public void cmdExit() throws Exception {
 		// when the command EXIT is entered/read then the time needs to
@@ -616,14 +637,14 @@ public class SystemController {
 			commandList = null;
 			if (currentTimer != null) {
 				currentTimer.exit();
+				currentTimer = null;
 			}
-			currentTimer = null;
 			if (commandList != null) {
 				while (!commandList.isEmpty()) {
 					commandList.remove();
 				}
+				commandList = null;
 			}
-			commandList = null;
 			if (channels != null) {
 				for (Channel chnl : channels) {
 					chnl.exit();
@@ -633,6 +654,7 @@ public class SystemController {
 			if (eventLog != null) {
 				eventLog.exit();
 			}
+			System.exit(1);
 		} catch (Exception e) {
 			throw e;
 		}
