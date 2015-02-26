@@ -2,28 +2,18 @@ package com.zerocool.systemcontroller.event;
 
 import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import com.zerocool.systemcontroller.SystemController;
-import com.zerocool.systemcontroller.channel.Channel;
-import com.zerocool.systemcontroller.eventlog.EventLog;
-import com.zerocool.systemcontroller.participant.Participant;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
-import com.zerocool.systemcontroller.timer.Timer;
 
 
 public class Driver {
 	
-	@SuppressWarnings("deprecation")
 	public static void main (String [] args) throws ParseException{
 		
 		System.out.println("Testing...testing....\n\n");
 		
 		SystemController sysCont = new SystemController();
-		File file = new File("/Users/TheHerbaliser/Documents/ZeroCoolWorkspace/WorkDamnYou/ZeroCoolRepo/test_files/syscontrolFastFileTest.txt");
+		File file = new File("test_files/syscontrolFastFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		System.out.println("\n\nTesting readFile\n\n");
 		sysCont.readFile(file);

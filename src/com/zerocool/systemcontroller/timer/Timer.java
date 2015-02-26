@@ -1,8 +1,6 @@
 package com.zerocool.systemcontroller.timer;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
@@ -62,7 +60,7 @@ public class Timer {
 	}
 	
 	public AbstractEvent getCurrentEvent() { 
-		return currentEvent; 
+		return currentEvent;
 	}
 		
 	// ----- mutators ----- \\

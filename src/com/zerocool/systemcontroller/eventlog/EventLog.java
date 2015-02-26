@@ -5,13 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
-import com.zerocool.systemcontroller.timer.Timer;
 
 /**
  * @author ZeroCool
@@ -39,7 +35,7 @@ public class EventLog {
 		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			String s = systemTime.toString() + " " + event.getEventName() +"\n" 
 					+ event.getEventId() + " " + event.getType() + " " 
-					+ systemTime.formatTime(event.getEventTime());
+					+ SystemTime.formatTime(event.getEventTime());
 			writer.println(s);
 			writer.close();
 		} catch (IOException e) {

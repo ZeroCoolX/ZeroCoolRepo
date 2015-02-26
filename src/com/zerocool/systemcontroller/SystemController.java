@@ -13,16 +13,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
 import com.zerocool.systemcontroller.channel.Channel;
-import com.zerocool.systemcontroller.event.Group;
-import com.zerocool.systemcontroller.event.Individual;
-import com.zerocool.systemcontroller.event.ParGroup;
-import com.zerocool.systemcontroller.event.ParIndividual;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
@@ -111,6 +106,8 @@ public class SystemController {
 						commandList.add(parsedList);
 					}
 				}
+				
+				inFile.close();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -519,12 +516,12 @@ public class SystemController {
 	 *            - ID field for a channel to connect a sensor too
 	 * **/
 	public void cmdConn(String sensorType, int channel) throws Exception {
-		try{
+		try {
 			Channel connect = findChannel(channel);
 			if (connect != null) {
 				connect.addSensor(sensorType);
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
@@ -540,13 +537,13 @@ public class SystemController {
 	 *            - the channel ID with which to set the sensor state
 	 */
 	public void cmdDisc(int channel) throws Exception {
-		try{
+		try {
 			Channel disc = findChannel(channel);
 			if (disc != null) {
 				disc.setSensorState(false);
 				disc.disconnectSensor();
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
@@ -581,14 +578,14 @@ public class SystemController {
 	 * @param participant - ID field of the participant
 	 * **/
 	public void cmdNum(int participant) throws Exception {
-		try{
+		try {
 			Participant par = findParticipant(participant);
 			if (par != null) {
 				par.setIsNext(true);
 			} else {
 				currentTimer.addNewParticipant(participant);
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
@@ -597,9 +594,9 @@ public class SystemController {
 	 * start the participant within event
 	 * **/
 	public void cmdStart() throws Exception {
-		try{
+		try {
 			currentTimer.startEvent();
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
@@ -608,10 +605,10 @@ public class SystemController {
 	 * End the participant within event
 	 * **/
 	public void cmdFinish() throws Exception {
-		try{
+		try {
 			currentTimer.endEvent();
 			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
@@ -620,11 +617,11 @@ public class SystemController {
 	 * End the participant within event..but...not as cool as the REGULAR finish.
 	 * **/
 	public void cmdDnf() throws Exception {
-		try{
+		try {
 			//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
 			currentTimer.endEvent();
 			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
 		}
 	}
