@@ -8,9 +8,7 @@ package com.zerocool.systemcontroller;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,7 +28,7 @@ public class SystemController {
 
 	public Queue<ArrayList<String>> commandList;
 
-	public SystemTime systemTime = null;
+	public SystemTime systemTime;
 	public Timer currentTimer;
 	public EventLog eventLog;
 
@@ -39,12 +37,18 @@ public class SystemController {
 	public boolean isPrinterOn;
 
 	public SystemController() {
+		channels = new ArrayList<Channel>();
 		// create a Queue collection to store each line in a FIFO
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<ArrayList<String>>();
-
+		
 		systemTime = new SystemTime();
 		systemTime.start();
+		
+		currentTimer = new Timer(systemTime);
+		eventLog = new EventLog();
+		
+		id = 0;
 	}
 
 	public SystemController(int id) {
@@ -81,36 +85,32 @@ public class SystemController {
 
 		try {
 
-			try {
-				// read in file from given path
-				Scanner inFile = new Scanner(new FileReader(file));
-				String[] parsedLine = null;
+			// read in file from given path
+			Scanner inFile = new Scanner(new FileReader(file));
+			String[] parsedLine = null;
 
-				// while there is another line to read...read it
-				while (inFile.hasNextLine()) {
-					String line = inFile.nextLine();
+			// while there is another line to read...read it
+			while (inFile.hasNextLine()) {
+				String line = inFile.nextLine();
 
-					// call parsing method
-					parsedLine = parse(line, "[:. \\t]");
-					ArrayList<String> parsedList = new ArrayList<String>();
-					for (String str : parsedLine) {
-						parsedList.add(str);
-					}
-
-					// check to see if the cmd is TIME, if it is Execute that
-					// immediately
-					if (parsedList.get(4).equals("TIME")) {
-						executeCommand(parsedList.get(4), parsedList);
-					} else {
-						// add line to the queue
-						commandList.add(parsedList);
-					}
+				// call parsing method
+				parsedLine = parse(line, "[:. \\t]");
+				ArrayList<String> parsedList = new ArrayList<String>();
+				for (String str : parsedLine) {
+					parsedList.add(str);
 				}
-				
-				inFile.close();
-			} catch (Exception e) {
-				throw e;
+
+				// check to see if the cmd is TIME, if it is Execute that
+				// immediately
+				if (parsedList.get(4).equals("TIME")) {
+					executeCommand(parsedList.get(4), parsedList);
+				} else {
+					// add line to the queue
+					commandList.add(parsedList);
+				}
 			}
+
+			inFile.close();
 
 			// Uncomment to see the results of the input
 			while (!commandList.isEmpty()) {
@@ -163,35 +163,31 @@ public class SystemController {
 			String[] parsedLine = null;
 			boolean exit = false;
 			do {
-				try {
-					System.out.print("mainframe$ ");
-					/*
-					 * Now in between parsing the command entered, and
-					 * executing/storing it for now in the queue we need to
-					 * append a timestamp of when the use typed in said command
-					 * in the format <hour>:<min>:<second>.<millisecond>
-					 */
+				System.out.print("mainframe$ ");
+				/*
+				 * Now in between parsing the command entered, and
+				 * executing/storing it for now in the queue we need to
+				 * append a timestamp of when the use typed in said command
+				 * in the format <hour>:<min>:<second>.<millisecond>
+				 */
 
-					String input = br.readLine();
-					if (input.equals("EXIT")) {
-						exit = true;
-					}
-
-					// call parsing method for line
-					parsedLine = parse((systemTime.toString() + "\t" + input),
-							"[:. \\t]");
-					ArrayList<String> parsedList = new ArrayList<String>();
-					for (String str : parsedLine) {
-						parsedList.add(str);
-					}
-
-					// check to see if the cmd is TIME, if it is Execute that
-					// immediately
-					executeCommand(parsedList.get(4), parsedList);
-
-				} catch (IOException ioe) {
-					throw ioe;
+				String input = br.readLine();
+				if (input.equals("EXIT")) {
+					exit = true;
 				}
+
+				// call parsing method for line
+				parsedLine = parse((systemTime.toString() + "\t" + input),
+						"[:. \\t]");
+				ArrayList<String> parsedList = new ArrayList<String>();
+				for (String str : parsedLine) {
+					parsedList.add(str);
+				}
+
+				// check to see if the cmd is TIME, if it is Execute that
+				// immediately
+				executeCommand(parsedList.get(4), parsedList);
+
 				// keep reading in lines from the terminal until exit has been
 				// entered
 			} while (!exit);
@@ -338,18 +334,18 @@ public class SystemController {
 				break;
 			case "START":
 				// stuff
-					cmdStart();
+				cmdStart();
 				break;
 			case "FIN":
 				// stuff
-					cmdFinish();
+				cmdFinish();
 				break;
 			case "TRIG":
 				// stuff
 				break;
 			case "DNF":
 				// stuff
-					cmdDnf();
+				cmdDnf();
 				break;
 			}
 
@@ -369,45 +365,37 @@ public class SystemController {
 	 * Instantiates all the variables to initial states
 	 * **/
 	public void cmdOn() throws Exception {
-		try {
-			// When the command ON is entered/read then the time needs to start.
-			// As
-			// of now upon instantiation of this class the systemTime is
-			// started...not sure if that should happen HERE or THERE
-			// What happens when OFF is entered...then ON again right after it?
-			// IDK
-			// we need to converse on this
-			// printer set to false for default state
-			if(eventLog == null){
-				eventLog = new EventLog();
-			}
-			if(currentTimer == null){
-				currentTimer = new Timer(systemTime, EventType.IND, EventType.IND+"", new ArrayList<Participant>());
-			}
-			if(channels == null){
-				channels = new ArrayList<Channel>();
-			}
-			// printer set to false for insurance
-			isPrinterOn = false;
-		} catch (Exception e) {
-			throw e;
+		// When the command ON is entered/read then the time needs to start.
+		// As
+		// of now upon instantiation of this class the systemTime is
+		// started...not sure if that should happen HERE or THERE
+		// What happens when OFF is entered...then ON again right after it?
+		// IDK
+		// we need to converse on this
+		// printer set to false for default state
+		if (eventLog == null) {
+			eventLog = new EventLog();
 		}
+		if (currentTimer == null) {
+			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
+		}
+		if (channels == null) {
+			channels = new ArrayList<Channel>();
+		}
+		// printer set to false for insurance
+		isPrinterOn = false;
 	}
 
 	/**
 	 * KEEP THE systemTime running set everything else to null
 	 * **/
 	public void cmdOff() throws Exception {
-		try {
-			// When the command OFF is entered/read then the time needs to stop.
-			eventLog = null;
-			currentTimer = null;
-			channels = null;
-			// printer set to false for insurance
-			isPrinterOn = false;
-		} catch (Exception e) {
-			throw e;
-		}
+		// When the command OFF is entered/read then the time needs to stop.
+		eventLog = null;
+		currentTimer = null;
+		channels = null;
+		// printer set to false for insurance
+		isPrinterOn = false;
 	}
 
 	/**
@@ -420,22 +408,18 @@ public class SystemController {
 	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
 	 **/
 	public void cmdEvent(ArrayList<String> args) throws Exception {
-		try {
-			if (args.get(5).equals("IND")) {
-				currentTimer.createEvent(EventType.IND,
-						EventType.IND.toString());
-			} else if (args.get(5).equals("PARIND")) {
-				currentTimer.createEvent(EventType.PARIND,
-						EventType.PARIND.toString());
-			} else if (args.get(5).equals("GRP")) {
-				currentTimer.createEvent(EventType.GRP,
-						EventType.GRP.toString());
-			} else if (args.get(5).equals("PARGRP")) {
-				currentTimer.createEvent(EventType.PARGRP,
-						EventType.PARGRP.toString());
-			}
-		} catch (Exception e) {
-
+		if (args.get(5).equals("IND")) {
+			currentTimer.createEvent(EventType.IND,
+					EventType.IND.toString());
+		} else if (args.get(5).equals("PARIND")) {
+			currentTimer.createEvent(EventType.PARIND,
+					EventType.PARIND.toString());
+		} else if (args.get(5).equals("GRP")) {
+			currentTimer.createEvent(EventType.GRP,
+					EventType.GRP.toString());
+		} else if (args.get(5).equals("PARGRP")) {
+			currentTimer.createEvent(EventType.PARGRP,
+					EventType.PARGRP.toString());
 		}
 	}
 
@@ -443,16 +427,12 @@ public class SystemController {
 	 * Instantiates all the variables to initial states
 	 * **/
 	public void cmdReset() throws Exception {
-		try {
-			eventLog = new EventLog();
-			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
-					+ "", new ArrayList<Participant>());
-			channels = new ArrayList<Channel>();
-			// printer set to false for insurance
-			isPrinterOn = false;
-		} catch (Exception e) {
-			throw e;
-		}
+		eventLog = new EventLog();
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
+				+ "", new ArrayList<Participant>());
+		channels = new ArrayList<Channel>();
+		// printer set to false for insurance
+		isPrinterOn = false;
 	}
 
 	/**
@@ -464,15 +444,11 @@ public class SystemController {
 	 *            HR:MIN:SEC.MIL TIME HR:MIN:SEC args: 0 1 2 3 4 5 6 7
 	 * **/
 	public void cmdTime(ArrayList<String> args) throws Exception {
-		try {
-			// set the current time
-			systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000
-					+ Integer.parseInt(args.get(6)) * 60000
-					+ Integer.parseInt(args.get(7)) * 1000);
-			systemTime.start();
-		} catch (Exception e) {
-			throw e;
-		}
+		// set the current time
+		systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000
+				+ Integer.parseInt(args.get(6)) * 60000
+				+ Integer.parseInt(args.get(7)) * 1000);
+		systemTime.start();
 	}
 
 	/**
@@ -485,18 +461,14 @@ public class SystemController {
 	 *            - the channel ID to either set state or create new instance of
 	 * **/
 	public void cmdTog(int channel) throws Exception {
-		try {
-			Channel toggle = findChannel(channel);
-			if (toggle != null) {
-				toggle.setState((toggle.getState() == true ? false : true));
-			} else {
-				Channel chnl = new Channel();
-				chnl.setID(channel);
-				chnl.setState(true);
-				channels.add(chnl);
-			}
-		} catch (Exception e) {
-			throw e;
+		Channel toggle = findChannel(channel);
+		if (toggle != null) {
+			toggle.setState((toggle.getState() == true ? false : true));
+		} else {
+			Channel chnl = new Channel();
+			chnl.setID(channel);
+			chnl.setState(true);
+			channels.add(chnl);
 		}
 	}
 
@@ -516,13 +488,9 @@ public class SystemController {
 	 *            - ID field for a channel to connect a sensor too
 	 * **/
 	public void cmdConn(String sensorType, int channel) throws Exception {
-		try {
-			Channel connect = findChannel(channel);
-			if (connect != null) {
-				connect.addSensor(sensorType);
-			}
-		} catch(Exception e) {
-			throw e;
+		Channel connect = findChannel(channel);
+		if (connect != null) {
+			connect.addSensor(sensorType);
 		}
 	}
 
@@ -537,14 +505,10 @@ public class SystemController {
 	 *            - the channel ID with which to set the sensor state
 	 */
 	public void cmdDisc(int channel) throws Exception {
-		try {
-			Channel disc = findChannel(channel);
-			if (disc != null) {
-				disc.setSensorState(false);
-				disc.disconnectSensor();
-			}
-		} catch(Exception e) {
-			throw e;
+		Channel disc = findChannel(channel);
+		if (disc != null) {
+			disc.setSensorState(false);
+			disc.disconnectSensor();
 		}
 	}
 
@@ -553,18 +517,14 @@ public class SystemController {
 	 * stuff) method to output stats to the console
 	 * **/
 	public void cmdPrint() throws Exception {
-		try {
-			Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
+		Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
 
-			// while there is another line to read...print it
-			while (inFile.hasNextLine()) {
-				System.out.println(inFile.nextLine());
-			}
-
-			inFile.close();
-		} catch (FileNotFoundException e) {
-			throw e;
+		// while there is another line to read...print it
+		while (inFile.hasNextLine()) {
+			System.out.println(inFile.nextLine());
 		}
+
+		inFile.close();
 	}
 
 	/**
@@ -578,15 +538,11 @@ public class SystemController {
 	 * @param participant - ID field of the participant
 	 * **/
 	public void cmdNum(int participant) throws Exception {
-		try {
-			Participant par = findParticipant(participant);
-			if (par != null) {
-				par.setIsNext(true);
-			} else {
-				currentTimer.addNewParticipant(participant);
-			}
-		} catch(Exception e) {
-			throw e;
+		Participant par = findParticipant(participant);
+		if (par != null) {
+			par.setIsNext(true);
+		} else {
+			currentTimer.addNewParticipant(participant);
 		}
 	}
 
@@ -594,36 +550,24 @@ public class SystemController {
 	 * start the participant within event
 	 * **/
 	public void cmdStart() throws Exception {
-		try {
-			currentTimer.startEvent();
-		} catch(Exception e) {
-			throw e;
-		}
+		currentTimer.startEvent();
 	}
 
 	/**
 	 * End the participant within event
 	 * **/
 	public void cmdFinish() throws Exception {
-		try {
-			currentTimer.endEvent();
-			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
-		} catch(Exception e) {
-			throw e;
-		}
+		currentTimer.endEvent();
+		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 	}
-	
+
 	/**
 	 * End the participant within event..but...not as cool as the REGULAR finish.
 	 * **/
 	public void cmdDnf() throws Exception {
-		try {
-			//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
-			currentTimer.endEvent();
-			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
-		} catch(Exception e) {
-			throw e;
-		}
+		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
+		currentTimer.endEvent();
+		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 	}
 
 	/**
@@ -633,34 +577,30 @@ public class SystemController {
 	public void cmdExit() throws Exception {
 		// when the command EXIT is entered/read then the time needs to
 		// completely die
-		try {
-			systemTime.exit();
-			systemTime = null;
-			isPrinterOn = false;
-			commandList = null;
-			if (currentTimer != null) {
-				currentTimer.exit();
-				currentTimer = null;
-			}
-			if (commandList != null) {
-				while (!commandList.isEmpty()) {
-					commandList.remove();
-				}
-				commandList = null;
-			}
-			if (channels != null) {
-				for (Channel chnl : channels) {
-					chnl.exit();
-				}
-			}
-			id = -1;
-			if (eventLog != null) {
-				eventLog.exit();
-			}
-			System.exit(1);
-		} catch (Exception e) {
-			throw e;
+		systemTime.exit();
+		systemTime = null;
+		isPrinterOn = false;
+		commandList = null;
+		if (currentTimer != null) {
+			currentTimer.exit();
+			currentTimer = null;
 		}
+		if (commandList != null) {
+			while (!commandList.isEmpty()) {
+				commandList.remove();
+			}
+			commandList = null;
+		}
+		if (channels != null) {
+			for (Channel chnl : channels) {
+				chnl.exit();
+			}
+		}
+		id = -1;
+		if (eventLog != null) {
+			eventLog.exit();
+		}
+		System.exit(1);
 	}
 
 	/**
@@ -761,7 +701,7 @@ public class SystemController {
 	 * 
 	 * @return The current ID.
 	 */
-	public long getId() {
+	public int getId() {
 		return this.id;
 	}
 

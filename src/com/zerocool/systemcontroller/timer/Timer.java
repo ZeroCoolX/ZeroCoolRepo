@@ -100,7 +100,7 @@ public class Timer {
 	}
 
 	public void addNewParticipant(int participant) {
-		Participant newPar = new Participant(participant, ""+participant);
+		Participant newPar = new Participant(participant, "" + participant);
 		totalParticipants.add(newPar);
 		currentEvent.addNewParticipant(newPar);
 	}

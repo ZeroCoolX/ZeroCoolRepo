@@ -47,11 +47,11 @@ public class EventLog {
 	 * Gets the output file of the logged Event
 	 * @return a File
 	 */
-	public File getFile(){
+	public File getFile() {
 		return file;
 	}
 	
-	public void exit(){
+	public void exit() {
 		
 	}
 }
