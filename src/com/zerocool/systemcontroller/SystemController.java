@@ -477,16 +477,26 @@ public class SystemController {
 		}
 	}
 	
+	
+	/**
+	 * start the event within currentTimer
+	 * **/
 	public void cmdStart() {
-		//for now...
-		//currentTimer.getEvent().startAllParticipants(systemTime.getTime());
+		currentTimer.startEvent();
 	}
 	
+	
+	/**
+	 * End the event within currentTimer
+	 * **/
 	public void cmdFinish() {
-		//for now...
-		//currentTimer.getEvent().finishAllParticipants(systemTime.getTime());
+		currentTimer.endEvent();
 	}
 	
+	/**
+	 * Exit the entire system.
+	 * Go through all global variables calling their .exit() function and/or set themto null
+	 * **/
 	public void cmdExit() {
 		//when the command EXIT is entered/read then the time needs to completely die
 		systemTime.exit();
@@ -514,6 +524,13 @@ public class SystemController {
 		}
 	}
 	
+	
+	/**
+	 * Helper method that goes through all participants in currentTimer looking for a matching ID field as the parameter id
+	 * 
+	 * @param id - the ID field for the saught after Participant
+	 * @return par - the Participant with ID field that matches parameter id
+	 * **/
 	public Participant findParticipant(int id) {
 		for (Participant par: currentTimer.getTotalParticipants()) {
 			if (par.getID() == id) {
@@ -523,6 +540,13 @@ public class SystemController {
 		return null;
 	}
 	
+	
+	/**
+	 * Helper method that goes through all channels in channels looking for a matching ID field as the parameter id
+	 * 
+	 * @param id - the ID field for the saught after Channel
+	 * @return chnl - the Channel with ID field that matches parameter id
+	 * **/
 	public Channel findChannel(int id) {
 		if(channels != null){
 			for (Channel chnl: channels) {
