@@ -23,7 +23,7 @@ public class Driver {
 		System.out.println("Testing...testing....\n\n");
 		
 		SystemController sysCont = new SystemController();
-		File file = new File("syscontrolFastFileTest.txt");
+		File file = new File("/Users/TheHerbaliser/Documents/ZeroCoolWorkspace/WorkDamnYou/ZeroCoolRepo/test_files/syscontrolFastFileTest.txt");
 		//File file = new File("/Users/TheHerbaliser/Documents/workspace/syscontrolFileTest2.txt");
 		System.out.println("\n\nTesting readFile\n\n");
 		sysCont.readFile(file);
