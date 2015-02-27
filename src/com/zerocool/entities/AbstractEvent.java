@@ -1,10 +1,8 @@
-package com.zerocool.systemcontroller.event;
+package com.zerocool.entities;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import com.zerocool.systemcontroller.participant.Participant;
 
 public abstract class AbstractEvent {
 	

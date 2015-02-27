@@ -1,8 +1,6 @@
-package com.zerocool.systemcontroller.event;
+package com.zerocool.entities;
 
 import java.util.ArrayList;
-
-import com.zerocool.systemcontroller.participant.Participant;
 
 public class ParGroup extends AbstractEvent {
 

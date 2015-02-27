@@ -1,4 +1,5 @@
-package com.zerocool.systemcontroller.channel;
+package com.zerocool.entities;
+
 
 
 /**

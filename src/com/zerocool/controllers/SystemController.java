@@ -15,11 +15,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import com.zerocool.entities.Channel;
+import com.zerocool.entities.Participant;
+import com.zerocool.entities.AbstractEvent.EventType;
+import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
-import com.zerocool.systemcontroller.channel.Channel;
-import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
-import com.zerocool.systemcontroller.eventlog.EventLog;
-import com.zerocool.systemcontroller.participant.Participant;
 
 public class SystemController {
 

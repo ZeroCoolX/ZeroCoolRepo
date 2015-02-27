@@ -9,9 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
-import com.zerocool.systemcontroller.event.*;
-import com.zerocool.systemcontroller.eventlog.EventLog;
 
 public class SystemControllerTest {
 	

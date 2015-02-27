@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller.participant;
+package com.zerocool.entities;
 
 import java.util.*;
 /**

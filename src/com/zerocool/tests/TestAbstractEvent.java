@@ -8,9 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zerocool.entities.AbstractEvent;
+import com.zerocool.entities.Participant;
 import com.zerocool.services.SystemTime;
-import com.zerocool.systemcontroller.event.AbstractEvent;
-import com.zerocool.systemcontroller.participant.Participant;
 
 public class TestAbstractEvent { 
 
