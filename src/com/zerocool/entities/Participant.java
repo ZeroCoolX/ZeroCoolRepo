@@ -59,8 +59,27 @@ public class Participant {
 		return this.records.isEmpty() ? null : this.records.peek();
 	}
 	
+	/**
+	 * Returns the formatted data for the participant's most recent
+	 * Event
+	 * Format - <Event ID> <Participant Number> <Elapsed Time>
+	 * @param eventID
+	 * @return a empty string if no data for the event ID.  Otherwise
+	 * a string of event data in the format above
+	 */
 	public String getFormattedData(int eventID) {
-		return null;
+		Record eventRecord = null;
+		String result = "";
+		
+		for(Record r : this.records) {
+			if(r.getEventID() == eventID) eventRecord = r;
+		}
+		
+		if(eventRecord != null){
+			result = "" + eventID + this.id + eventRecord.getElapsedTime();
+		}
+		
+		return result;
 	}
 
 	/**

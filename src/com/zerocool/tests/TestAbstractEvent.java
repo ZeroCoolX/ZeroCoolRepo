@@ -133,7 +133,7 @@ public class TestAbstractEvent {
 			eve.finishAllParticipants(finishTime);
 			assertFalse(eve.getParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
-			assertEquals(eve.getParticipants().get(0).getLastRecord().getElpasedTime(), startTime - finishTime);
+			assertEquals(eve.getParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
 		}
 	}
 

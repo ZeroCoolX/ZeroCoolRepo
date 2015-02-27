@@ -28,6 +28,11 @@ public class ChronoTimerSystemTests {
 	}
 	
 	@Test
+	public void testExecuteCommand() {
+		
+	}
+	
+	@Test
 	public void testEventLog() {
 		// Arrange
 		SystemTime time = new SystemTime(System.currentTimeMillis());
@@ -52,16 +57,17 @@ public class ChronoTimerSystemTests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		SystemController controller = new SystemController(timer, log, 1);
-//		// set the time and name of event and test to see if 
-//		// it outputs a file in the working directory.
-//		controller.executeCommand(new Date(),"ON", new ArrayList<String>());
-//		controller.executeCommand(new Date(),"ON", new ArrayList<String>());
 	}
 	
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testInputFile() {
+        System.out.println("Testing...testing....\n\n");
+		
+		SystemController systemController = new SystemController();
+		File file = new File("test_files/syscontrolFastFileTest.txt");
+		System.out.println("\n\nTesting readFile\n\n");
+		systemController.readFile(file);
+		System.out.println("\n\nTesting readInput\n\n");
 	}
+	
 }

@@ -79,7 +79,7 @@ public class Record {
 	 * Gets the time it took to complete the race.
 	 * @return The total time from start to finish of the race or -1 if DNF or not finished.
 	 */
-	public long getElpasedTime() {
+	public long getElapsedTime() {
 		return elapsedTime;
 	}
 	
@@ -122,7 +122,7 @@ public class Record {
 	 */
 	public void setFinishTime(long finishTime) {
 		this.finishTime = finishTime;
-		elapsedTime = startTime - finishTime;
+		elapsedTime = this.finishTime - this.startTime;
 	}
 	
 	/**
