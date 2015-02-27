@@ -11,18 +11,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
-import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
 public class SystemController {
-
+	
 	public ArrayList<Channel> channels;
 
 	public Queue<ArrayList<String>> commandList;
@@ -31,6 +32,8 @@ public class SystemController {
 	public Timer currentTimer;
 	public EventLog eventLog;
 
+	public String validCommands;
+	
 	public int id;
 
 	public boolean isPrinterOn;
@@ -41,12 +44,15 @@ public class SystemController {
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<ArrayList<String>>();
 		
+		validCommands = "ON, OFF, EXIT, RESET, TIME, TOG, CONN, DISC, EVENT, NEWRUN, ENDRUN, PRINT, EXPORT, NUM, CLR, "
+				+ "SWAP, RCL, START, FIN, TRIG";
+
 		systemTime = new SystemTime();
 		systemTime.start();
-		
+
 		currentTimer = new Timer(systemTime);
 		eventLog = new EventLog();
-		
+
 		id = 0;
 	}
 
@@ -113,17 +119,21 @@ public class SystemController {
 
 			// Uncomment to see the results of the input
 			while (!commandList.isEmpty()) {
-				ArrayList<String> currentLine = commandList.remove();
-				String[] systemTimeArr = parse(systemTime.toString(), "[:.]");
+				if (isValidCommand(commandList.peek().get(4))) {
+					ArrayList<String> currentLine = commandList.remove();
+					String[] systemTimeArr = parse(systemTime.toString(),
+							"[:.]");
 
-				while (!(currentLine.get(0).equals(systemTimeArr[0])
-						&& currentLine.get(1).equals(systemTimeArr[1]) && currentLine
-						.get(2).equals(systemTimeArr[2]))) {
-					// KEEP CHECKING!!!!!!!!!!
-					systemTimeArr = parse(systemTime.toString(), "[:.]");
+					while (!(currentLine.get(0).equals(systemTimeArr[0])
+							&& currentLine.get(1).equals(systemTimeArr[1]) && currentLine
+							.get(2).equals(systemTimeArr[2]))) {
+						// KEEP CHECKING!!!!!!!!!!
+						systemTimeArr = parse(systemTime.toString(), "[:.]");
+					}
+					System.out.println(systemTime.toString() + "\t"
+							+ currentLine.get(4));
+					executeCommand(currentLine.get(4), currentLine);
 				}
-				System.out.println(systemTime.toString() + "\t"+ currentLine.get(4));
-				executeCommand(currentLine.get(4), currentLine);
 			}
 
 		} catch (Exception e) {
@@ -143,9 +153,13 @@ public class SystemController {
 	 *            - Regular Expression which determines how to parse the String
 	 * @return newLine - String array of parsed string
 	 * **/
-	public String[] parse(String line, String regex) {
+	private String[] parse(String line, String regex) {
 		String[] newLine = line.split(regex);
 		return newLine;
+	}
+	
+	public boolean isValidCommand(String str){
+		return validCommands.contains(str);
 	}
 
 	/**
@@ -183,9 +197,13 @@ public class SystemController {
 					parsedList.add(str);
 				}
 
-				// check to see if the cmd is TIME, if it is Execute that
-				// immediately
-				executeCommand(parsedList.get(4), parsedList);
+				if(isValidCommand(parsedList.get(4))){
+					// check to see if the cmd is TIME, if it is Execute that
+					// immediately
+					executeCommand(parsedList.get(4), parsedList);
+				}else{
+					exit = true;
+				}
 
 				// keep reading in lines from the terminal until exit has been
 				// entered
@@ -536,12 +554,12 @@ public class SystemController {
 	 * 
 	 * @param participant - ID field of the participant
 	 * **/
-	public void cmdNum(int participant) throws Exception {
-		Participant par = findParticipant(participant);
+	public void cmdNum(int participantId) throws Exception {
+		Participant par = currentTimer.findParticipant(participantId);
 		if (par != null) {
 			par.setIsNext(true);
 		} else {
-			currentTimer.addNewParticipant(participant);
+			currentTimer.addNewParticipant(participantId);
 		}
 	}
 
@@ -603,23 +621,6 @@ public class SystemController {
 	}
 
 	/**
-	 * Helper method that goes through all participants in currentTimer looking
-	 * for a matching ID field as the parameter id
-	 * 
-	 * @param id
-	 *            - the ID field for the saught after Participant
-	 * @return par - the Participant with ID field that matches parameter id
-	 * **/
-	public Participant findParticipant(int id) {
-		for (Participant par : currentTimer.getTotalParticipants()) {
-			if (par.getID() == id) {
-				return par;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Helper method that goes through all channels in channels looking for a
 	 * matching ID field as the parameter id
 	 * 
@@ -627,7 +628,7 @@ public class SystemController {
 	 *            - the ID field for the saught after Channel
 	 * @return chnl - the Channel with ID field that matches parameter id
 	 * **/
-	public Channel findChannel(int id) {
+	private Channel findChannel(int id) {
 		if (channels != null) {
 			for (Channel chnl : channels) {
 				if (chnl.getId() == id) {
@@ -703,7 +704,7 @@ public class SystemController {
 	public int getId() {
 		return this.id;
 	}
-	
+
 	public Queue<ArrayList<String>> getCommandList(){
 		return this.commandList;
 	}

@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public abstract class AbstractEvent {
 	
-	// First event will be 0 then 1, 2... so on.
+	// First event will be 1, 2... so on.
 	protected static int LASTID;
 	
 	// just doing this for a test
@@ -59,6 +59,8 @@ public abstract class AbstractEvent {
 	
 	// ----- abstract functional methods ----- \\
 
+	public abstract void initializeEvent();
+	
 	/**
 	 * initializeEvent:
 	 * 
@@ -67,7 +69,6 @@ public abstract class AbstractEvent {
 	 * participants and their respective Records setting the eventName and
 	 * eventId
 	 **/
-	public abstract void initializeEvent(ArrayList<Participant> participants);
 
 	/**
 	 * Goes through all the current Participants and sets them to be competing
@@ -109,7 +110,7 @@ public abstract class AbstractEvent {
 		this.eventTime = eventTime;
 	}
 	
-	public void setParticipants(ArrayList<Participant> participants){
+	public void setParticipants(ArrayList<Participant> participants) {
 		this.currentParticipants = participants;
 	}
 
@@ -136,10 +137,13 @@ public abstract class AbstractEvent {
 		return currentParticipants;
 	}
 	
-	public void addNewParticipant(Participant par){
+	public void addNewParticipant(Participant par) {
 		startingQueue.add(par);
 	}
 	
+	/**
+	 * Gracefully shuts down.
+	 */
 	public void exit() {
 		System.out.println("exiting event");
 		LASTID = -1;
