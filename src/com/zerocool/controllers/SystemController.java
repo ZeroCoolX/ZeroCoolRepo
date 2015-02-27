@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller;
+package com.zerocool.controllers;
 
 /*
  * AWESOME WORK SO FAR GUYS!!! ^___^
@@ -15,12 +15,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import com.zerocool.services.SystemTime;
 import com.zerocool.systemcontroller.channel.Channel;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.participant.Participant;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
-import com.zerocool.systemcontroller.timer.Timer;
 
 public class SystemController {
 

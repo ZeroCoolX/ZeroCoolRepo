@@ -1,7 +1,8 @@
-package com.zerocool.systemcontroller.timer;
+package com.zerocool.controllers;
 
 import java.util.ArrayList;
 
+import com.zerocool.services.SystemTime;
 import com.zerocool.systemcontroller.event.AbstractEvent;
 import com.zerocool.systemcontroller.event.AbstractEvent.EventType;
 import com.zerocool.systemcontroller.event.Group;
@@ -9,7 +10,6 @@ import com.zerocool.systemcontroller.event.Individual;
 import com.zerocool.systemcontroller.event.ParGroup;
 import com.zerocool.systemcontroller.event.ParIndividual;
 import com.zerocool.systemcontroller.participant.Participant;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
 
 public class Timer {
 	

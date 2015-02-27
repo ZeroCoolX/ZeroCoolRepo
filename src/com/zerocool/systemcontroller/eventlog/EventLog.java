@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.zerocool.services.SystemTime;
 import com.zerocool.systemcontroller.event.AbstractEvent;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
 
 /**
  * @author ZeroCool
