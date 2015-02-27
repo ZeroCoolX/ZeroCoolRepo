@@ -14,17 +14,15 @@ public class Group extends AbstractEvent {
 	
 	public Group(String eventName, long eventTime, ArrayList<Participant> participants) {
 		this(eventName, eventTime);
-		initializeEvent(participants);
+		currentParticipants = participants;
 	}
 
 	@Override
-	public void initializeEvent(ArrayList<Participant> participants) {
+	public void initializeEvent() {
 		// must check for null parameter
-		if (participants == null) {
-			throw new IllegalArgumentException("List of participants can't be null!");
+		if (currentParticipants == null) {
+			throw new IllegalArgumentException("List of participants is null!  Add some participants before initializing.");
 		}
-		
-		currentParticipants = participants;
 		
 		// go through each participant and set their eventId and event name
 		for (Participant curPar : currentParticipants) {

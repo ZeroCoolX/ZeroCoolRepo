@@ -35,16 +35,12 @@ public class Timer {
 	
 	// ----- functional methods ----- \\
 	
-	public void startEvent() { 
-		//Must actually initialize the event
-		currentEvent.initializeEvent(totalParticipants);
-		//Then start the event (which also fills in the event name and eventId of each participants record)
+	public void startEvent() {
+		currentEvent.initializeEvent();
 		currentEvent.startAllParticipants(systemTime.getTime());
 	}
 	
 	public void endEvent() { 
-		//Finish all participants (for this sprint this will work)
-		//Further on, when we're doing more that just one single participant we need functionality to start and finish specific participants
 		currentEvent.finishAllParticipants(systemTime.getTime());
 	}
 	
@@ -59,9 +55,20 @@ public class Timer {
 		return totalParticipants; 
 	}
 	
+	public Participant findParticipant(int participantId) {
+		for (Participant par : totalParticipants) {
+			if (par.getID() == participantId) {
+				return par;
+			}
+		}
+		
+		return null;
+	}
+	
 	public AbstractEvent getCurrentEvent() { 
 		return currentEvent;
 	}
+	
 		
 	// ----- mutators ----- \\
 	
@@ -87,22 +94,43 @@ public class Timer {
 	
 	public void createEvent(EventType type, String eventName, ArrayList<Participant> participants) {
 		createEvent(type, eventName);
-		currentEvent.initializeEvent(participants);
-	}
-	
-	public void exit() {
-		System.out.println("exiting timer");
-		for(Participant par: totalParticipants){
-			par.exit();
-		}
-		currentEvent.exit();
-		System.out.println("exiting timer");
+		addToTotal(participants);
 	}
 
 	public void addNewParticipant(int participant) {
 		Participant newPar = new Participant(participant, "" + participant);
 		totalParticipants.add(newPar);
 		currentEvent.addNewParticipant(newPar);
+	}
+	
+	
+	// ----- private methods ----- \\
+	
+	private void addToTotal(ArrayList<Participant> participants) {
+		for (Participant par : participants) {
+			if (!totalParticipants.contains(par)) {
+				totalParticipants.add(par);
+			}
+		}
+	}
+	
+	private void addToTotal(Participant participant) {
+		if (!totalParticipants.contains(participant)) {
+			totalParticipants.add(participant);
+		}
+	}
+	
+	
+	/**
+	 * Exits gracefully.
+	 */
+	public void exit() {
+		System.out.println("exiting timer");
+		for (Participant par: totalParticipants) {
+			par.exit();
+		}
+		currentEvent.exit();
+		System.out.println("exiting timer");
 	}
 	
 }

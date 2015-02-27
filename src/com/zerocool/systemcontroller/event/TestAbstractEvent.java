@@ -79,7 +79,7 @@ public class TestAbstractEvent {
 		addParticipants(1);
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent(participants);
+			eve.initializeEvent();
 			assertNotNull(eve.getParticipants());
 			assertEquals(1, eve.getParticipants().size());
 		}
@@ -92,7 +92,7 @@ public class TestAbstractEvent {
 		addParticipants(1);	
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent(participants);
+			eve.initializeEvent();
 			assertNotNull(eve.getParticipants());
 			assertEquals(1, eve.getParticipants().size());
 			assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventName());
@@ -107,7 +107,7 @@ public class TestAbstractEvent {
 		addParticipants(1);
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent(participants);
+			eve.initializeEvent();
 
 			// wait 1 second so the start times are staggered.
 			try {
