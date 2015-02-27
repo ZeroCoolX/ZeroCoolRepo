@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller;
+package com.zerocool.tests;
 
 import static org.junit.Assert.*;
 
@@ -8,11 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zerocool.systemcontroller.SystemController;
-import com.zerocool.systemcontroller.event.*;
-import com.zerocool.systemcontroller.eventlog.EventLog;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
-import com.zerocool.systemcontroller.timer.Timer;
+import com.zerocool.controllers.SystemController;
+import com.zerocool.services.EventLog;
+import com.zerocool.services.SystemTime;
 
 public class SystemControllerTest {
 	

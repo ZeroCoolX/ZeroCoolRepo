@@ -1,9 +1,9 @@
-package com.zerocool.systemcontroller.event;
+package com.zerocool.tests;
 
 import java.io.File;
 import java.text.ParseException;
 
-import com.zerocool.systemcontroller.SystemController;
+import com.zerocool.controllers.SystemController;
 
 
 public class Driver {

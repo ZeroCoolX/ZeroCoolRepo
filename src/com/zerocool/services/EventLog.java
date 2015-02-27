@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller.eventlog;
+package com.zerocool.services;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,8 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.zerocool.systemcontroller.event.AbstractEvent;
-import com.zerocool.systemcontroller.systemtime.SystemTime;
+import com.zerocool.entities.AbstractEvent;
 
 /**
  * @author ZeroCool
