@@ -35,7 +35,7 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testEventLog() {
 		// Arrange
-		SystemTime time = new SystemTime(System.currentTimeMillis());
+		SystemTime time = new SystemTime();
 		EventLog log = new EventLog();
 		AbstractEvent event1 = new Individual("Indy500", 1);
 		AbstractEvent event = new Individual("Indy600", 2);
