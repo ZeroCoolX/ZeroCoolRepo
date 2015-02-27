@@ -1,4 +1,4 @@
-package com.zerocool.systemcontroller;
+package com.zerocool.systemcontroller.timer;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,6 @@ import com.zerocool.systemcontroller.SystemController;
 import com.zerocool.systemcontroller.event.*;
 import com.zerocool.systemcontroller.eventlog.EventLog;
 import com.zerocool.systemcontroller.systemtime.SystemTime;
-import com.zerocool.systemcontroller.timer.Timer;
 
 public class SystemControllerTest {
 	
