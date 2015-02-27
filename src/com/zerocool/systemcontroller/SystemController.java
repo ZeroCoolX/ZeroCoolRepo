@@ -704,6 +704,10 @@ public class SystemController {
 	public int getId() {
 		return this.id;
 	}
+	
+	public Queue<ArrayList<String>> getCommandList(){
+		return this.commandList;
+	}
 
 	/**
 	 * Set's the Printer on or off.
