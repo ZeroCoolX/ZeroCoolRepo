@@ -141,6 +141,14 @@ public abstract class AbstractEvent {
 		startingQueue.add(par);
 	}
 	
+	public Queue<Participant> getStartingQueue(){
+		return this.startingQueue;
+	}
+	
+	public Participant getCompetingParticipant(){
+		return this.competingPar;
+	}
+	
 	/**
 	 * Gracefully shuts down.
 	 */

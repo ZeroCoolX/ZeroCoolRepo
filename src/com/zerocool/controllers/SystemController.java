@@ -472,17 +472,17 @@ public class SystemController {
 	 * opposite of whatever it is If there isn't a channel found then a new
 	 * channel is created and added to the ArrayList
 	 * 
-	 * @param channel
-	 *            - the channel ID to either set state or create new instance of
+	 * @param channel - the channel ID to either set state or create new instance of
 	 * **/
 	public void cmdTog(int channel) throws Exception {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
-			toggle.setState((toggle.getState() == true ? false : true));
+			toggle.setSensorState((toggle.getSensorState() == true ? false : true));
 		} else {
 			Channel chnl = new Channel();
 			chnl.setID(channel);
 			chnl.setState(true);
+			chnl.setSensorState(true);
 			channels.add(chnl);
 		}
 	}
@@ -506,6 +506,12 @@ public class SystemController {
 		Channel connect = findChannel(channel);
 		if (connect != null) {
 			connect.addSensor(sensorType);
+		}else{
+			Channel chnl = new Channel();
+			chnl.setID(channel);
+			chnl.setState(true);
+			chnl.addSensor(sensorType);
+			channels.add(chnl);
 		}
 	}
 
@@ -516,8 +522,7 @@ public class SystemController {
 	 * state (off or disconnected) If the channel is not AN ERROR WILL BE THROWN
 	 * IN THE FUTURE. NOT IMPLEMENTED YET
 	 * 
-	 * @param channel
-	 *            - the channel ID with which to set the sensor state
+	 * @param channel - the channel ID with which to set the sensor state
 	 */
 	public void cmdDisc(int channel) throws Exception {
 		Channel disc = findChannel(channel);
