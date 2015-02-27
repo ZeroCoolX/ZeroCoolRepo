@@ -118,8 +118,7 @@ public class SystemController {
 			inFile.close();
 
 			// Uncomment to see the results of the input
-			while (!commandList.isEmpty()) {
-				if (isValidCommand(commandList.peek().get(4))) {
+			while (!commandList.isEmpty() && isValidCommand(commandList.peek().get(4))) {
 					ArrayList<String> currentLine = commandList.remove();
 					String[] systemTimeArr = parse(systemTime.toString(),
 							"[:.]");
@@ -133,7 +132,6 @@ public class SystemController {
 					System.out.println(systemTime.toString() + "\t"
 							+ currentLine.get(4));
 					executeCommand(currentLine.get(4), currentLine);
-				}
 			}
 
 		} catch (Exception e) {
