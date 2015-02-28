@@ -53,5 +53,9 @@ public class Individual extends AbstractEvent {
 		participant.setIsCompeting(false);
 		participant.getLastRecord().setFinishTime(finishTime);
 	}
+	
+	public EventType getType(){
+		return EventType.IND;
+	}
 
 }

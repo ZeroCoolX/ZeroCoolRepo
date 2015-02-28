@@ -121,9 +121,7 @@ public abstract class AbstractEvent {
 		return eventName;
 	}
 
-	public EventType getType() {
-		return type;
-	}
+	public abstract EventType getType();
 
 	public long getEventTime() {
 		return eventTime;

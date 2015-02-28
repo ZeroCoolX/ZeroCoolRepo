@@ -3,8 +3,10 @@ package com.zerocool.tests;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +23,7 @@ public class SystemControllerTest {
 	
 	SystemController sysCont = null;
 	File file = null;
+	Scanner inFile = null;
 
 	@Before
 	public void setUp() throws Exception {
@@ -100,34 +103,84 @@ public class SystemControllerTest {
 			assertEquals(2, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getParticipants());
-			
-			
-			testString = helperParser("12:01:22.0	START");
-			sysCont.executeCommand(testString.get(4), testString);
 			for (Participant curPar : sysCont.getTimer().getCurrentEvent().getParticipants()) {
 				assertNotNull(curPar.getLastRecord());
 				assertEquals(1, curPar.getLastRecord().getEventID());
 				assertEquals("IND", curPar.getLastRecord().getEventName());
 			}
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
 			
+			
+			testString = helperParser("12:01:22.0	START");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			
 			
 			testString = helperParser("12:01:24.0	NUM 435");
+			sysCont.executeCommand(testString.get(4), testString);
 			assertEquals(3, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(3, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			assertEquals(3, sysCont.getTimer().getCurrentEvent().getParticipants());
 			
 			
 			testString = helperParser("12:01:26.0	FIN");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
+			file = sysCont.getEventLog().getFile();
+			assertNotNull(file);
+			inFile = new Scanner(new FileReader(file));
+			assertTrue(inFile.hasNextLine());
+			//String [] parsedTestFile = inFile.nextLine().split("[:. \\t]");
+			System.out.println(inFile.nextLine());
+			
+			
 			testString = helperParser("12:01:28.0	START");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertEquals(435, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
+			
+			
 			testString = helperParser("12:01:30.0	START");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			
+			
 			testString = helperParser("12:01:32.0	DNF");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			
+			
 			testString = helperParser("12:01:34.0	FIN");
-			testString = helperParser("12:01:36.0	PRINTF");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			
+			
+			testString = helperParser("12:01:36.0	PRINT");
+			sysCont.executeCommand(testString.get(4), testString);
+
+			
 			testString = helperParser("12:01:38.0	OFF");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertNull(sysCont.getEventLog());
+			assertNull(sysCont.getTimer());
+			assertNull(sysCont.getChannels());
+			assertFalse(sysCont.getIsPrinterOn());
+			
+			
 			testString = helperParser("12:01:40.0	EXIT");
+			sysCont.executeCommand(testString.get(4), testString);
+			assertTrue(sysCont.getSystemTime().isStopped());
+			assertNull(sysCont.getEventLog());
+			assertNull(sysCont.getTimer());
+			assertNull(sysCont.getChannels());
+			assertFalse(sysCont.getIsPrinterOn());
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

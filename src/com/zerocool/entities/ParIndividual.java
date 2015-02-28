@@ -2,6 +2,8 @@ package com.zerocool.entities;
 
 import java.util.ArrayList;
 
+import com.zerocool.entities.AbstractEvent.EventType;
+
 public class ParIndividual extends AbstractEvent {
 
 	public ParIndividual(String eventName, long eventTime) {
@@ -57,6 +59,10 @@ public class ParIndividual extends AbstractEvent {
 	public void finishOneParticipant(Participant participant, long finishTime) {
 		participant.setIsCompeting(false);
 		participant.getLastRecord().setFinishTime(finishTime);
+	}
+	
+	public EventType getType(){
+		return EventType.PARIND;
 	}
 
 }

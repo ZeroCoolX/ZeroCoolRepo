@@ -50,7 +50,7 @@ public class SystemController {
 		systemTime = new SystemTime();
 		systemTime.start();
 
-		currentTimer = new Timer(systemTime);
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
 		eventLog = new EventLog();
 
 		id = 0;
@@ -388,11 +388,15 @@ public class SystemController {
 		// IDK
 		// we need to converse on this
 		// printer set to false for default state
+		System.out.println("hellp");
 		if (eventLog == null) {
 			eventLog = new EventLog();
 		}
+		System.out.println("hellp");
 		if (currentTimer == null) {
+			System.out.println("hellp");
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
+			System.out.println("hellp");
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();

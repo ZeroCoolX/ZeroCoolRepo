@@ -76,6 +76,7 @@ public class Timer {
 		//IND, PARIND, GRP, PARGRP
 		switch(type) {
 		case IND:
+			System.out.println("FUCK");
 			currentEvent = new Individual(eventName, systemTime.getTime());
 			break;
 		case PARIND:

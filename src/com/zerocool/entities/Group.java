@@ -3,6 +3,7 @@ package com.zerocool.entities;
 import java.util.ArrayList;
 
 import com.zerocool.entities.AbstractEvent;
+import com.zerocool.entities.AbstractEvent.EventType;
 
 public class Group extends AbstractEvent {
 
@@ -59,6 +60,10 @@ public class Group extends AbstractEvent {
 	public void finishOneParticipant(Participant participant, long finishTime) {
 		participant.setIsCompeting(false);
 		participant.getLastRecord().setFinishTime(finishTime);
+	}
+	
+	public EventType getType(){
+		return EventType.GRP;
 	}
 
 }
