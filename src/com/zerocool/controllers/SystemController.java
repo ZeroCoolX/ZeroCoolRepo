@@ -537,14 +537,19 @@ public class SystemController {
 	 * stuff) method to output stats to the console
 	 * **/
 	public void cmdPrint() throws Exception {
-		Scanner inFile = new Scanner(new FileReader(eventLog.getFile()));
-
-		// while there is another line to read...print it
-		while (inFile.hasNextLine()) {
-			System.out.println(inFile.nextLine());
+		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
+		try {
+			FileReader fileReader = new FileReader(eventLog.getFile());
+			BufferedReader reader = new BufferedReader(fileReader);
+			System.out.println("PRINTING EVENTLOG DATA:\n\n\n");
+			while(reader.ready()){
+				System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
+			}
+			System.out.println("\n\n");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		inFile.close();
 	}
 
 	/**

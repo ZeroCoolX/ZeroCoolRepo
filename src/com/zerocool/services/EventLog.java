@@ -1,7 +1,10 @@
 package com.zerocool.services;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,7 +48,7 @@ public class EventLog {
 		try(PrintWriter writer = new PrintWriter(Files.newBufferedWriter(eventFile.toPath(),charset,
 				StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE))) {
 			String s = systemTime.toString() + " " + event.getEventName() +"\n" 
-					+ event.getEventId() + " " + event.getType() + " " 
+					+ event.getEventId() + " " + event.getType().toString() + " " 
 					+ SystemTime.formatTime(event.getEventTime());
 			writer.println(s);
 			writer.close();
