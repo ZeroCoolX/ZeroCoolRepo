@@ -66,7 +66,6 @@ public class EventLog {
 		
 		try(PrintWriter writer = new PrintWriter(Files.newBufferedWriter(participantFile.toPath(),charset,
 			StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE))) {
-			
 			writer.println(fileLine);
 			writer.close();
 		} catch (IOException e) {
