@@ -133,18 +133,6 @@ public class SystemControllerTest {
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
 			
-			//printing and getting the data from the eventLog (AND telling it when to log) is still buggy
-			/*try {
-				fileReader = new FileReader(sysCont.getEventLog().getFile());
-				BufferedReader reader = new BufferedReader(fileReader);
-				while(reader.ready()){
-					System.out.println("PRINTING FROM EventLog:\n"+reader.readLine()+"\n"+reader.readLine());
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-
 			
 			testString = helperParser("12:01:28.0	START");
 			sysCont.executeCommand(testString.get(4), testString);
@@ -169,9 +157,22 @@ public class SystemControllerTest {
 			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
-			//still buggy (printing functionality...or calling it to log stuff, when and how...) IDK cuz there's WAY mroe data in there than there should be?
 			testString = helperParser("12:01:36.0	PRINT");
 			sysCont.executeCommand(testString.get(4), testString);
+			
+			try {
+				fileReader = new FileReader(sysCont.getEventLog().getFile());
+				BufferedReader reader = new BufferedReader(fileReader);
+				while(reader.ready()){
+					String line = reader.readLine();
+					assertEquals("00:00:00.0", line.substring(0, 10));
+					assertEquals("IND", line.substring(13));
+					assertEquals("3 IND 00:00:00.000", reader.readLine());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 
 			testString = helperParser("12:01:38.0	OFF");
