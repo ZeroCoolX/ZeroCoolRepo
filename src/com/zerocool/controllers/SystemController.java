@@ -45,7 +45,7 @@ public class SystemController {
 		commandList = new LinkedList<ArrayList<String>>();
 		
 		validCommands = "ON, OFF, EXIT, RESET, TIME, TOG, CONN, DISC, EVENT, NEWRUN, ENDRUN, PRINT, EXPORT, NUM, CLR, "
-				+ "SWAP, RCL, START, FIN, TRIG";
+				+ "SWAP, RCL, START, FIN, TRIG, DNF";
 
 		systemTime = new SystemTime();
 		systemTime.start();
@@ -182,7 +182,7 @@ public class SystemController {
 				 * in the format <hour>:<min>:<second>.<millisecond>
 				 */
 
-				String input = br.readLine();
+				String input = br.readLine();				
 				if (input.equals("EXIT")) {
 					exit = true;
 				}
@@ -194,6 +194,9 @@ public class SystemController {
 				for (String str : parsedLine) {
 					parsedList.add(str);
 				}
+				
+				// add line to the queue
+				commandList.add(parsedList);
 
 				if(isValidCommand(parsedList.get(4))){
 					// check to see if the cmd is TIME, if it is Execute that
@@ -208,11 +211,11 @@ public class SystemController {
 			} while (!exit);
 
 			// Uncomment to see the results of the input
-			while (!commandList.isEmpty()) {
+			/*while (!commandList.isEmpty()) {
 				for (String str : commandList.remove()) {
 					System.out.println("LINE: " + str);
 				}
-			}
+			}*/
 
 		} catch (Exception e) {
 			System.err.println("ERROR: " + e.getMessage());
@@ -545,7 +548,7 @@ public class SystemController {
 		try {
 			FileReader fileReader = new FileReader(eventLog.getFile());
 			BufferedReader reader = new BufferedReader(fileReader);
-			System.out.println("PRINTING EVENTLOG DATA:\n\n\n");
+			System.out.println("\tPRINTING EVENTLOG DATA:\n\n\n");
 			while(reader.ready()){
 				System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
 			}
@@ -624,7 +627,6 @@ public class SystemController {
 		}
 		id = -1;
 		if (eventLog != null) {
-			System.out.println("exiting eventLog");
 			eventLog.exit();
 		}
 		//cannot totally system exit for testing purposes...

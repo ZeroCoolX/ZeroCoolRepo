@@ -32,25 +32,85 @@ public class SystemControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		sysCont = new SystemController();
+		System.out.println("\tTESTING INITIATED\n\n");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		
+		System.out.println("\n\n\tTESTING TERMINATED");
 	}
 	
 	@Test
 	public void testSystemController(){
-		System.out.println("Testing SystemController()");
+		System.out.println("\t-------Testing SystemController()-------");
 		assertNotNull(sysCont.getChannels());
 		assertNotNull(sysCont.getEventLog());
 		assertNotNull(sysCont.getTimer());
 		assertNotNull(sysCont.getSystemTime());
 		assertEquals(0, sysCont.getId());
+		System.out.println("\t-------Successfully tested SystemController()-------\n");
+	}
+	
+	@Test
+	public void testReadFile(){
+		System.out.println("\t-------Testing readFile()-------");
+		file = new File("test_files/syscontroljunittestfile.txt");
+		sysCont.readFile(file);
+		Queue<ArrayList<String>> commandList = sysCont.getCommandList();
+		ArrayList<String> cmd = commandList.remove();
+		assertEquals("TESTON", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTOFF", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTCONN", cmd.get(4));
+		assertEquals("GATE", cmd.get(5));
+		assertEquals("1", cmd.get(6));
+		cmd = commandList.remove();
+		assertEquals("TESTTOG", cmd.get(4));
+		assertEquals("1", cmd.get(5));
+		cmd = commandList.remove();
+		assertEquals("TESTNUM", cmd.get(4));
+		assertEquals("315", cmd.get(5));
+		cmd = commandList.remove();
+		assertEquals("TESTSTART", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTFIN", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTDNF", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTPRINT", cmd.get(4));
+		cmd = commandList.remove();
+		assertEquals("TESTEXIT", cmd.get(4));
+		System.out.println("\t-------Successfully tested readFile()-------\n");
+	}
+	
+	@Test
+	public void testReadInput(){
+		System.out.println("\t-------Testing readInput()-------");
+		System.out.println("This is a special type of test...\n" +
+				"Since this is testing user input...it may not always be consistent...\n" +
+				"Well in order for the test to test the data is accurate it has to know what to expect...AKA be consistent...\n" +
+				"So please enter the commands like they are written pressing enter after each command:\n" +
+				"<<OR if you're not really feeling like running this test just type EXIT and this test will be skipped>>\n\n" +
+				"ON\n" +
+				"OFF\n" +
+				"ON\n" +
+				"CONN GATE 1\n" +
+				"TOG 1\n" +
+				"NUM 315\n" +
+				"START\n" +
+				"FIN\n" +
+				"DNF\n" +
+				"PRINT\n" +
+				"EXIT");
+		sysCont.readInput();
+		System.out.println("\nIf no errors were thrown..then this test passed. YAY");
+		System.out.println("\t-------Successfully tested readInput()-------\n");
 	}
 	
 	@Test
 	public void executeCommand() {
+		System.out.println("\t-------Testing executeCommand()-------");
 		try {
 			ArrayList<String> testString;
 			
@@ -110,8 +170,7 @@ public class SystemControllerTest {
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getParticipants().size());
 			for (Participant curPar : sysCont.getTimer().getCurrentEvent().getParticipants()) {
 				assertNotNull(curPar.getLastRecord());
-				//confusing? but it could be that I am creating new stuff each test...idk really
-				assertEquals(3, curPar.getLastRecord().getEventID());
+				assertEquals(sysCont.getTimer().getCurrentEvent().getEventId(), curPar.getLastRecord().getEventID());
 				assertEquals("IND", curPar.getLastRecord().getEventName());
 			}
 			
@@ -167,7 +226,7 @@ public class SystemControllerTest {
 					String line = reader.readLine();
 					assertEquals("00:00:00.0", line.substring(0, 10));
 					assertEquals("IND", line.substring(13));
-					assertEquals("3 IND 00:00:00.000", reader.readLine());
+					assertEquals("1 IND 00:00:00.000", reader.readLine());
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -195,6 +254,7 @@ public class SystemControllerTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("\t-------Successfully tested executeCommand()-------\n");
 	}
 	
 	public ArrayList<String> helperParser(String str){
@@ -206,37 +266,5 @@ public class SystemControllerTest {
 		return parsedList;
 	}
 	
-	
-	@Test
-	public void testReadFile(){
-		System.out.println("Testing readFile()");
-		file = new File("test_files/syscontroljunittestfile.txt");
-		sysCont.readFile(file);
-		Queue<ArrayList<String>> commandList = sysCont.getCommandList();
-		ArrayList<String> cmd = commandList.remove();
-		assertEquals("TESTON", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTOFF", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTCONN", cmd.get(4));
-		assertEquals("GATE", cmd.get(5));
-		assertEquals("1", cmd.get(6));
-		cmd = commandList.remove();
-		assertEquals("TESTTOG", cmd.get(4));
-		assertEquals("1", cmd.get(5));
-		cmd = commandList.remove();
-		assertEquals("TESTNUM", cmd.get(4));
-		assertEquals("315", cmd.get(5));
-		cmd = commandList.remove();
-		assertEquals("TESTSTART", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTFIN", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTDNF", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTPRINT", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTEXIT", cmd.get(4));
-	}
 
 }

@@ -83,6 +83,8 @@ public class EventLog {
 	}
 	
 	public void exit() {
-		
+		eventFile = null;
+		participantFile = null;
+		charset = null;
 	}
 }

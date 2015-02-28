@@ -153,13 +153,11 @@ public abstract class AbstractEvent {
 	 * Gracefully shuts down.
 	 */
 	public void exit() {
-		System.out.println("exiting event");
 		LASTID = -1;
 		type = null;
 		eventName = null;
 		eventId = -1;
 		eventTime = -1;
-		System.out.println("done event");
 	}
 	
 }
