@@ -393,6 +393,7 @@ public class SystemController {
 		}
 		if (currentTimer == null) {
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
+			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();
@@ -436,6 +437,7 @@ public class SystemController {
 			currentTimer.createEvent(EventType.PARGRP,
 					EventType.PARGRP.toString());
 		}
+		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 	}
 
 	/**
@@ -445,6 +447,8 @@ public class SystemController {
 		eventLog = new EventLog();
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
 				+ "", new ArrayList<Participant>());
+		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
+
 		channels = new ArrayList<Channel>();
 		// printer set to false for insurance
 		isPrinterOn = false;
@@ -583,7 +587,6 @@ public class SystemController {
 	 * **/
 	public void cmdFinish() throws Exception {
 		currentTimer.endEvent();
-		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 	}
 
 	/**
@@ -592,7 +595,6 @@ public class SystemController {
 	public void cmdDnf() throws Exception {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
 		currentTimer.endEvent();
-		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
 	}
 
 	/**
