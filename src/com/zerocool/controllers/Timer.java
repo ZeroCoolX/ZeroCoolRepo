@@ -76,7 +76,6 @@ public class Timer {
 		//IND, PARIND, GRP, PARGRP
 		switch(type) {
 		case IND:
-			System.out.println("FUCK");
 			currentEvent = new Individual(eventName, systemTime.getTime());
 			break;
 		case PARIND:
@@ -100,6 +99,7 @@ public class Timer {
 
 	public void addNewParticipant(int participant) {
 		Participant newPar = new Participant(participant, "" + participant);
+		newPar.createNewRecord(currentEvent.getEventName(), currentEvent.getEventId());
 		totalParticipants.add(newPar);
 		currentEvent.addNewParticipant(newPar);
 	}
@@ -126,12 +126,10 @@ public class Timer {
 	 * Exits gracefully.
 	 */
 	public void exit() {
-		System.out.println("exiting timer");
 		for (Participant par: totalParticipants) {
 			par.exit();
 		}
 		currentEvent.exit();
-		System.out.println("exiting timer");
 	}
 	
 }

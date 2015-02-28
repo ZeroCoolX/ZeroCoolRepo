@@ -65,8 +65,8 @@ public class SystemTime extends StopWatch {
 	 * Exit method to 'end gracefully'.
 	 */
 	public void exit() {
-		stop();
-		reset();
+		super.stop();
+		this.reset();
 	}
 	
 }

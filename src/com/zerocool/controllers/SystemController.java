@@ -388,15 +388,11 @@ public class SystemController {
 		// IDK
 		// we need to converse on this
 		// printer set to false for default state
-		System.out.println("hellp");
 		if (eventLog == null) {
 			eventLog = new EventLog();
 		}
-		System.out.println("hellp");
 		if (currentTimer == null) {
-			System.out.println("hellp");
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
-			System.out.println("hellp");
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();
@@ -604,7 +600,6 @@ public class SystemController {
 		systemTime.exit();
 		systemTime = null;
 		isPrinterOn = false;
-		commandList = null;
 		if (currentTimer != null) {
 			currentTimer.exit();
 			currentTimer = null;
@@ -622,9 +617,11 @@ public class SystemController {
 		}
 		id = -1;
 		if (eventLog != null) {
+			System.out.println("exiting eventLog");
 			eventLog.exit();
 		}
-		System.exit(1);
+		//cannot totally system exit for testing purposes...
+		//System.exit(1);
 	}
 
 	/**

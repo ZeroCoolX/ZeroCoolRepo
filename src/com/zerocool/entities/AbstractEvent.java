@@ -54,6 +54,7 @@ public abstract class AbstractEvent {
 	protected AbstractEvent() {
 		eventId = ++LASTID;
 		startingQueue = new LinkedList<Participant>();
+		currentParticipants = new ArrayList<Participant>();
 	}
 
 	
@@ -137,6 +138,7 @@ public abstract class AbstractEvent {
 	
 	public void addNewParticipant(Participant par) {
 		startingQueue.add(par);
+		currentParticipants.add(par);
 	}
 	
 	public Queue<Participant> getStartingQueue(){
