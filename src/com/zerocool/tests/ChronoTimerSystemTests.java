@@ -45,11 +45,11 @@ public class ChronoTimerSystemTests {
 		String name = "John Doe";
 		int id = 55;
 		int numRecords = 10;
-		AbstractEvent ind = new Individual("IND", 0);
 		Participant participant = new Participant(id, name);
 		
 		// Act
-		for(int i = 0; i <= numRecords; ++i) {
+		for(int i = 1; i <= numRecords; ++i) {
+			AbstractEvent ind = new Individual("IND" + i, i);
 			participant.createNewRecord(ind.getEventName(), ind.getEventId());
 		}
 		
@@ -61,7 +61,23 @@ public class ChronoTimerSystemTests {
 	
 	@Test
 	public void testRecord() {
+		// Arrange
+		AbstractEvent ind = new Individual("Record Event", (int)(Math.random() *10));
+		Record record = new Record(ind.getEventName(), ind.getEventId());
 		
+		// Act
+		long startTime = System.currentTimeMillis();
+		long finishTime = System.currentTimeMillis() * 10000;
+		long elapsedTime = finishTime - startTime;
+		record.setStartTime(startTime);
+		record.setFinishTime(finishTime);
+		record.setDnf(false);
+		
+		// Assert
+		assertEquals(false, record.getDnf());
+		assertEquals(startTime, record.getStartTime());
+		assertEquals(finishTime, record.getFinishTime());
+		assertEquals(elapsedTime, record.getElapsedTime());		
 	}
 	
 	@Test
@@ -99,6 +115,7 @@ public class ChronoTimerSystemTests {
 		} catch (Exception e) {
 			e.printStackTrace();		
 		}
+		log.exit();
 	}
 	
 	@Test
@@ -107,7 +124,7 @@ public class ChronoTimerSystemTests {
 		systemTime.start();
 		EventLog log = new EventLog();
 		Participant participant = new Participant(155, "Name 155");
-		AbstractEvent individual = new Individual("Event 1", 1);
+		AbstractEvent individual = new Individual("Event 1", systemTime.getTime());
 		individual.addNewParticipant(participant);
 		
 		// Act
@@ -127,10 +144,12 @@ public class ChronoTimerSystemTests {
 			String fileLine = reader.readLine();
 			assertEquals(fileLine, "Run   BIB      Time");
 			fileLine = reader.readLine();
-			assertEquals(fileLine, participant.getFormattedData(2));
+			assertEquals(fileLine, participant.getFormattedData(individual.getEventId()));
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		log.exit();
 	}
 }
