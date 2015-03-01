@@ -1,7 +1,5 @@
 package com.zerocool.entities;
 
-import java.util.ArrayList;
-
 public class Individual extends AbstractEvent {
 
 	public Individual(String eventName, long eventTime) {
@@ -9,53 +7,37 @@ public class Individual extends AbstractEvent {
 		this.eventName = eventName;
 		this.eventTime = eventTime;
 	}
-	
-	public Individual(String eventName, long eventTime, ArrayList<Participant> participants) {
-		this(eventName, eventTime);
-		currentParticipants = participants;
-	}
 
+	// Override for more method functionality.
 	@Override
-	public void initializeEvent() {
-		// must check for null parameter
-		if (currentParticipants == null) {
-			throw new IllegalArgumentException("List of participants is null!  Add some participants before initializing.");
-		}
+	public void startNextParticipant(long startTime) {
+		super.startNextParticipant(startTime);
+		Participant par = startingQueue.poll();
+		addCompetingParticipant(par);
+		par.getLastRecord().setStartTime(startTime);
 		
-		// go through each participant and set their eventId and event name
-		for (Participant curPar : currentParticipants) {
-			curPar.createNewRecord(eventName, eventId);
-		}
 	}
 
+	// Overriding for more method functionality.
 	@Override
-	public void startAllParticipants(long startTime) {
-		// go through each participant and set the start time
-		competingPar = startingQueue.remove();
-		competingPar.setIsCompeting(true);
-		competingPar.getLastRecord().setStartTime(startTime);
-	}
-
-	@Override
-	public void startOneParticipant(Participant participant, long startTime) {
-		participant.setIsCompeting(true);
-		participant.getLastRecord().setStartTime(startTime);
-	}
-
-	@Override
-	public void finishAllParticipants(long finishTime) {
-		competingPar.setIsCompeting(false);
-		competingPar.getLastRecord().setFinishTime(finishTime);
-	}
-
-	@Override
-	public void finishOneParticipant(Participant participant, long finishTime) {
+	public void finishParticipant(Participant participant, long finishTime) {
+		super.finishParticipant(participant, finishTime);
 		participant.setIsCompeting(false);
+		competingParticipants.remove(participant);
 		participant.getLastRecord().setFinishTime(finishTime);
 	}
 	
-	public EventType getType(){
+	@Override
+	public EventType getType() {
 		return EventType.IND;
+	}
+	
+	/**
+	 * Override for more method functionality.  Although there are no new variables, possibly later.
+	 * Exits gracefully.
+	 */
+	public void exit() {
+		super.exit();
 	}
 
 }

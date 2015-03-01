@@ -50,11 +50,11 @@ public class TestAbstractEvent {
 		}
 	}
 
-	public void link(int num) {
-		for(int i = 0; i < num; ++i){
-			events.get(i).setParticipants(participants);
-		}
-	}
+//	public void link(int num) {
+//		for(int i = 0; i < num; ++i){
+//			events.get(i).setParticipants(participants);
+//		}
+//	}
 
 	@Test
 	public void testConstructor() {
@@ -80,9 +80,8 @@ public class TestAbstractEvent {
 		addParticipants(1);
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent();
-			assertNotNull(eve.getParticipants());
-			assertEquals(1, eve.getParticipants().size());
+			assertNotNull(eve.getCurrentParticipants());
+			assertEquals(1, eve.getCurrentParticipants().size());
 		}
 	}
 
@@ -93,11 +92,10 @@ public class TestAbstractEvent {
 		addParticipants(1);	
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent();
-			assertNotNull(eve.getParticipants());
-			assertEquals(1, eve.getParticipants().size());
-			assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventName());
-			assertNotNull(eve.getParticipants().get(0).getLastRecord().getEventID());
+			assertNotNull(eve.getCurrentParticipants());
+			assertEquals(1, eve.getCurrentParticipants().size());
+			assertNotNull(eve.getCurrentParticipants().get(0).getLastRecord().getEventName());
+			assertNotNull(eve.getCurrentParticipants().get(0).getLastRecord().getEventID());
 		}
 	}
 
@@ -108,19 +106,13 @@ public class TestAbstractEvent {
 		addParticipants(1);
 
 		for (AbstractEvent eve: events) {
-			eve.initializeEvent();
-
-			// wait 1 second so the start times are staggered.
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) { };
-
 			long startTime = stopWatch.getTime();
+			
 			System.out.println("Start: " + SystemTime.formatTime(startTime));
 
 			eve.startAllParticipants(startTime);
-			assertTrue(eve.getParticipants().get(0).getIsCompeting());
-			assertEquals(eve.getParticipants().get(0).getLastRecord().getStartTime(), startTime);
+			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
 
 			// waits 1 second showing our participant ran the race.
 			try {
@@ -128,12 +120,13 @@ public class TestAbstractEvent {
 			} catch (InterruptedException e) { };
 			
 			long finishTime = stopWatch.getTime();
+			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
 			eve.finishAllParticipants(finishTime);
-			assertFalse(eve.getParticipants().get(0).getIsCompeting());
-			assertEquals(eve.getParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
-			assertEquals(eve.getParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
+			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
 		}
 	}
 

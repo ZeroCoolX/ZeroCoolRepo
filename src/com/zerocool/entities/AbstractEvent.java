@@ -6,29 +6,29 @@ import java.util.List;
 import java.util.Queue;
 
 public abstract class AbstractEvent {
-	
+
 	// First event will be 1, 2... so on.
 	protected static int LASTID;
-	
+
 	// just doing this for a test
 	// type of this event
 	protected EventType type;
-	
+
 	// name of this event
 	protected String eventName;
-	
-	// sequentially increasing unique identifier
-	protected int eventId;
-	
+
 	// participants actually competing in this event
-	protected  ArrayList<Participant> currentParticipants;
+	protected ArrayList<Participant> currentParticipants;
+	protected ArrayList<Participant> competingParticipants;
+
+	protected Queue<Participant> startingQueue;
 	
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
 	protected long eventTime;
 	
-	protected Queue<Participant> startingQueue;
-	protected Participant competingPar;
+	// sequentially increasing unique identifier
+	protected int eventId;
 
 	/**
 	 * Type Descriptions:
@@ -55,109 +55,256 @@ public abstract class AbstractEvent {
 		eventId = ++LASTID;
 		startingQueue = new LinkedList<Participant>();
 		currentParticipants = new ArrayList<Participant>();
+		competingParticipants = new ArrayList<Participant>();
 	}
 
-	
-	// ----- abstract functional methods ----- \\
 
-	public abstract void initializeEvent();
-	
-	/**
-	 * initializeEvent:
-	 * 
-	 * parameter: Collection of Participant objects are given as parameter
-	 * function: Stores participant[] parameter Goes through list of
-	 * participants and their respective Records setting the eventName and
-	 * eventId
-	 **/
+	// ----- override methods ----- \\
 
 	/**
-	 * Goes through all the current Participants and sets them to be competing
-	 * and set's their start time.
-	 * @param startTime - The start time of the race.
+	 * No need to override because it just calls startNextParticipants() anyway.
+	 * Starts all the Participants in the starting queue.
+	 * @param startTime - The time the Participant started.
 	 */
-	public abstract void startAllParticipants(long startTime);
-	
-	/**
-	 * Starts a specified Participant since some races not all Participants will be
-	 * starting at the same time.
-	 * @param participant - The Participant to start.
-	 * @param startTime - The start time of the specific participant.
-	 */
-	public abstract void startOneParticipant(Participant participant, long startTime);
+	public void startAllParticipants(long startTime) {
+		startNextParticipants(startingQueue.size(), startTime);
+	}
 
 	/**
-	 * Goes through all the current Participants and sets them to not be
-	 * competing and set's their finish time.
-	 * @param finishTime - The finish time of the race.
+	 * Override in subclass for more functionality.
+	 * Starts the next Participant in the starting queue.
+	 * @param startTime - The time the Participant started.
+	 * @throws IllegalStateException - There are no Participants in
+	 * 	the starting queue.
 	 */
-	public abstract void finishAllParticipants(long finishTime);
-	
+	public void startNextParticipant(long startTime) {
+		if (startingQueue.isEmpty()) {
+			throw new IllegalStateException("There are no participants in the starting queue.");
+		}
+	}
+
 	/**
-	 * Finishes a specified Participant because it is unlikely that all of them will tie.  >.<
+	 * No need to override this one because it just calls startNextParticipant() anyway.
+	 * Starts a specified number of participants from the starting queue.
+	 * @param numOfParticipants - The number of participants to start.
+	 * @param startTime - The time the Participants started.
+	 * @throws IllegalArgumentException - THe specified number of Participants to start
+	 * 	is less than zero or is bigger than the number of Participants in the starting queue.
+	 * @throws IllegalStateException - There are no Participants in
+	 * 	the starting queue.
+	 */
+	public void startNextParticipants(int numOfParticipants, long startTime) {
+		if (numOfParticipants < 0 || numOfParticipants > startingQueue.size()) {
+			throw new IllegalArgumentException("Start queue does not have " + numOfParticipants + ".");
+		}
+
+		for (int i = 0; i < numOfParticipants; i++) {
+			startNextParticipant(startTime);
+		}
+	}
+
+	/**
+	 * No need to override this one because it just calls finishParticipant() anyway.
+	 * Finish all the Participants currently competing.
+	 * @param finishTime - The time at which the Participants finished.
+	 */
+	public void finishAllParticipants(long finishTime) {
+		for (Participant par : competingParticipants) {
+			finishParticipant(par, finishTime);
+		}
+	}
+
+	/**
+	 * Override in subclass for more detailed functionality.
+	 * Finish a specific Participant.
 	 * @param participant - The Participant to finish.
-	 * @param finishTime - The finish time of the specific participant.
+	 * @param finishTime - The time at which the Participant finished.
+	 * @throws IllegalArgumentException - The Participant is null.
+	 * @throws IllegalStateException - There are no Participants currently
+	 * 	competing.
+	 * @throws IllegalStateException - The Participant is not currently
+	 * 	competing.
 	 */
-	public abstract void finishOneParticipant(Participant participant, long finishTime);
+	public void finishParticipant(Participant participant, long finishTime) {
+		if (participant == null) {
+			throw new IllegalArgumentException("Participant can't be null.");
+		}
+		if (competingParticipants.isEmpty()) {
+			throw new IllegalStateException("There are no participants competing.");
+		}
+		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
+			throw new IllegalStateException("Not a valid competing Participant.");
+		}
+	}
 
-	
+
 	// ----- functional methods ----- \\
 
+	/**
+	 * Sets the name of the event.
+	 * @param eventName - The name to set the event to.
+	 */
 	public void setName(String eventName) {
 		this.eventName = eventName;
 	}
 
+	/**
+	 * Sets the time of the event.
+	 * @param eventTime - The time to set the event to.
+	 */
 	public void setEventTime(long eventTime) {
 		this.eventTime = eventTime;
 	}
-	
-	public void setParticipants(ArrayList<Participant> participants) {
-		this.currentParticipants = participants;
+
+	/**
+	 * Adds a participant to currentParticipants if not there already and adds them
+	 * to the starting queue.
+	 * @param participant - The Participant to add.
+	 * @throws IllegalArgumentException - The Participant is null.
+	 */
+	public void addParticipantToStart(Participant participant) {
+		if (participant == null) {
+			throw new IllegalArgumentException("Participant can't be null.");
+		}
+		
+		if (!currentParticipants.contains(participant)) {
+			currentParticipants.add(participant);
+		}
+		
+		startingQueue.add(participant);
 	}
 
+	/**
+	 * Indicates that the last start was a false start, so this method resets the
+	 * starting queue and competingParticipants.
+	 */
+	public void resetCompeting() {
+		Queue<Participant> newStartingQueue = new LinkedList<Participant>();
+
+		for (Participant par : competingParticipants) {
+			par.setIsCompeting(false);
+			newStartingQueue.add(par);
+		}
+
+		while (!startingQueue.isEmpty()) {
+			newStartingQueue.add(startingQueue.poll());
+		}
+
+		competingParticipants.clear();
+		startingQueue = newStartingQueue;
+	}
+
+	/**
+	 * Sets all competing Participants to DNF.
+	 */
+	public void setAllDNF() {
+		for (Participant par : competingParticipants) {
+			setOneDNF(par);
+		}
+	}
 	
+	/**
+	 * Sets a competing Participant to DNF.
+	 * @param participant - The Participant to set to DNF.
+	 * @throws IllegalArgumentException - The Participant is null.
+	 * @throws IllegalStateException - The Participant is not currently
+	 * 	competing.
+	 */
+	public void setOneDNF(Participant participant) {
+		if (participant == null) {
+			throw new IllegalArgumentException("Participant can't be null.");
+		}
+		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
+			throw new IllegalStateException("Not a valid competing Participant.");
+		}
+		
+		participant.setIsCompeting(false);
+		participant.getLastRecord().setDnf(true);
+		competingParticipants.remove(participant);
+	}
+
 	// ----- accessors ----- \\
 
+	/**
+	 * Gets the event name.
+	 * @return The name of the event.
+	 */
 	public String getEventName() {
 		return eventName;
 	}
 
+	/**
+	 * Gets the type of the event.
+	 * @return The event type.
+	 */
 	public abstract EventType getType();
 
+	/**
+	 * Gets the event time.
+	 * @return The event time.
+	 */
 	public long getEventTime() {
 		return eventTime;
 	}
 
+	/**
+	 * Gets the event id.
+	 * @return The event id.
+	 */
 	public int getEventId() {
 		return eventId;
 	}
 
-	public List<Participant> getParticipants() {
+	/**
+	 * Gets the current Participants of the event.
+	 * @return The current Participants.
+	 */
+	public List<Participant> getCurrentParticipants() {
 		return currentParticipants;
 	}
-	
-	public void addNewParticipant(Participant par) {
-		startingQueue.add(par);
-		currentParticipants.add(par);
+
+	/**
+	 * Gets the currently competing Participants of the event.
+	 * @return The competing Participants.
+	 */
+	public List<Participant> getCompetingParticipants() {
+		return competingParticipants;
 	}
-	
-	public Queue<Participant> getStartingQueue(){
+
+	/**
+	 * Gets the starting queue of the event.
+	 * @return The starting queue.
+	 */
+	public Queue<Participant> getStartingQueue() {
 		return this.startingQueue;
 	}
-	
-	public Participant getCompetingParticipant(){
-		return this.competingPar;
-	}
-	
+
+
+	// ----- helper methods ----- \\
+
 	/**
+	 * Sets a specified Participant to be competing and adds them to
+	 * the currently competing list.
+	 * @param participant - The participant to set to competing.
+	 */
+	protected void addCompetingParticipant(Participant participant) {
+		participant.setIsCompeting(true);
+		competingParticipants.add(participant);
+	}
+
+	/**
+	 * Override for more method functionality.
 	 * Gracefully shuts down.
 	 */
 	public void exit() {
 		LASTID = -1;
 		type = null;
 		eventName = null;
-		eventId = -1;
+		currentParticipants = null;
+		competingParticipants = null;
+		startingQueue = null;
 		eventTime = -1;
+		eventId = -1;
 	}
-	
+
 }

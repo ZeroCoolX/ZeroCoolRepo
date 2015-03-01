@@ -1,10 +1,5 @@
 package com.zerocool.entities;
 
-import java.util.ArrayList;
-
-import com.zerocool.entities.AbstractEvent;
-import com.zerocool.entities.AbstractEvent.EventType;
-
 public class Group extends AbstractEvent {
 
 	public Group(String eventName, long eventTime) {
@@ -13,57 +8,36 @@ public class Group extends AbstractEvent {
 		this.eventTime = eventTime;
 	}
 	
-	public Group(String eventName, long eventTime, ArrayList<Participant> participants) {
-		this(eventName, eventTime);
-		currentParticipants = participants;
-	}
-
+	// Override for more method functionality.
 	@Override
-	public void initializeEvent() {
-		// must check for null parameter
-		if (currentParticipants == null) {
-			throw new IllegalArgumentException("List of participants is null!  Add some participants before initializing.");
-		}
+	public void startNextParticipant(long startTime) {
+		super.startNextParticipant(startTime);
+		Participant par = startingQueue.poll();
+		addCompetingParticipant(par);
+		par.getLastRecord().setStartTime(startTime);
 		
-		// go through each participant and set their eventId and event name
-		for (Participant curPar : currentParticipants) {
-			curPar.createNewRecord(eventName, eventId);
-		}
 	}
 
+	// Overriding for more method functionality.
 	@Override
-	public void startAllParticipants(long startTime) {
-		System.out.println("Starting Group Participants");
-		// go through each participant and set the start time
-		for (Participant curPar : currentParticipants) {
-			curPar.setIsCompeting(true);
-			curPar.getLastRecord().setStartTime(startTime);
-		}
-	}
-	
-	@Override
-	public void startOneParticipant(Participant participant, long startTime) {
-		participant.setIsCompeting(true);
-		participant.getLastRecord().setStartTime(startTime);
-	}
-
-	@Override
-	public void finishAllParticipants(long finishTime) {
-		System.out.println("Finishing Group Participants");
-		for (Participant curPar : currentParticipants) {
-			curPar.setIsCompeting(false);
-			curPar.getLastRecord().setFinishTime(finishTime);
-		}
-	}
-
-	@Override
-	public void finishOneParticipant(Participant participant, long finishTime) {
+	public void finishParticipant(Participant participant, long finishTime) {
+		super.finishParticipant(participant, finishTime);
 		participant.setIsCompeting(false);
+		competingParticipants.remove(participant);
 		participant.getLastRecord().setFinishTime(finishTime);
 	}
 	
-	public EventType getType(){
+	@Override
+	public EventType getType() {
 		return EventType.GRP;
+	}
+	
+	/**
+	 * Override for more method functionality.  Although there are no new variables, possibly later.
+	 * Exits gracefully.
+	 */
+	public void exit() {
+		super.exit();
 	}
 
 }

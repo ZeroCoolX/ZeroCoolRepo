@@ -17,6 +17,10 @@ public class SystemTime extends StopWatch {
 		offset = startTime;
 	}
 	
+	public SystemTime(int hours, int minutes, int seconds) {
+		this(hours * 3600000 + minutes * 60000 + seconds * 1000);
+	}
+	
 	/**
 	 * Used to format milliseconds to the desired look.
 	 * @param millis - The milliseconds to format.
@@ -33,6 +37,17 @@ public class SystemTime extends StopWatch {
 	public void setTime(long startTime) {
 		reset();
 		offset = startTime;
+	}
+	
+	/**
+	 * A more friendly overloaded method to reset and set the time.
+	 * @param hours - The hour(s) to set the time to.
+	 * @param minutes - The minute(s) to set the time to.
+	 * @param seconds - The second(s) to set the time to.
+	 */
+	public void setTime(int hours, int minutes, int seconds) {
+		reset();
+		offset = hours * 3600000 + minutes * 60000 + seconds * 1000;
 	}
 	
 	/**

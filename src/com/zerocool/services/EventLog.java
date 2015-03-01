@@ -86,7 +86,20 @@ public class EventLog {
 		return participantFile;
 	}
 	
+	/**
+	 * Resets variables and deletes the output text files
+	 */
 	public void exit() {
+		// Attempts to delete both files
+		try{
+			Files.delete(eventFile.toPath());
+		} catch (IOException e) {
+		}
+		try {
+			Files.delete(participantFile.toPath());
+		} catch (IOException e) {
+		}
+		
 		eventFile = null;
 		participantFile = null;
 		charset = null;

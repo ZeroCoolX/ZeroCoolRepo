@@ -1,3 +1,70 @@
+----------------- Change Log - 3/1/2015 -----------------
+
+** Changes to SystemTime
+	
+	- Added a new constructor that takes hours, minutes, seconds.
+	- Added a new method to make it easier to set the time.  You can set the time by milliseconds or hours, minutes and seconds.
+	
+	
+** Changes to SystemController
+
+	- Removed unneeded imports (just one =P).
+	- Removed unneeded try catch {} in cmdPrint().
+	- Updated setTime to use the new overloaded setTime(hours, minutes, seconds).
+	- Updated methods to use changed/modified methods in Timer.
+	- Other small readability changes.
+	
+	
+** Changes to Timer
+
+	So there were a couple issues going on with this class and the events.  It wasn't straight forward what really was supposed to
+	do what so I tried to clear it up a bit with changes to some old methods and new ones as well.  Every Participant is now 
+	added directly to the Starting Queue being that every participant added to the event is going to be participating.  Competing
+	Participants is an ArrayList that keeps track of all the currently competing participants.  I found it easier using that rather
+	than curPar because you can have multiple Participants competing at one time.
+	
+	- startAllParticipants()
+		Starts all the Participants in the starting queue.
+		
+	- startNextParticipant()
+		Starts the next participant in the starting queue.
+		
+	- startNextParticipants(int numOfParticipants)
+		Starts the next number of Participants in the starting queue.
+		
+	- finishAllParticipants
+		Finishes all the Participants in the competingParticipants arraylist.
+		
+	- finishParticipant(Participant participant)
+		Finishes a specified participant.
+		
+	- cancelStart()
+		Indicates a false start and resets the data back before the Participants started.
+		
+	- setAllDNf()
+		Sets all the competingParticipants to DNF.
+		
+	- setOneDNF(Participant participant)
+		Sets the specified Participant to DNF.
+		
+	- addParticipantToStart(Participant participant)
+		Adds the specified Participant to totalParticipants, currentParticipants, creates a new record and adds them to the
+		starting queue.
+		
+	- addParticipantTOStart(in participantId)
+		Creates a new Participant from the id given and does as previous method.
+		
+		
+** Changes to AbstractEvent & Event classes
+	
+	All of the changes in this class were based off of the changes in the Timer class.  Basically just the implementation of all of the
+	above.  
+	
+	
+
+----------------- End Change Log - 3/1/2015 -----------------
+
+
 ----------------- Change Log - 2/24/2015 -----------------
 
 So I made LOTS of changes and figured it'd be best to write them all down in this new handy dandy change log.

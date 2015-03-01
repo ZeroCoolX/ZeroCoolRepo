@@ -121,7 +121,7 @@ public class SystemControllerTest {
 			assertEquals(EventType.IND, sysCont.getTimer().getCurrentEvent().getType());
 			assertEquals(EventType.IND + "", sysCont.getTimer().getCurrentEvent().getEventName());
 			assertNotNull(sysCont.getTimer().getTotalParticipants());
-			assertNotNull(sysCont.getTimer().getCurrentEvent().getParticipants());
+			assertNotNull(sysCont.getTimer().getCurrentEvent().getCurrentParticipants());
 			assertNotNull(sysCont.getChannels());
 			assertFalse(sysCont.getIsPrinterOn());
 
@@ -159,7 +159,7 @@ public class SystemControllerTest {
 			sysCont.executeCommand(testString.get(4), testString);
 			assertEquals(1, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(1, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
-			assertEquals(1, sysCont.getTimer().getCurrentEvent().getParticipants().size());
+			assertEquals(1, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			assertEquals(234, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			
 			
@@ -167,8 +167,8 @@ public class SystemControllerTest {
 			sysCont.executeCommand(testString.get(4), testString);
 			assertEquals(2, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
-			assertEquals(2, sysCont.getTimer().getCurrentEvent().getParticipants().size());
-			for (Participant curPar : sysCont.getTimer().getCurrentEvent().getParticipants()) {
+			assertEquals(2, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			for (Participant curPar : sysCont.getTimer().getCurrentEvent().getCurrentParticipants()) {
 				assertNotNull(curPar.getLastRecord());
 				assertEquals(sysCont.getTimer().getCurrentEvent().getEventId(), curPar.getLastRecord().getEventID());
 				assertEquals("IND", curPar.getLastRecord().getEventName());
@@ -176,44 +176,44 @@ public class SystemControllerTest {
 			
 			testString = helperParser("12:01:22.0	START");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			
 			testString = helperParser("12:01:24.0	NUM 435");
 			sysCont.executeCommand(testString.get(4), testString);
 			assertEquals(3, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
-			assertEquals(3, sysCont.getTimer().getCurrentEvent().getParticipants().size());
+			assertEquals(3, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			
 
 			testString = helperParser("12:01:26.0	FIN");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
 			
 			
 			testString = helperParser("12:01:28.0	START");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(435, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getID());
 			
 
 			testString = helperParser("12:01:30.0	START");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 
 			testString = helperParser("12:01:32.0	DNF");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 
 			testString = helperParser("12:01:34.0	FIN");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipant().getIsCompeting());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 			testString = helperParser("12:01:36.0	PRINT");

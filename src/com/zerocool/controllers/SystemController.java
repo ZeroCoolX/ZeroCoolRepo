@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -156,7 +155,7 @@ public class SystemController {
 		return newLine;
 	}
 	
-	public boolean isValidCommand(String str){
+	private boolean isValidCommand(String str) {
 		return validCommands.contains(str);
 	}
 
@@ -467,9 +466,7 @@ public class SystemController {
 	 * **/
 	public void cmdTime(ArrayList<String> args) throws Exception {
 		// set the current time
-		systemTime.setTime(Integer.parseInt(args.get(5)) * 3600000
-				+ Integer.parseInt(args.get(6)) * 60000
-				+ Integer.parseInt(args.get(7)) * 1000);
+		systemTime.setTime(Integer.parseInt(args.get(5)), Integer.parseInt(args.get(6)), Integer.parseInt(args.get(7)));
 		systemTime.start();
 	}
 
@@ -545,18 +542,14 @@ public class SystemController {
 	 * **/
 	public void cmdPrint() throws Exception {
 		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
-		try {
 			FileReader fileReader = new FileReader(eventLog.getEventFile());
 			BufferedReader reader = new BufferedReader(fileReader);
 			System.out.println("\tPRINTING EVENTLOG DATA:\n\n\n");
-			while(reader.ready()){
+			while(reader.ready()) {
 				System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
 			}
 			System.out.println("\n\n");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			reader.close();
 	}
 
 	/**
@@ -574,7 +567,7 @@ public class SystemController {
 		if (par != null) {
 			par.setIsNext(true);
 		} else {
-			currentTimer.addNewParticipant(participantId);
+			currentTimer.addParticipantToStart(participantId);
 		}
 	}
 
@@ -582,14 +575,14 @@ public class SystemController {
 	 * start the participant within event
 	 * **/
 	public void cmdStart() throws Exception {
-		currentTimer.startEvent();
+		currentTimer.startNextParticipant();
 	}
 
 	/**
 	 * End the participant within event
 	 * **/
 	public void cmdFinish() throws Exception {
-		currentTimer.endEvent();
+		currentTimer.finishAllParticipants();
 	}
 
 	/**
@@ -597,7 +590,7 @@ public class SystemController {
 	 * **/
 	public void cmdDnf() throws Exception {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
-		currentTimer.endEvent();
+		currentTimer.setAllDNF();
 	}
 
 	/**
@@ -718,7 +711,7 @@ public class SystemController {
 		return this.id;
 	}
 
-	public Queue<ArrayList<String>> getCommandList(){
+	public Queue<ArrayList<String>> getCommandList() {
 		return this.commandList;
 	}
 
