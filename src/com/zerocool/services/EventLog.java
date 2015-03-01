@@ -1,17 +1,10 @@
 package com.zerocool.services;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -57,8 +50,12 @@ public class EventLog {
 		}
 	}
 	
+	/**
+	 * @param event
+	 * @param systemTime
+	 */
 	public void logParticipants(AbstractEvent event, SystemTime systemTime) {
-		String fileLine = "Run  BIB  Time\n";
+		String fileLine = "Run   BIB      Time\n";
 		List<Participant> participants = event.getParticipants();
 		for(Participant p: participants) {
 			fileLine += p.getFormattedData(event.getEventId()) + "\n";
@@ -77,8 +74,16 @@ public class EventLog {
 	 * Gets the output file of the logged Event
 	 * @return a File
 	 */
-	public File getFile() {
+	public File getEventFile() {
 		return eventFile;
+	}
+
+	/**
+	 * Gets the output file of the particpant's times
+	 * @return
+	 */
+	public File getParticipantFile() {
+		return participantFile;
 	}
 	
 	public void exit() {

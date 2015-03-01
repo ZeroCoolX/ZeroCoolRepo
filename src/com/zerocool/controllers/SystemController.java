@@ -546,7 +546,7 @@ public class SystemController {
 	public void cmdPrint() throws Exception {
 		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
 		try {
-			FileReader fileReader = new FileReader(eventLog.getFile());
+			FileReader fileReader = new FileReader(eventLog.getEventFile());
 			BufferedReader reader = new BufferedReader(fileReader);
 			System.out.println("\tPRINTING EVENTLOG DATA:\n\n\n");
 			while(reader.ready()){

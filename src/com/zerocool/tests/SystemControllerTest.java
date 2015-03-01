@@ -220,7 +220,7 @@ public class SystemControllerTest {
 			sysCont.executeCommand(testString.get(4), testString);
 			
 			try {
-				fileReader = new FileReader(sysCont.getEventLog().getFile());
+				fileReader = new FileReader(sysCont.getEventLog().getEventFile());
 				BufferedReader reader = new BufferedReader(fileReader);
 				while(reader.ready()){
 					String line = reader.readLine();

@@ -1,6 +1,8 @@
 package com.zerocool.entities;
 
 import java.util.*;
+
+import com.zerocool.services.SystemTime;
 /**
  * @author ZeroCool
  * The Participant Class
@@ -76,7 +78,7 @@ public class Participant {
 		}
 		
 		if(eventRecord != null){
-			result = "" + eventID + this.id + eventRecord.getElapsedTime();
+			result = "" + eventID + "     " + this.id + "    " + SystemTime.formatTime(eventRecord.getElapsedTime());
 		}
 		
 		return result;
