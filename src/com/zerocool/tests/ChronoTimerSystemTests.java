@@ -6,7 +6,6 @@ import static org.junit.Assert.assertSame;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -125,16 +124,15 @@ public class ChronoTimerSystemTests {
 		EventLog log = new EventLog();
 		Participant participant = new Participant(155, "Name 155");
 		AbstractEvent individual = new Individual("Event 1", systemTime.getTime());
-		individual.addNewParticipant(participant);
+		systemController.currentTimer.addParticipantToStart(participant);
 		
 		// Act
-		individual.initializeEvent();
-		individual.startOneParticipant(participant, systemTime.getTime());
+		systemController.currentTimer.startNextParticipant();
 		
 		for(long i = 0; i <= 500000000l; ++i) {
 			// adding delay before individual finishes
 		}
-		individual.finishOneParticipant(participant, systemTime.getTime());
+		systemController.currentTimer.finishParticipant(participant);
 		log.logParticipants(individual, systemTime);
 		
 		// Assert

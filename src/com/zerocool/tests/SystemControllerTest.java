@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -19,8 +17,6 @@ import com.zerocool.controllers.SystemController;
 import com.zerocool.entities.Participant;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Sensor.SensorType;
-import com.zerocool.services.EventLog;
-import com.zerocool.services.SystemTime;
 
 public class SystemControllerTest {
 	

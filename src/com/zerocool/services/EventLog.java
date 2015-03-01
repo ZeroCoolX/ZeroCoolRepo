@@ -56,7 +56,7 @@ public class EventLog {
 	 */
 	public void logParticipants(AbstractEvent event, SystemTime systemTime) {
 		String fileLine = "Run   BIB      Time\n";
-		List<Participant> participants = event.getParticipants();
+		List<Participant> participants = event.getCurrentParticipants();
 		for(Participant p: participants) {
 			fileLine += p.getFormattedData(event.getEventId()) + "\n";
 		}
