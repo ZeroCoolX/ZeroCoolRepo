@@ -85,7 +85,7 @@ public class Participant {
 	}
 
 	/**
-	 * Get's the ID of the particiapnt.
+	 * Get's the ID of the participant.
 	 * @return The id of the participant.
 	 */
 	public int getID() {
@@ -116,6 +116,10 @@ public class Participant {
 		return this.isCompeting;
 	}
 	
+	/**
+	 * Get if this {@link #Participant} is next to start.
+	 * @return true if the participant is next to start
+	 */
 	public boolean getIsNext(){
 		return this.isNext;
 	}
@@ -131,11 +135,18 @@ public class Participant {
 		this.isCompeting = isCompeting;
 	}
 	
+	/**
+	 * Sets if this {@link #Participant} is next to start in an {@link #Event}.
+	 * @param next
+	 */
 	public void setIsNext(boolean next){
 		isNext = next;
 	}
 	
 	
+	/**
+	 * Used so the system can exit "gracefully"
+	 */
 	public void exit(){
 		System.out.println("exiting par");
 		name = null;

@@ -1,12 +1,12 @@
 package com.zerocool.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +17,7 @@ import com.zerocool.controllers.Timer;
 import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.Individual;
 import com.zerocool.entities.Participant;
+import com.zerocool.entities.Record;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
@@ -36,6 +37,31 @@ public class ChronoTimerSystemTests {
 	@After
 	public void tearDown() throws Exception {
 		systemTime.reset();
+	}
+	
+	@Test
+	public void testGetRecordCount() {
+		// Arrange
+		String name = "John Doe";
+		int id = 55;
+		int numRecords = 10;
+		AbstractEvent ind = new Individual("IND", 0);
+		Participant participant = new Participant(id, name);
+		
+		// Act
+		for(int i = 0; i <= numRecords; ++i) {
+			participant.createNewRecord(ind.getEventName(), ind.getEventId());
+		}
+		
+		// Assert
+		assertEquals(numRecords, participant.getRecordCount());
+		assertEquals(name, participant.getName());
+		assertEquals(id, participant.getID());
+	}
+	
+	@Test
+	public void testRecord() {
+		
 	}
 	
 	@Test
