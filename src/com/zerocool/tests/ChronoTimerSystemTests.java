@@ -70,6 +70,7 @@ public class ChronoTimerSystemTests {
 		commandList.add("10:01:06.0	ON");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
+		commandList.add("10:02:26.0	FIN");
 		
 		// Act
 		while(!commandList.isEmpty()) {
@@ -83,14 +84,13 @@ public class ChronoTimerSystemTests {
 		
 		long startTime = systemController.getTimer().findParticipant(555).getLastRecord().getStartTime();
 		long finishTime = systemController.getTimer().findParticipant(555).getLastRecord().getFinishTime();
+		long duration = systemController.getTimer().findParticipant(555).getLastRecord().getElapsedTime();
 		
 		// Assert
 		assertNotNull(systemController.getTimer().findParticipant(555));
-		assertEquals(SystemTime.getTimeInMillis(10,01,22), startTime);
-		
-		// Exit
-//		commandList.add("10:02:38.0	OFF");
-//		commandList.add("10:02:40.0	EXIT");
+		assertEquals(SystemTime.getTimeInMillis(10, 01, 22), startTime);
+		assertEquals(SystemTime.getTimeInMillis(10, 02, 26), finishTime);
+		assertEquals(SystemTime.getTimeInMillis(0, 01, 04), duration);
 	}
 	
 	@Test
