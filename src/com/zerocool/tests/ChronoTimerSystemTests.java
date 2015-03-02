@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,6 +28,7 @@ public class ChronoTimerSystemTests {
 	Timer timer;
 	EventLog eventLog;
 	Participant john;
+	Queue<String> commandList;
 
 	@Before
 	public void setUp() {
@@ -42,6 +46,33 @@ public class ChronoTimerSystemTests {
 		timer = null;
 		eventLog = null;
 		john = null;
+	}
+	
+	private ArrayList<String> helperParser(String str) {
+		String [] atrArr = str.split("[:. \\t]");
+		ArrayList<String> parsedList = new ArrayList<String>();
+		
+		for (String stri : atrArr) {
+			parsedList.add(stri);
+		}
+		
+		return parsedList;
+	}
+	
+	@Test
+	public void testStartAndFinished() {
+		commandList = new LinkedList<String>();
+		
+	}
+	
+	@Test
+	public void testStartAndDNF() {
+		
+	}
+	
+	@Test
+	public void testStartAndCanceled() {
+		
 	}
 
 	@Test

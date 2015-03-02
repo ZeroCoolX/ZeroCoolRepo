@@ -262,6 +262,4 @@ public class SystemControllerTest {
 		
 		return parsedList;
 	}
-	
-
 }
