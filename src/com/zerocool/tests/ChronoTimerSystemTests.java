@@ -67,12 +67,12 @@ public class ChronoTimerSystemTests {
 	
 	@Test
 	public void testStartAndDNF() {
-		
+		commandList = new LinkedList<String>();
 	}
 	
 	@Test
 	public void testStartAndCanceled() {
-		
+		commandList = new LinkedList<String>();
 	}
 
 	@Test
