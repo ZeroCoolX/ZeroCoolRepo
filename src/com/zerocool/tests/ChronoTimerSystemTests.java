@@ -62,7 +62,19 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testStartAndFinished() {
 		commandList = new LinkedList<String>();
+		commandList.add("10:00:00.0	TIME 10:01:00");
+		commandList.add("10:01:02.0	ON");
+		commandList.add("10:01:04.0	OFF");
+		commandList.add("10:01:06.0	ON");
+		commandList.add("10:01:20.0	NUM 315");
+		commandList.add("10:01:22.0	START");
+		commandList.add("10:01:26.0	FIN");
 		
+		
+//		12:01:36.0	PRINT
+//		12:01:38.0	OFF
+//		12:01:40.0	EXIT
+
 	}
 	
 	@Test
