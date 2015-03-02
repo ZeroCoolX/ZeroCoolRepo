@@ -18,7 +18,7 @@ public class SystemTime extends StopWatch {
 	}
 	
 	public SystemTime(int hours, int minutes, int seconds) {
-		this(hours * 3600000 + minutes * 60000 + seconds * 1000);
+		this(getTimeInMillis(hours, minutes, seconds));
 	}
 	
 	/**
@@ -28,6 +28,17 @@ public class SystemTime extends StopWatch {
 	 */
 	public static String formatTime(long millis) {
 		return DurationFormatUtils.formatDuration(millis, "HH:mm:ss.S");
+	}
+	
+	/**
+	 * A helper to get a time formatted in HH:mm:ss.S
+	 * @param hours
+	 * @param minutes
+	 * @param seconds
+	 * @return
+	 */
+	public static long getTimeInMillis(int hours, int minutes, int seconds) {
+		return hours * 3600000 + minutes * 60000 + seconds * 1000;
 	}
 	
 	/**
@@ -47,7 +58,7 @@ public class SystemTime extends StopWatch {
 	 */
 	public void setTime(int hours, int minutes, int seconds) {
 		reset();
-		offset = hours * 3600000 + minutes * 60000 + seconds * 1000;
+		offset = getTimeInMillis(hours, minutes, seconds);
 	}
 	
 	/**

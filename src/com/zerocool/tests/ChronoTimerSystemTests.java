@@ -1,6 +1,6 @@
 package com.zerocool.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +32,7 @@ public class ChronoTimerSystemTests {
 
 	@Before
 	public void setUp() {
+		commandList = new LinkedList<String>();
 		systemController = new SystemController();
 		systemTime = systemController.getSystemTime();
 		timer = systemController.getTimer();
@@ -61,20 +62,35 @@ public class ChronoTimerSystemTests {
 	
 	@Test
 	public void testStartAndFinished() {
-		commandList = new LinkedList<String>();
+		// Arrange
+		ArrayList<String> testString;
 		commandList.add("10:00:00.0	TIME 10:01:00");
 		commandList.add("10:01:02.0	ON");
 		commandList.add("10:01:04.0	OFF");
 		commandList.add("10:01:06.0	ON");
-		commandList.add("10:01:20.0	NUM 315");
+		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
-		commandList.add("10:01:26.0	FIN");
 		
+		// Act
+		while(!commandList.isEmpty()) {
+			testString = helperParser(commandList.poll());
+			try {
+				systemController.executeCommand(testString.get(4), testString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
-//		12:01:36.0	PRINT
-//		12:01:38.0	OFF
-//		12:01:40.0	EXIT
-
+		long startTime = systemController.getTimer().findParticipant(555).getLastRecord().getStartTime();
+		long finishTime = systemController.getTimer().findParticipant(555).getLastRecord().getFinishTime();
+		
+		// Assert
+		assertNotNull(systemController.getTimer().findParticipant(555));
+		assertEquals(SystemTime.getTimeInMillis(10,01,22), startTime);
+		
+		// Exit
+//		commandList.add("10:02:38.0	OFF");
+//		commandList.add("10:02:40.0	EXIT");
 	}
 	
 	@Test
