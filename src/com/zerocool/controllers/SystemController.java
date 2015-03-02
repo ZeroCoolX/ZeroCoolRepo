@@ -44,7 +44,7 @@ public class SystemController {
 		// mentality using .add() and .remove()
 		commandList = new LinkedList<ArrayList<String>>();
 
-		validCommands = "ON, OFF, EXIT, RESET, TIME, TOG, CONN, DISC, EVENT, NEWRUN, ENDRUN, PRINT, EXPORT, NUM, CLR, "
+		validCommands = "ON, OFF, EXIT, RESET, TIME, TOGGLE, CONN, DISC, EVENT, NEWRUN, ENDRUN, PRINT, EXPORT, NUM, CLR, "
 				+ "SWAP, RCL, START, FIN, TRIG, DNF";
 
 		systemTime = new SystemTime();
@@ -540,13 +540,22 @@ public class SystemController {
 		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
 		FileReader fileReader = new FileReader(eventLog.getEventFile());
 		BufferedReader reader = new BufferedReader(fileReader);
-		System.out.println("\tPRINTING EVENTLOG DATA:\n\n\n");
+		System.out.println("\tEVENTLOG DATA:\n\n\n");
 
 		while (reader.ready()) {
 			System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
 		}
 
 		System.out.println("\n\n");
+		
+		fileReader = new FileReader(eventLog.getParticipantFile());
+		reader = new BufferedReader(fileReader);
+		System.out.println("\tPARTICIPANT DATA:\n\n\n");
+		
+		while (reader.ready()) {
+			System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
+		}
+
 		reader.close();
 	}
 
@@ -575,7 +584,10 @@ public class SystemController {
 	 * End the participant within event
 	 * **/
 	public void cmdFinish() throws Exception {
-		currentTimer.finishAllParticipants();
+		currentTimer.finishAllParticipants(false);
+		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
+			eventLog.logParticipants(currentTimer.getCurrentEvent().getCurrentParticipants(), systemTime);
+		}
 	}
 
 	/**
@@ -583,7 +595,10 @@ public class SystemController {
 	 * **/
 	public void cmdDnf() throws Exception {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
-		currentTimer.setAllDNF();
+		currentTimer.finishAllParticipants(true);
+		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
+			eventLog.logParticipants(currentTimer.getCurrentEvent().getCurrentParticipants(), systemTime);
+		}
 	}
 
 	/**
@@ -616,7 +631,7 @@ public class SystemController {
 			eventLog.exit();
 		}
 		//cannot totally system exit for testing purposes...
-		//System.exit(1);
+		System.exit(1);
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class ChronoTimerSystemTests {
 			timer.createEvent(EventType.IND, "Practice " + i);
 			timer.addParticipantToStart(john);
 			timer.startNextParticipant();
-			timer.finishAllParticipants();
+			timer.finishAllParticipants(false);
 		}
 
 		// Assert
@@ -155,9 +155,9 @@ public class ChronoTimerSystemTests {
 		timer.finishParticipant(john);
 		
 		systemTime.suspend();
-		participantData = "Run   BIB      Time\n" + timer.getEventParticipantData();
+		participantData = "Run\tBIB\tTime\n" + timer.getEventParticipantData();
 
-		eventLog.logParticipants(timer.getEventParticipantData(), systemTime);
+		eventLog.logParticipants(timer.getCurrentEvent().getCurrentParticipants(), systemTime);
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(eventFile));

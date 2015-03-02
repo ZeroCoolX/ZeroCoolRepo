@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+
+import com.zerocool.entities.Participant;
 
 /**
  * @author ZeroCool
@@ -41,10 +44,13 @@ public class EventLog {
 	 * @param event
 	 * @param systemTime
 	 */
-	public void logParticipants(String eventParticipantData, SystemTime systemTime) {
+	public void logParticipants(ArrayList<Participant> eventParticipants, SystemTime systemTime) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(participantFile));
-			bw.write("Run   BIB      Time\n" + eventParticipantData);
+			bw.write("Run\tBIB\tTime\n");
+			for(Participant par: eventParticipants){
+				bw.write(par.getFormattedData()+"\n");
+			}
 			bw.close();
 		} catch (Exception e) { };
 	}

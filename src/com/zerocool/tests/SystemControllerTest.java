@@ -92,7 +92,7 @@ public class SystemControllerTest {
 				"OFF\n" +
 				"ON\n" +
 				"CONN GATE 1\n" +
-				"TOG 1\n" +
+				"TOGGLE 1\n" +
 				"NUM 315\n" +
 				"START\n" +
 				"FIN\n" +

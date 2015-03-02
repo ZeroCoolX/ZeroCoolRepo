@@ -21,11 +21,21 @@ public class Individual extends AbstractEvent {
 
 	// Overriding for more method functionality.
 	@Override
-	public void finishParticipant(Participant participant, long finishTime) {
-		super.finishParticipant(participant, finishTime);
+	public void finishParticipant(Participant participant, long finishTime, boolean dnf) {
+		super.finishParticipant(participant, finishTime, dnf);
 		participant.setIsCompeting(false);
 		competingParticipants.remove(participant);
 		participant.getLastRecord().setFinishTime(finishTime);
+		if(dnf){
+			participant.getLastRecord().setDnf(true);
+		}else{
+			participant.getLastRecord().setDnf(false);
+		}
+	}
+	
+	@Override
+	public void setAllDNF(){
+		
 	}
 	
 	/**

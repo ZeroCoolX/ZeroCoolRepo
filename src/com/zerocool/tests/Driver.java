@@ -10,7 +10,17 @@ public class Driver {
 	
 	public static void main (String [] args) throws ParseException{
 		
-		System.out.println("Testing...testing....\n\n");
+		System.out.println("\t\tChronoTimer 1009 Sprint 1.0 release run\n\n\n" +
+				"Running file load system execution\n\n");
+		
+		
+		SystemController sysCont = new SystemController();
+		File file = new File("test_files/syscontrolFastFileTest.txt");
+		sysCont.readFile(file);
+		
+		
+		
+		/*System.out.println("Testing...testing....\n\n");
 		
 		SystemController sysCont = new SystemController();
 		File file = new File("test_files/syscontrolFastFileTest.txt");
@@ -18,7 +28,7 @@ public class Driver {
 		System.out.println("\n\nTesting readFile\n\n");
 		sysCont.readFile(file);
 		System.out.println("\n\nTesting readInput\n\n");
-		//sysCont.readInput();
+		//sysCont.readInput();*/
 		
 		/*AbstractEvent[] events = new AbstractEvent[8];
 		//Calendar cal = Calendar.getInstance();

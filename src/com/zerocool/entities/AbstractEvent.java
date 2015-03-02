@@ -111,8 +111,8 @@ public abstract class AbstractEvent {
 	 * @param finishTime - The time at which the Participants finished.
 	 */
 	public void finishAllParticipants(long finishTime) {
-		while (!competingParticipants.isEmpty()) {
-			finishParticipant(competingParticipants.get(0), finishTime);
+		if (!competingParticipants.isEmpty()) {
+			finishParticipant(competingParticipants.get(0), finishTime, finishTime>0?false:true);
 		}
 	}
 
@@ -127,7 +127,7 @@ public abstract class AbstractEvent {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishParticipant(Participant participant, long finishTime) {
+	public void finishParticipant(Participant participant, long finishTime, boolean dnf) {
 		if (participant == null) {
 			throw new IllegalArgumentException("Participant can't be null.");
 		}
@@ -263,7 +263,7 @@ public abstract class AbstractEvent {
 	 * Gets the current Participants of the event.
 	 * @return The current Participants.
 	 */
-	public List<Participant> getCurrentParticipants() {
+	public ArrayList<Participant> getCurrentParticipants() {
 		return currentParticipants;
 	}
 

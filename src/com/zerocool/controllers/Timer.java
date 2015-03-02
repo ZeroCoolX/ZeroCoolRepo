@@ -75,8 +75,12 @@ public class Timer {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishAllParticipants() { 
-		currentEvent.finishAllParticipants(systemTime.getTime());
+	public void finishAllParticipants(boolean dnf) { 
+		if(dnf){
+			currentEvent.finishAllParticipants(-1);
+		}else{
+			currentEvent.finishAllParticipants(systemTime.getTime());
+		}
 	}
 	
 	/**
@@ -90,7 +94,11 @@ public class Timer {
 	 * 	competing.
 	 */
 	public void finishParticipant(Participant participant) {
-		currentEvent.finishParticipant(participant, systemTime.getTime());
+		currentEvent.finishParticipant(participant, systemTime.getTime(), false);
+	}
+	
+	public void finishAllDnfParticipants(){
+		//currentEvent.finishParticipant(participant, systemTime.getTime(), true);
 	}
 	
 	/**
@@ -115,7 +123,7 @@ public class Timer {
 	 * 	competing.
 	 */
 	public void setOneDNF(Participant participant) {
-		currentEvent.setOneDNF(participant);
+		currentEvent.finishParticipant(participant, systemTime.getTime()*0, true);
 	}
 	
 	
@@ -151,7 +159,7 @@ public class Timer {
 		String data = "";
 		
 		for (Participant par : currentEvent.getCurrentParticipants()) {
-			data += par.getFormattedData(par.getRecordCount() - 1) + "\n";
+			data += par.getFormattedData() + "\n";
 		}
 		
 		return data;

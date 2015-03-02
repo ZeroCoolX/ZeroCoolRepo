@@ -85,9 +85,15 @@ public class Participant {
 	 * @return a empty string if no data for the event ID.  Otherwise
 	 * a string of event data in the format above
 	 */
-	public String getFormattedData(int recordNum) {
-		Record rec = getRecord(recordNum);
-		return rec.getEventId() + "     " + this.id + "    " + SystemTime.formatTime(rec.getElapsedTime());
+	public String getFormattedData() {
+		Record rec = this.getLastRecord();
+		String ret = rec.getEventId() + "\t" + this.id + "\t";
+		if(!rec.getDnf()){
+			ret +=SystemTime.formatTime(rec.getElapsedTime());
+		}else {
+			ret += "DNF";
+		}
+		return ret;
 	}
 
 	/**

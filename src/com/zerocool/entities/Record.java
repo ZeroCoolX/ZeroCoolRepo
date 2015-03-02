@@ -83,6 +83,7 @@ public class Record {
 		return elapsedTime;
 	}
 	
+	
 	/**
 	 * @return The event name this record is for
 	 */
@@ -122,7 +123,7 @@ public class Record {
 	 */
 	public void setFinishTime(long finishTime) {
 		this.finishTime = finishTime;
-		elapsedTime = this.finishTime - this.startTime;
+		elapsedTime = (this.finishTime - this.startTime);
 	}
 	
 	/**
