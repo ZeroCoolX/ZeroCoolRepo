@@ -31,7 +31,7 @@ public class Timer {
 		this(systemTime);
 		createEvent(type, eventName, participants);
 		totalParticipants = participants;
-	}	
+	}
 	
 	
 	// ----- functional methods ----- \\
@@ -223,14 +223,31 @@ public class Timer {
 	}
 	
 	/**
-	 * Adds a participant to totalParticipants, currentParticipants, creates a new record and
-	 * add them to the starting queue by a given id.
+	 * Creates a new Participant if one does not already exist with the given id.
+	 * Adds the participant to totalParticipants, currentParticipants, creates a new record and
+	 * add them to the starting queue.
 	 * @param participantId - The id to create a new Participant from.
 	 */
 	public void addParticipantToStart(int participantId) {
-		addParticipantToStart(new Participant(participantId, "" + participantId));
+		addParticipantToStart("NoName " + participantId, participantId);
 	}
 	
+	/**
+	 * Creates a new Participant if one does not already exist with the given id.
+	 * Adds the participant to totalParticipants, currentParticipants, creates a new record and
+	 * add them to the starting queue.
+	 * @param name - The name of the new Participant.
+	 * @param id - The id of the new Participant.
+	 */
+	public void addParticipantToStart(String name, int id) {
+		Participant par = findParticipant(id);
+		
+		if (par == null) {
+			par = new Participant(name, id);
+		}
+		
+		addParticipantToStart(par);
+	}
 	
 	/**
 	 * Exits gracefully.

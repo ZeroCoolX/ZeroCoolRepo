@@ -32,7 +32,7 @@ public class ChronoTimerSystemTests {
 		systemTime = systemController.getSystemTime();
 		timer = systemController.getTimer();
 		eventLog = systemController.getEventLog();
-		john = new Participant(55, "John Doe");
+		john = new Participant("John Doe", 55);
 	}
 
 	@After
@@ -51,7 +51,7 @@ public class ChronoTimerSystemTests {
 			timer.createEvent(EventType.IND, "Practice " + i);
 			timer.addParticipantToStart(john);
 			timer.startNextParticipant();
-			timer.finishParticipant(john);
+			timer.finishAllParticipants();
 		}
 
 		// Assert

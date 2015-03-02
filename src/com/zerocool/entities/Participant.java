@@ -18,16 +18,15 @@ public class Participant {
 	private int id;
 	
 	private boolean isCompeting;
-	private boolean isNext;
 	
 	/**
 	 * Creates a new instance of the Participant class
 	 * @param id
 	 * @param name
 	 */
-	public Participant(int id, String name) {
-		this.id = id;
+	public Participant(String name, int id) {
 		this.name = name;
+		this.id = id;
 		records = new ArrayList<Record>();
 	}
 	
@@ -123,12 +122,9 @@ public class Participant {
 		return isCompeting;
 	}
 	
-	/**
-	 * Get if this {@link #Participant} is next to start.
-	 * @return true if the participant is next to start
-	 */
-	public boolean getIsNext() {
-		return isNext;
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Participant && id == ((Participant) other).id;
 	}
 	
 	
@@ -143,15 +139,6 @@ public class Participant {
 	}
 	
 	/**
-	 * Sets if this {@link #Participant} is next to start in an {@link #Event}.
-	 * @param next
-	 */
-	public void setIsNext(boolean next) {
-		isNext = next;
-	}
-	
-	
-	/**
 	 * Used so the system can exit "gracefully"
 	 */
 	public void exit() {
@@ -160,10 +147,9 @@ public class Participant {
 		name = null;
 		id = -1;
 		isCompeting = false;
-		isNext = false;
 		
-		for (Record rec : records) {
-			rec.exit();
+		for (int i = 0; i < records.size(); ++i) {
+			records.get(i).exit();
 		}
 		
 		System.out.println("exiting par");

@@ -111,8 +111,8 @@ public abstract class AbstractEvent {
 	 * @param finishTime - The time at which the Participants finished.
 	 */
 	public void finishAllParticipants(long finishTime) {
-		for (Participant par : competingParticipants) {
-			finishParticipant(par, finishTime);
+		while (!competingParticipants.isEmpty()) {
+			finishParticipant(competingParticipants.get(0), finishTime);
 		}
 	}
 

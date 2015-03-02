@@ -46,7 +46,7 @@ public class TestAbstractEvent {
 
 	public void addParticipants(int numParticipants) {
 		for(int i = 0; i < numParticipants; ++i) {
-			participants.add(new Participant(i, "Joe [" + i + "]"));
+			participants.add(new Participant("Joe [" + i + "]", i));
 		}
 	}
 

@@ -37,7 +37,7 @@ public class SystemControllerTest {
 	}
 	
 	@Test
-	public void testSystemController(){
+	public void testSystemController() {
 		System.out.println("\t-------Testing SystemController()-------");
 		assertNotNull(sysCont.getChannels());
 		assertNotNull(sysCont.getEventLog());
@@ -48,7 +48,7 @@ public class SystemControllerTest {
 	}
 	
 	@Test
-	public void testReadFile(){
+	public void testReadFile() {
 		System.out.println("\t-------Testing readFile()-------");
 		file = new File("test_files/syscontroljunittestfile.txt");
 		sysCont.readFile(file);
@@ -81,7 +81,7 @@ public class SystemControllerTest {
 	}
 	
 	@Test
-	public void testReadInput(){
+	public void testReadInput() {
 		System.out.println("\t-------Testing readInput()-------");
 		System.out.println("This is a special type of test...\n" +
 				"Since this is testing user input...it may not always be consistent...\n" +
@@ -184,7 +184,7 @@ public class SystemControllerTest {
 
 			testString = helperParser("12:01:26.0	FIN");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
 			
@@ -209,7 +209,7 @@ public class SystemControllerTest {
 
 			testString = helperParser("12:01:34.0	FIN");
 			sysCont.executeCommand(testString.get(4), testString);
-			assertFalse(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 			testString = helperParser("12:01:36.0	PRINT");
@@ -218,17 +218,16 @@ public class SystemControllerTest {
 			try {
 				fileReader = new FileReader(sysCont.getEventLog().getEventFile());
 				BufferedReader reader = new BufferedReader(fileReader);
-				while(reader.ready()){
+				while (reader.ready()) {
 					String line = reader.readLine();
 					assertEquals("00:00:00.0", line.substring(0, 10));
 					assertEquals("IND", line.substring(13));
-					assertEquals("1 IND 00:00:00.000", reader.readLine());
+					assertEquals("IND 00:00:00.000", reader.readLine().substring(2));
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 
 			testString = helperParser("12:01:38.0	OFF");
 			sysCont.executeCommand(testString.get(4), testString);
@@ -253,12 +252,14 @@ public class SystemControllerTest {
 		System.out.println("\t-------Successfully tested executeCommand()-------\n");
 	}
 	
-	public ArrayList<String> helperParser(String str){
+	public ArrayList<String> helperParser(String str) {
 		String [] atrArr = str.split("[:. \\t]");
 		ArrayList<String> parsedList = new ArrayList<String>();
+		
 		for (String stri : atrArr) {
 			parsedList.add(stri);
 		}
+		
 		return parsedList;
 	}
 	
