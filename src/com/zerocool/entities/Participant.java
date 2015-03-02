@@ -13,7 +13,7 @@ import com.zerocool.services.SystemTime;
 public class Participant {
 	
 	private String name;
-	private Stack<Record> records;
+	private ArrayList<Record> records;
 	
 	private int id;
 	
@@ -28,7 +28,7 @@ public class Participant {
 	public Participant(int id, String name) {
 		this.id = id;
 		this.name = name;
-		this.records = new Stack<Record>();
+		records = new ArrayList<Record>();
 	}
 	
 	
@@ -38,7 +38,7 @@ public class Participant {
 	 * Creates a new {@link #Record} for this {@link #Participant}.
 	 */
 	public void createNewRecord() {
-		records.push(new Record());
+		records.add(new Record());
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class Participant {
 	 * @param eventId - The ID of the event.
 	 */
 	public void createNewRecord(String eventName, int eventId) {
-		records.push(new Record(eventName, eventId));
+		records.add(new Record(eventName, eventId));
 	}
 	
 	// ----- Access ----- \\
@@ -56,9 +56,26 @@ public class Participant {
 	 * Returns the last {@link #Record} created for this {@link #Participant}.
 	 * If no {@link #Record} exists then it returns null
 	 * @return The last created {@link #Record}
+	 * @throws IllegalArgumentException - If recordNum is below 0 or greater than
+	 * 	the number of records.
 	 */
 	public Record getLastRecord() {
-		return this.records.isEmpty() ? null : this.records.peek();
+		return getRecord(records.size() - 1);
+	}
+	
+	/**
+	 * Returns the {@link #Record} at a specific index created for this {@link #Participant}.
+	 * If no {@link #Record} exists then it returns null
+	 * @return The last created {@link #Record}
+	 * @throws IllegalArgumentException - If recordNum is below 0 or greater than
+	 * 	the number of records.
+	 */
+	public Record getRecord(int recordNum) {
+		if (recordNum < 0 || recordNum >= records.size()) {
+			throw new IllegalArgumentException("There is no record at " + recordNum + ".");
+		}
+		
+		return records.isEmpty() ? null : records.get(recordNum);
 	}
 	
 	/**
@@ -69,27 +86,17 @@ public class Participant {
 	 * @return a empty string if no data for the event ID.  Otherwise
 	 * a string of event data in the format above
 	 */
-	public String getFormattedData(int eventID) {
-		Record eventRecord = null;
-		String result = "";
-		
-		for(Record r : this.records) {
-			if(r.getEventID() == eventID) eventRecord = r;
-		}
-		
-		if(eventRecord != null){
-			result = "" + eventID + "     " + this.id + "    " + SystemTime.formatTime(eventRecord.getElapsedTime());
-		}
-		
-		return result;
+	public String getFormattedData(int recordNum) {
+		Record rec = getRecord(recordNum);
+		return rec.getEventId() + "     " + this.id + "    " + SystemTime.formatTime(rec.getElapsedTime());
 	}
 
 	/**
 	 * Get's the ID of the participant.
 	 * @return The id of the participant.
 	 */
-	public int getID() {
-		return this.id;
+	public int getId() {
+		return id;
 	}
 	
 	/**
@@ -97,7 +104,7 @@ public class Participant {
 	 * @return The number of records.
 	 */
 	public int getRecordCount() {
-		return this.records.size();
+		return records.size();
 	}
 	
 	/**
@@ -105,7 +112,7 @@ public class Participant {
 	 * @return The name of the participant.
 	 */
 	public String getName() {
-		return this.name;
+		return name;
 	}
 	
 	/**
@@ -113,15 +120,15 @@ public class Participant {
 	 * @return true if in an event else false.
 	 */
 	public boolean getIsCompeting() {
-		return this.isCompeting;
+		return isCompeting;
 	}
 	
 	/**
 	 * Get if this {@link #Participant} is next to start.
 	 * @return true if the participant is next to start
 	 */
-	public boolean getIsNext(){
-		return this.isNext;
+	public boolean getIsNext() {
+		return isNext;
 	}
 	
 	
@@ -139,7 +146,7 @@ public class Participant {
 	 * Sets if this {@link #Participant} is next to start in an {@link #Event}.
 	 * @param next
 	 */
-	public void setIsNext(boolean next){
+	public void setIsNext(boolean next) {
 		isNext = next;
 	}
 	
@@ -147,15 +154,18 @@ public class Participant {
 	/**
 	 * Used so the system can exit "gracefully"
 	 */
-	public void exit(){
+	public void exit() {
 		System.out.println("exiting par");
+		
 		name = null;
 		id = -1;
 		isCompeting = false;
 		isNext = false;
-		while(!records.isEmpty()){
-			records.pop().exit();
+		
+		for (Record rec : records) {
+			rec.exit();
 		}
+		
 		System.out.println("exiting par");
 	}
 }

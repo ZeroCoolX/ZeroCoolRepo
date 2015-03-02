@@ -93,7 +93,7 @@ public class Record {
 	/**
 	 * @return The event Id
 	 */
-	public long getEventID() {
+	public int getEventId() {
 		return this.eventId;
 	}
 

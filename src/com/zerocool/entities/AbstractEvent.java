@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.zerocool.services.SystemTime;
+
 public abstract class AbstractEvent {
 
 	// First event will be 1, 2... so on.
@@ -237,7 +239,9 @@ public abstract class AbstractEvent {
 	 * Gets the type of the event.
 	 * @return The event type.
 	 */
-	public abstract EventType getType();
+	public EventType getType() {
+		return type;
+	}
 
 	/**
 	 * Gets the event time.
@@ -277,6 +281,16 @@ public abstract class AbstractEvent {
 	 */
 	public Queue<Participant> getStartingQueue() {
 		return this.startingQueue;
+	}
+	
+	/**
+	 * Returns all the data needed from an event to print to the log file in the format:
+	 * <EventName> '\n'
+	 * <EventId> <EventType> <SystemTime> '\n'
+	 * @return The formatted data.
+	 */
+	public String getFormattedData() {
+		return eventName + "\n" + eventId + " " + type + " " + SystemTime.formatTime(eventTime) + "\n";
 	}
 
 

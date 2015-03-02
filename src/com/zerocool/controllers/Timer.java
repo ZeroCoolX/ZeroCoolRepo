@@ -19,6 +19,7 @@ public class Timer {
 	
 	public Timer(SystemTime systemTime) {
 		this.systemTime = systemTime;
+		totalParticipants = new ArrayList<Participant>();
 	}
 	
 	public Timer(SystemTime systemTime, EventType type, String eventName) {
@@ -134,7 +135,7 @@ public class Timer {
 	
 	public Participant findParticipant(int participantId) {
 		for (Participant par : totalParticipants) {
-			if (par.getID() == participantId) {
+			if (par.getId() == participantId) {
 				return par;
 			}
 		}
@@ -142,7 +143,22 @@ public class Timer {
 		return null;
 	}
 	
-	public AbstractEvent getCurrentEvent() { 
+	public String getEventData() {
+		return currentEvent.getFormattedData();
+	}
+	
+	public String getEventParticipantData() {
+		String data = "";
+		
+		for (Participant par : currentEvent.getCurrentParticipants()) {
+			data += par.getFormattedData(par.getRecordCount() - 1) + "\n";
+		}
+		
+		return data;
+	}
+	
+	// USE ONLY FOR TESTING PURPOSES!
+	public AbstractEvent getCurrentEvent() {
 		return currentEvent;
 	}
 	
@@ -197,7 +213,11 @@ public class Timer {
 		if (participant == null) {
 			throw new IllegalArgumentException("Participant can't be null.");
 		}
-		totalParticipants.add(participant);
+		
+		if (!totalParticipants.contains(participant)) {
+			totalParticipants.add(participant);
+		}
+		
 		participant.createNewRecord(currentEvent.getEventName(), currentEvent.getEventId());
 		currentEvent.addParticipantToStart(participant);
 	}

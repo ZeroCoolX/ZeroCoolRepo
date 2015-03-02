@@ -6,6 +6,7 @@ public class Individual extends AbstractEvent {
 		super();
 		this.eventName = eventName;
 		this.eventTime = eventTime;
+		type = EventType.IND;
 	}
 
 	// Override for more method functionality.
@@ -25,11 +26,6 @@ public class Individual extends AbstractEvent {
 		participant.setIsCompeting(false);
 		competingParticipants.remove(participant);
 		participant.getLastRecord().setFinishTime(finishTime);
-	}
-	
-	@Override
-	public EventType getType() {
-		return EventType.IND;
 	}
 	
 	/**

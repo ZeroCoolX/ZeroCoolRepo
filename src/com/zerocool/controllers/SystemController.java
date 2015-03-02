@@ -8,7 +8,9 @@ package com.zerocool.controllers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -49,7 +51,7 @@ public class SystemController {
 		systemTime = new SystemTime();
 		systemTime.start();
 
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
+		currentTimer = new Timer(systemTime);
 		eventLog = new EventLog();
 
 		id = 0;
@@ -395,7 +397,7 @@ public class SystemController {
 		}
 		if (currentTimer == null) {
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
-			eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
+			eventLog.logEvent(currentTimer.getEventData(), systemTime);
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();
@@ -439,7 +441,7 @@ public class SystemController {
 			currentTimer.createEvent(EventType.PARGRP,
 					EventType.PARGRP.toString());
 		}
-		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
+		eventLog.logEvent(currentTimer.getEventData(), systemTime);
 	}
 
 	/**
@@ -449,7 +451,7 @@ public class SystemController {
 		eventLog = new EventLog();
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
 				+ "", new ArrayList<Participant>());
-		eventLog.logEvent(currentTimer.getCurrentEvent(), systemTime);
+		eventLog.logEvent(currentTimer.getEventData(), systemTime);
 
 		channels = new ArrayList<Channel>();
 		// printer set to false for insurance
@@ -539,15 +541,18 @@ public class SystemController {
 	/**
 	 * Calls the EventLog's print(may not be named this after Adam changes
 	 * stuff) method to output stats to the console
+	 * @throws IOException 
 	 * **/
-	public void cmdPrint() throws Exception {
+	public void cmdPrint() throws IOException {
 		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
 			FileReader fileReader = new FileReader(eventLog.getEventFile());
 			BufferedReader reader = new BufferedReader(fileReader);
 			System.out.println("\tPRINTING EVENTLOG DATA:\n\n\n");
-			while(reader.ready()) {
+			
+			while (reader.ready()) {
 				System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
 			}
+			
 			System.out.println("\n\n");
 			reader.close();
 	}

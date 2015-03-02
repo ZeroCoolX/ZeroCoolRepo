@@ -95,7 +95,7 @@ public class TestAbstractEvent {
 			assertNotNull(eve.getCurrentParticipants());
 			assertEquals(1, eve.getCurrentParticipants().size());
 			assertNotNull(eve.getCurrentParticipants().get(0).getLastRecord().getEventName());
-			assertNotNull(eve.getCurrentParticipants().get(0).getLastRecord().getEventID());
+			assertNotNull(eve.getCurrentParticipants().get(0).getLastRecord().getEventId());
 		}
 	}
 

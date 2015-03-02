@@ -1,15 +1,10 @@
 package com.zerocool.services;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.List;
-
-import com.zerocool.entities.AbstractEvent;
-import com.zerocool.entities.Participant;
 
 /**
  * @author ZeroCool
@@ -20,15 +15,13 @@ public class EventLog {
 	
 	private File eventFile;
 	private File participantFile;
-	private Charset charset;
 
 	/**
 	 * Creates a new instance of the {@link #EventLog} class
 	 */
 	public EventLog() {
-		eventFile = new File("eventOutput.txt");
-		participantFile = new File("competitorOut.txt");
-		charset = Charset.forName("US-ASCII");
+		eventFile = new File("eventOut.txt");
+		participantFile = new File("participantOut.txt");
 	}
 	
 	/**
@@ -36,38 +29,24 @@ public class EventLog {
 	 * @param event The event to log
 	 * @param systemTime the system time
 	 */
-	public void logEvent(AbstractEvent event, SystemTime systemTime) {
-		
-		try(PrintWriter writer = new PrintWriter(Files.newBufferedWriter(eventFile.toPath(),charset,
-				StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE))) {
-			String s = systemTime.toString() + " " + event.getEventName() +"\n" 
-					+ event.getEventId() + " " + event.getType().toString() + " " 
-					+ SystemTime.formatTime(event.getEventTime());
-			writer.println(s);
-			writer.close();
-		} catch (IOException e) {
-			System.err.format("IOException: %s%n", e);
-		}
+	public void logEvent(String eventData, SystemTime systemTime) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(eventFile));
+			bw.write(systemTime + " " + eventData);
+			bw.close();
+		} catch (Exception e) { };
 	}
 	
 	/**
 	 * @param event
 	 * @param systemTime
 	 */
-	public void logParticipants(AbstractEvent event, SystemTime systemTime) {
-		String fileLine = "Run   BIB      Time\n";
-		List<Participant> participants = event.getCurrentParticipants();
-		for(Participant p: participants) {
-			fileLine += p.getFormattedData(event.getEventId()) + "\n";
-		}
-		
-		try(PrintWriter writer = new PrintWriter(Files.newBufferedWriter(participantFile.toPath(),charset,
-			StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE))) {
-			writer.println(fileLine);
-			writer.close();
-		} catch (IOException e) {
-			System.err.format("IOException: %s%n", e);
-		}
+	public void logParticipants(String eventParticipantData, SystemTime systemTime) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(participantFile));
+			bw.write("Run   BIB      Time\n" + eventParticipantData);
+			bw.close();
+		} catch (Exception e) { };
 	}
 	
 	/**
@@ -91,17 +70,15 @@ public class EventLog {
 	 */
 	public void exit() {
 		// Attempts to delete both files
-		try{
+		try {
 			Files.delete(eventFile.toPath());
-		} catch (IOException e) {
-		}
+		} catch (IOException e) { };
+		
 		try {
 			Files.delete(participantFile.toPath());
-		} catch (IOException e) {
-		}
+		} catch (IOException e) { };
 		
 		eventFile = null;
 		participantFile = null;
-		charset = null;
 	}
 }

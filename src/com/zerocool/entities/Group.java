@@ -6,6 +6,7 @@ public class Group extends AbstractEvent {
 		super();
 		this.eventName = eventName;
 		this.eventTime = eventTime;
+		type = EventType.GRP;
 	}
 	
 	// Override for more method functionality.
@@ -25,11 +26,6 @@ public class Group extends AbstractEvent {
 		participant.setIsCompeting(false);
 		competingParticipants.remove(participant);
 		participant.getLastRecord().setFinishTime(finishTime);
-	}
-	
-	@Override
-	public EventType getType() {
-		return EventType.GRP;
 	}
 	
 	/**

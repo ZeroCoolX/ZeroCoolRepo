@@ -58,9 +58,24 @@
 ** Changes to AbstractEvent & Event classes
 	
 	All of the changes in this class were based off of the changes in the Timer class.  Basically just the implementation of all of the
-	above.  
+	above.
+	
+	- getFormattedData()
+		Returns the needed data in the specified format to print to the log file.
 	
 	
+** Changes to EventLog
+	
+	- logEvent(String eventData, SystemTime systemTime)
+		Changed it so it takes a String rather than an AbstractEvent class.
+		
+	- logParticipants(String eventParticipantData, SystemTime, systemTime)
+		Change it so it takes a String rather than an AbstractEvent class.
+		
+		
+** Changes to Test Files
+	
+	Mostly just updated them to use the most recent methods and made sure they are testing well.  >.<
 
 ----------------- End Change Log - 3/1/2015 -----------------
 
