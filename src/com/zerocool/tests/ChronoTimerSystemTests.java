@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.xml.datatype.Duration;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +65,11 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testStartAndFinished() {
 		// Arrange
+		long startTime = 0;
+		long finishTime = 0;
+		long elapsedTime = 0;
 		ArrayList<String> testString;
+		Participant competitor;
 		commandList.add("10:00:00.0	TIME 10:01:00");
 		commandList.add("10:01:02.0	ON");
 		commandList.add("10:01:04.0	OFF");
@@ -77,30 +83,75 @@ public class ChronoTimerSystemTests {
 			testString = helperParser(commandList.poll());
 			try {
 				systemController.executeCommand(testString.get(4), testString);
+				if(testString.get(4).equalsIgnoreCase("START")) 
+					startTime = systemTime.getTime();
+				if(testString.get(4).equalsIgnoreCase("FIN")) 
+					finishTime = systemTime.getTime();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
-		long startTime = systemController.getTimer().findParticipant(555).getLastRecord().getStartTime();
-		long finishTime = systemController.getTimer().findParticipant(555).getLastRecord().getFinishTime();
-		long duration = systemController.getTimer().findParticipant(555).getLastRecord().getElapsedTime();
+		timer = systemController.getTimer();
+		competitor = timer.findParticipant(555);
+		elapsedTime = competitor.getLastRecord().getElapsedTime();
+		
+
+		// use the delta so it is accurate to within 5 milliseconds
+		double delta = 5.0;
 		
 		// Assert
-		assertNotNull(systemController.getTimer().findParticipant(555));
-		assertEquals(SystemTime.getTimeInMillis(10, 01, 22), startTime);
-		assertEquals(SystemTime.getTimeInMillis(10, 02, 26), finishTime);
-		assertEquals(SystemTime.getTimeInMillis(0, 01, 04), duration);
+		assertNotNull(competitor);
+		assertEquals((double)startTime, (double)competitor.getLastRecord().getStartTime(), delta);
+		assertEquals((double)finishTime, (double)competitor.getLastRecord().getFinishTime(), delta);
+		assertEquals((double)elapsedTime, (double)competitor.getLastRecord().getElapsedTime(), delta);
+		assertFalse(timer.findParticipant(555).getLastRecord().getDnf());
 	}
 	
 	@Test
 	public void testStartAndDNF() {
 		commandList = new LinkedList<String>();
+		// Arrange
+		long startTime = 0;
+		long finishTime = -1;
+		ArrayList<String> testString;
+		Participant competitor;
+		commandList.add("10:00:00.0	TIME 10:01:00");
+		commandList.add("10:01:02.0	ON");
+		commandList.add("10:01:04.0	OFF");
+		commandList.add("10:01:06.0	ON");
+		commandList.add("10:01:20.0	NUM 555");
+		commandList.add("10:01:22.0	START");
+		commandList.add("10:03:26.0	DNF");
+		
+		// Act
+		while(!commandList.isEmpty()) {
+			testString = helperParser(commandList.poll());
+			try {
+				systemController.executeCommand(testString.get(4), testString);
+				if(testString.get(4).equalsIgnoreCase("START")) 
+					startTime = systemTime.getTime();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		timer = systemController.getTimer();
+		competitor = timer.findParticipant(555);
+		
+		// use the delta so it is accurate to within 5 milliseconds
+		double delta = 5.0;
+		
+		// Assert
+		assertNotNull(competitor);
+		assertEquals((double)startTime, (double)competitor.getLastRecord().getStartTime(), delta);
+		assertEquals(finishTime, competitor.getLastRecord().getFinishTime());
+		assertTrue(timer.findParticipant(555).getLastRecord().getDnf());
 	}
 	
 	@Test
 	public void testStartAndCanceled() {
-		commandList = new LinkedList<String>();
+		fail("Not implemented yet");
 	}
 
 	@Test
