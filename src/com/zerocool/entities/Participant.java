@@ -87,13 +87,7 @@ public class Participant {
 	 */
 	public String getFormattedData() {
 		Record rec = this.getLastRecord();
-		String ret = rec.getEventId() + "\t" + this.id + "\t";
-		if(!rec.getDnf()){
-			ret +=SystemTime.formatTime(rec.getElapsedTime());
-		}else {
-			ret += "DNF";
-		}
-		return ret;
+		return rec.getEventId() + "\t" + id + "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}
 
 	/**

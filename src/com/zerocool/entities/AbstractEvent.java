@@ -60,7 +60,11 @@ public abstract class AbstractEvent {
 		competingParticipants = new ArrayList<Participant>();
 	}
 
-
+	public void resetEventId() {
+		LASTID = 0;
+	}
+	
+	
 	// ----- override methods ----- \\
 
 	/**
@@ -110,9 +114,9 @@ public abstract class AbstractEvent {
 	 * Finish all the Participants currently competing.
 	 * @param finishTime - The time at which the Participants finished.
 	 */
-	public void finishAllParticipants(long finishTime) {
+	public void finishAllParticipants(long finishTime, boolean setDNF) {
 		if (!competingParticipants.isEmpty()) {
-			finishParticipant(competingParticipants.get(0), finishTime, finishTime>0?false:true);
+			finishParticipant(competingParticipants.get(0), finishTime, setDNF);
 		}
 	}
 
@@ -127,7 +131,7 @@ public abstract class AbstractEvent {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishParticipant(Participant participant, long finishTime, boolean dnf) {
+	public void finishParticipant(Participant participant, long finishTime, boolean setDNF) {
 		if (participant == null) {
 			throw new IllegalArgumentException("Participant can't be null.");
 		}
@@ -194,35 +198,6 @@ public abstract class AbstractEvent {
 
 		competingParticipants.clear();
 		startingQueue = newStartingQueue;
-	}
-
-	/**
-	 * Sets all competing Participants to DNF.
-	 */
-	public void setAllDNF() {
-		for (Participant par : competingParticipants) {
-			setOneDNF(par);
-		}
-	}
-	
-	/**
-	 * Sets a competing Participant to DNF.
-	 * @param participant - The Participant to set to DNF.
-	 * @throws IllegalArgumentException - The Participant is null.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
-	 */
-	public void setOneDNF(Participant participant) {
-		if (participant == null) {
-			throw new IllegalArgumentException("Participant can't be null.");
-		}
-		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
-			throw new IllegalStateException("Not a valid competing Participant.");
-		}
-		
-		participant.setIsCompeting(false);
-		participant.getLastRecord().setDnf(true);
-		competingParticipants.remove(participant);
 	}
 
 	// ----- accessors ----- \\

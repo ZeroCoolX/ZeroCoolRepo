@@ -132,12 +132,13 @@ public class Record {
 	 */
 	public void setDnf(boolean dnf) {
 		this.dnf = dnf;
+		finishTime = dnf ? -1 : finishTime;
 	}
 	
 	/**
 	 * @param eventId
 	 */
-	public void setEventId(int eventId){
+	public void setEventId(int eventId) {
 		this.eventId = eventId;
 	}
 	

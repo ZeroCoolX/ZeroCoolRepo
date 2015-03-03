@@ -33,6 +33,9 @@ public class Timer {
 		totalParticipants = participants;
 	}
 	
+	public void resetEventId() {
+		currentEvent.resetEventId();
+	}
 	
 	// ----- functional methods ----- \\
 	
@@ -75,12 +78,8 @@ public class Timer {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishAllParticipants(boolean dnf) { 
-		if(dnf){
-			currentEvent.finishAllParticipants(-1);
-		}else{
-			currentEvent.finishAllParticipants(systemTime.getTime());
-		}
+	public void finishAllParticipants(boolean setDNF) { 
+		currentEvent.finishAllParticipants(systemTime.getTime(), setDNF);
 	}
 	
 	/**
@@ -93,12 +92,8 @@ public class Timer {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishParticipant(Participant participant) {
-		currentEvent.finishParticipant(participant, systemTime.getTime(), false);
-	}
-	
-	public void finishAllDnfParticipants(){
-		//currentEvent.finishParticipant(participant, systemTime.getTime(), true);
+	public void finishParticipant(Participant participant, boolean setDNF) {
+		currentEvent.finishParticipant(participant, systemTime.getTime(), setDNF);
 	}
 	
 	/**
@@ -106,24 +101,6 @@ public class Timer {
 	 */
 	public void cancelStart() {
 		currentEvent.resetCompeting();
-	}
-	
-	/**
-	 * Sets all competing Participants to DNF.
-	 */
-	public void setAllDNF() {
-		currentEvent.setAllDNF();
-	}
-	
-	/**
-	 * Sets a competing Participant to DNF.
-	 * @param participant - The Participant to set to DNF.
-	 * @throws IllegalArgumentException - The Participant is null.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
-	 */
-	public void setOneDNF(Participant participant) {
-		currentEvent.finishParticipant(participant, systemTime.getTime()*0, true);
 	}
 	
 	

@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import javax.xml.datatype.Duration;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +23,13 @@ import com.zerocool.services.SystemTime;
 
 public class ChronoTimerSystemTests {
 
+	Queue<String> commandList;
+	
 	SystemController systemController;
 	SystemTime systemTime;
 	Timer timer;
 	EventLog eventLog;
 	Participant john;
-	Queue<String> commandList;
 
 	@Before
 	public void setUp() {
@@ -63,30 +62,34 @@ public class ChronoTimerSystemTests {
 	}
 	
 	@Test
-	public void testStartAndFinished() {
+	public void testOneStartAndFinished() {
 		// Arrange
+		ArrayList<String> testString;
+		Participant competitor;
+		
 		long startTime = 0;
 		long finishTime = 0;
 		long elapsedTime = 0;
-		ArrayList<String> testString;
-		Participant competitor;
+		
 		commandList.add("10:00:00.0	TIME 10:01:00");
 		commandList.add("10:01:02.0	ON");
-		commandList.add("10:01:04.0	OFF");
-		commandList.add("10:01:06.0	ON");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
 		commandList.add("10:02:26.0	FIN");
 		
+		timer.resetEventId();
+		
 		// Act
 		while(!commandList.isEmpty()) {
 			testString = helperParser(commandList.poll());
 			try {
-				systemController.executeCommand(testString.get(4), testString);
-				if(testString.get(4).equalsIgnoreCase("START")) 
+				if (testString.get(4).equalsIgnoreCase("START")) {
 					startTime = systemTime.getTime();
-				if(testString.get(4).equalsIgnoreCase("FIN")) 
+				}
+				if (testString.get(4).equalsIgnoreCase("FIN")) {
 					finishTime = systemTime.getTime();
+				}
+				systemController.executeCommand(testString.get(4), testString);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -94,43 +97,42 @@ public class ChronoTimerSystemTests {
 		
 		timer = systemController.getTimer();
 		competitor = timer.findParticipant(555);
-		elapsedTime = competitor.getLastRecord().getElapsedTime();
-		
-
-		// use the delta so it is accurate to within 5 milliseconds
-		double delta = 5.0;
+		elapsedTime = (finishTime - startTime);
 		
 		// Assert
 		assertNotNull(competitor);
-		assertEquals((double)startTime, (double)competitor.getLastRecord().getStartTime(), delta);
-		assertEquals((double)finishTime, (double)competitor.getLastRecord().getFinishTime(), delta);
-		assertEquals((double)elapsedTime, (double)competitor.getLastRecord().getElapsedTime(), delta);
-		assertFalse(timer.findParticipant(555).getLastRecord().getDnf());
+		assertEquals(1, competitor.getLastRecord().getEventId());
+		assertEquals(startTime, competitor.getLastRecord().getStartTime());
+		assertEquals(finishTime, competitor.getLastRecord().getFinishTime());
+		assertEquals(elapsedTime, competitor.getLastRecord().getElapsedTime());
+		assertFalse(competitor.getLastRecord().getDnf());
 	}
 	
 	@Test
-	public void testStartAndDNF() {
-		commandList = new LinkedList<String>();
+	public void testOneStartAndDNF() {
 		// Arrange
-		long startTime = 0;
-		long finishTime = -1;
 		ArrayList<String> testString;
 		Participant competitor;
+		
+		long startTime = 0;
+		long finishTime = -1;
+		
 		commandList.add("10:00:00.0	TIME 10:01:00");
 		commandList.add("10:01:02.0	ON");
-		commandList.add("10:01:04.0	OFF");
-		commandList.add("10:01:06.0	ON");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
 		commandList.add("10:03:26.0	DNF");
 		
+		timer.resetEventId();
+		
 		// Act
-		while(!commandList.isEmpty()) {
+		while (!commandList.isEmpty()) {
 			testString = helperParser(commandList.poll());
 			try {
-				systemController.executeCommand(testString.get(4), testString);
-				if(testString.get(4).equalsIgnoreCase("START")) 
+				if (testString.get(4).equalsIgnoreCase("START")) {
 					startTime = systemTime.getTime();
+				}
+				systemController.executeCommand(testString.get(4), testString);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -139,14 +141,12 @@ public class ChronoTimerSystemTests {
 		timer = systemController.getTimer();
 		competitor = timer.findParticipant(555);
 		
-		// use the delta so it is accurate to within 5 milliseconds
-		double delta = 5.0;
-		
 		// Assert
 		assertNotNull(competitor);
-		assertEquals((double)startTime, (double)competitor.getLastRecord().getStartTime(), delta);
+		assertEquals(1, competitor.getLastRecord().getEventId());
+		assertEquals(startTime, competitor.getLastRecord().getStartTime());
 		assertEquals(finishTime, competitor.getLastRecord().getFinishTime());
-		assertTrue(timer.findParticipant(555).getLastRecord().getDnf());
+		assertTrue(competitor.getLastRecord().getDnf());
 	}
 	
 	@Test
@@ -177,6 +177,8 @@ public class ChronoTimerSystemTests {
 		long[] startTime = { 0, 0, 0, 0, 0 };
 		long[] finishTime = { 0, 0, 0, 0, 0 };
 
+		timer.resetEventId();
+		
 		// Act
 		for (int i = 0; i < 5; ++i) {
 			timer.createEvent(EventType.IND, "Practice " + i);
@@ -195,7 +197,7 @@ public class ChronoTimerSystemTests {
 
 			// Stop the time so the times are equal.
 			systemTime.suspend();
-			timer.finishParticipant(john);
+			timer.finishParticipant(john, false);
 			finishTime[i] = systemTime.getTime();
 			// Start the time again for fun times.
 			systemTime.resume();
@@ -204,9 +206,12 @@ public class ChronoTimerSystemTests {
 		// Assert
 		for (int i = 0; i < 5; ++i) {
 			Record rec = john.getRecord(i);
+			assertEquals(i + 1, rec.getEventId());
+			assertEquals("Practice " + i, rec.getEventName());
 			assertEquals(startTime[i], rec.getStartTime());
 			assertEquals(finishTime[i], rec.getFinishTime());
 			assertEquals(finishTime[i] - startTime[i], rec.getElapsedTime());
+			assertFalse(rec.getDnf());
 		}
 	}
 
@@ -262,12 +267,12 @@ public class ChronoTimerSystemTests {
 			Thread.sleep(1000);
 		} catch (Exception e) { };
 		
-		timer.finishParticipant(john);
+		timer.finishParticipant(john, false);
 		
 		systemTime.suspend();
 		participantData = "Run\tBIB\tTime\n" + timer.getEventParticipantData();
 
-		eventLog.logParticipants(timer.getCurrentEvent().getCurrentParticipants(), systemTime);
+		eventLog.logParticipants(timer.getEventParticipantData(), systemTime);
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(eventFile));

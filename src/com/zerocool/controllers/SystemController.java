@@ -586,7 +586,7 @@ public class SystemController {
 	public void cmdFinish() throws Exception {
 		currentTimer.finishAllParticipants(false);
 		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
-			eventLog.logParticipants(currentTimer.getCurrentEvent().getCurrentParticipants(), systemTime);
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
 
@@ -597,7 +597,7 @@ public class SystemController {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
 		currentTimer.finishAllParticipants(true);
 		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
-			eventLog.logParticipants(currentTimer.getCurrentEvent().getCurrentParticipants(), systemTime);
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
 

@@ -123,7 +123,7 @@ public class TestAbstractEvent {
 			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
-			eve.finishAllParticipants(finishTime);
+			eve.finishAllParticipants(finishTime, false);
 			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
