@@ -33,6 +33,7 @@ public class Timer {
 		totalParticipants = participants;
 	}
 	
+	// USE FOR TESTING PURPOSES ONLY!
 	public void resetEventId() {
 		currentEvent.resetEventId();
 	}

@@ -123,8 +123,6 @@ public class ChronoTimerSystemTests {
 		commandList.add("10:01:22.0	START");
 		commandList.add("10:03:26.0	DNF");
 		
-		timer.resetEventId();
-		
 		// Act
 		while (!commandList.isEmpty()) {
 			testString = helperParser(commandList.poll());
@@ -143,7 +141,6 @@ public class ChronoTimerSystemTests {
 		
 		// Assert
 		assertNotNull(competitor);
-		assertEquals(1, competitor.getLastRecord().getEventId());
 		assertEquals(startTime, competitor.getLastRecord().getStartTime());
 		assertEquals(finishTime, competitor.getLastRecord().getFinishTime());
 		assertTrue(competitor.getLastRecord().getDnf());

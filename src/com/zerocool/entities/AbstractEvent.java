@@ -60,6 +60,7 @@ public abstract class AbstractEvent {
 		competingParticipants = new ArrayList<Participant>();
 	}
 
+	// USE FOR TESTING ONLY!
 	public void resetEventId() {
 		LASTID = 0;
 	}
@@ -115,7 +116,7 @@ public abstract class AbstractEvent {
 	 * @param finishTime - The time at which the Participants finished.
 	 */
 	public void finishAllParticipants(long finishTime, boolean setDNF) {
-		if (!competingParticipants.isEmpty()) {
+		while (!competingParticipants.isEmpty()) {
 			finishParticipant(competingParticipants.get(0), finishTime, setDNF);
 		}
 	}

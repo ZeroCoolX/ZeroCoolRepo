@@ -389,7 +389,7 @@ public class SystemController {
 			eventLog = new EventLog();
 		}
 		if (currentTimer == null) {
-			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "", new ArrayList<Participant>());
+			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
 			eventLog.logEvent(currentTimer.getEventData(), systemTime);
 		}
 		if (channels == null) {
@@ -596,7 +596,7 @@ public class SystemController {
 	public void cmdDnf() throws Exception {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
 		currentTimer.finishAllParticipants(true);
-		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
+		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
