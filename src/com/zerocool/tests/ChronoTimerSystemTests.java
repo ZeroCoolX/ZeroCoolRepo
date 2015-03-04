@@ -149,6 +149,8 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testStartAndCanceled() {
 		fail("Not implemented yet");
+		
+		// Ensure that on cancel participant is queed to start
 	}
 
 	@Test
