@@ -107,32 +107,57 @@ public class ParticipantTests {
 		
 		// Assert
 		
-		fail("Not yet implemented");
+		assertEquals(1, participant1.getRecordCount());
+		assertEquals(3, participant2.getRecordCount());
 	}
 
 	@Test
 	public void testGetName() {
-		fail("Not yet implemented");
+		// Assert
+		
+		assertEquals("Name 1", participant1.getName());
+		assertEquals("Name 2", participant2.getName());
 	}
 
 	@Test
 	public void testGetIsCompeting() {
-		fail("Not yet implemented");
+		assertFalse(participant1.getIsCompeting());
+		assertFalse(participant2.getIsCompeting());
 	}
 
 	@Test
 	public void testEqualsObject() {
-		fail("Not yet implemented");
+		Participant participant3 = new Participant("Name 3", 1);
+		
+		assertTrue(participant1.equals(participant3));
 	}
 
 	@Test
 	public void testSetIsCompeting() {
-		fail("Not yet implemented");
+		// Act 
+		participant1.setIsCompeting(true);
+		participant2.setIsCompeting(true);
+		
+		// Assert
+		assertTrue(participant1.getIsCompeting());
+		assertTrue(participant2.getIsCompeting());
 	}
 
 	@Test
 	public void testExit() {
-		fail("Not yet implemented");
+		// Act
+		participant1.exit();
+		participant2.exit();
+		
+		// Assert
+		assertEquals(-1, participant1.getId());
+		assertEquals(0, participant1.getRecordCount());
+		assertNull(participant1.getName());
+		assertFalse(participant1.getIsCompeting());
+		assertEquals(-1, participant2.getId());
+		assertEquals(0, participant2.getRecordCount());
+		assertNull(participant2.getName());
+		assertFalse(participant2.getIsCompeting());
 	}
 
 }
