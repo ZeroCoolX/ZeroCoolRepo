@@ -31,14 +31,25 @@ public class SystemTime extends StopWatch {
 	}
 	
 	/**
-	 * A helper to get a time formatted in HH:mm:ss.S
-	 * @param hours
-	 * @param minutes
-	 * @param seconds
-	 * @return
+	 * A helper to get a time formatted in HH:mm:ss.S.
+	 * @param hours - Hours to convert.
+	 * @param minutes - Minutes to convert.
+	 * @param seconds - Seconds to convert.
+	 * @return - The time in Milliseconds.
 	 */
 	public static long getTimeInMillis(int hours, int minutes, int seconds) {
 		return hours * 3600000 + minutes * 60000 + seconds * 1000;
+	}
+	
+	/**
+	 * Takes the format <HH>:<mm>:<ss>.<S> and converts it into
+	 * milliseconds.
+	 * @param formattedTime - The String in the formatted form.
+	 * @return - The time in Milliseconds from the formatted string.
+	 */
+	public static long getTimeInMillis(String formattedTime) {
+		String[] split = formattedTime.split("[:.]");
+		return SystemTime.getTimeInMillis(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])) + Integer.parseInt(split[3]);
 	}
 	
 	/**
@@ -57,8 +68,16 @@ public class SystemTime extends StopWatch {
 	 * @param seconds - The second(s) to set the time to.
 	 */
 	public void setTime(int hours, int minutes, int seconds) {
-		reset();
-		offset = getTimeInMillis(hours, minutes, seconds);
+		setTime(getTimeInMillis(hours, minutes, seconds));
+	}
+	
+	/**
+	 * A very useful method to set the time given a String in the 
+	 * format <HH>:<mm>:<ss>.<S>.
+	 * @param formattedTime - The formatted String to set the time to.
+	 */
+	public void setTime(String formattedTime) {
+		setTime(getTimeInMillis(formattedTime));
 	}
 	
 	/**

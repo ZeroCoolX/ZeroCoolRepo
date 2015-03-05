@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -14,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.Participant;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Sensor.SensorType;
@@ -51,32 +51,25 @@ public class SystemControllerTest {
 	public void testReadFile() {
 		System.out.println("\t-------Testing readFile()-------");
 		file = new File("test_files/syscontroljunittestfile.txt");
-		sysCont.readFile(file);
-		Queue<ArrayList<String>> commandList = sysCont.getCommandList();
-		ArrayList<String> cmd = commandList.remove();
-		assertEquals("TESTON", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTOFF", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTCONN", cmd.get(4));
-		assertEquals("GATE", cmd.get(5));
-		assertEquals("1", cmd.get(6));
-		cmd = commandList.remove();
-		assertEquals("TESTTOG", cmd.get(4));
-		assertEquals("1", cmd.get(5));
-		cmd = commandList.remove();
-		assertEquals("TESTNUM", cmd.get(4));
-		assertEquals("315", cmd.get(5));
-		cmd = commandList.remove();
-		assertEquals("TESTSTART", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTFIN", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTDNF", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTPRINT", cmd.get(4));
-		cmd = commandList.remove();
-		assertEquals("TESTEXIT", cmd.get(4));
+		sysCont.testReadFile(file);
+		Queue<Task> commandList = sysCont.getTaskList().getTaskList();
+		assertEquals("TIME", commandList.peek().getTaskCommand());
+		assertEquals("12:01:00.000", commandList.poll().getTaskArgumentOne());
+		assertEquals("ON", commandList.poll().getTaskCommand());
+		assertEquals("OFF", commandList.poll().getTaskCommand());
+		assertEquals("CONN", commandList.peek().getTaskCommand());
+		assertEquals("GATE", commandList.peek().getTaskArgumentOne());
+		assertEquals("1", commandList.poll().getTaskArgumentTwo());
+		assertEquals("TOGGLE", commandList.peek().getTaskCommand());
+		assertEquals("1", commandList.poll().getTaskArgumentOne());
+		assertEquals("NUM", commandList.peek().getTaskCommand());
+		assertEquals("315", commandList.poll().getTaskArgumentOne());
+		assertEquals("START", commandList.poll().getTaskCommand());
+		assertEquals("FIN", commandList.poll().getTaskCommand());
+		assertEquals("DNF", commandList.poll().getTaskCommand());
+		assertEquals("PRINT", commandList.poll().getTaskCommand());
+		assertEquals("EXIT", commandList.poll().getTaskCommand());
+		assertTrue(commandList.isEmpty());
 		System.out.println("\t-------Successfully tested readFile()-------\n");
 	}
 	
@@ -108,10 +101,10 @@ public class SystemControllerTest {
 	public void executeCommand() {
 		System.out.println("\t-------Testing executeCommand()-------");
 		try {
-			ArrayList<String> testString;
+		
+			sysCont.executeCommand("12:01:00.0	TIME 12:01:01.0");
 			
-			testString = helperParser("12:01:02.0	ON");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:02.0	ON");
 			assertNotNull(sysCont.getEventLog());
 			assertNotNull(sysCont.getTimer());
 			assertEquals(EventType.IND, sysCont.getTimer().getCurrentEvent().getType());
@@ -121,46 +114,34 @@ public class SystemControllerTest {
 			assertNotNull(sysCont.getChannels());
 			assertFalse(sysCont.getIsPrinterOn());
 
-			
-			testString = helperParser("12:01:04.0	OFF");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:04.0	OFF");
 			assertNull(sysCont.getEventLog());
 			assertNull(sysCont.getTimer());
 			assertNull(sysCont.getChannels());
 			assertFalse(sysCont.getIsPrinterOn());
 			
+			sysCont.executeCommand("12:01:08.0	ON");
 			
-			testString = helperParser("12:01:08.0	ON");
-			sysCont.executeCommand(testString.get(4), testString);
-			
-			
-			testString = helperParser("12:01:10.0	CONN GATE 1");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:10.0	CONN GATE 1");
 			assertEquals(1, sysCont.getChannels().size());
 			assertEquals(1, sysCont.getChannels().get(0).getId());
 			assertTrue(sysCont.getChannels().get(0).getState());
 			assertEquals(SensorType.GATE.toString(), sysCont.getChannels().get(0).getSensorType());
 			assertFalse(sysCont.getChannels().get(0).getSensorState());
 			
-			
-			testString = helperParser("12:01:14.0	TOGGLE 1");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:14.0	TOGGLE 1");
 			assertEquals(1, sysCont.getChannels().size());
 			assertTrue(sysCont.getChannels().get(0).getState());
 			assertFalse(sysCont.getChannels().get(0).getSensorState());
 			assertEquals(SensorType.GATE.toString(), sysCont.getChannels().get(0).getSensorType());
 			
-			
-			testString = helperParser("12:01:18.0	NUM 234");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:18.0	NUM 234");
 			assertEquals(1, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(1, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			assertEquals(1, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			assertEquals(234, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			
-			
-			testString = helperParser("12:01:20.0	NUM 315");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:20.0	NUM 315");
 			assertEquals(2, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
@@ -170,75 +151,59 @@ public class SystemControllerTest {
 				assertEquals("IND", curPar.getLastRecord().getEventName());
 			}
 			
-			testString = helperParser("12:01:22.0	START");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:22.0	START");
 			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			
-			testString = helperParser("12:01:24.0	NUM 435");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:24.0	NUM 435");
 			assertEquals(3, sysCont.getTimer().getTotalParticipants().size());
 			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			assertEquals(3, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			
-
-			testString = helperParser("12:01:26.0	FIN");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:26.0	FIN");
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
 			
-			
-			testString = helperParser("12:01:28.0	START");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:28.0	START");
 			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(435, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			
-
-			testString = helperParser("12:01:30.0	START");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:30.0	START");
 			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
-
-			testString = helperParser("12:01:32.0	DNF");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:32.0	DNF");
 			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
-
-			testString = helperParser("12:01:34.0	FIN");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:34.0	FIN");
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
-			testString = helperParser("12:01:36.0	PRINT");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:36.0	PRINT");
 			
 			try {
 				fileReader = new FileReader(sysCont.getEventLog().getEventFile());
 				BufferedReader reader = new BufferedReader(fileReader);
 				while (reader.ready()) {
 					String line = reader.readLine();
-					assertEquals("00:00:00.0", line.substring(0, 10));
+					assertEquals("12:01:08.0", line.substring(0, 10));
 					assertEquals("IND", line.substring(13));
-					assertEquals("IND 00:00:00.000", reader.readLine().substring(2));
+					assertEquals("IND 12:01:08.000", reader.readLine().substring(2));
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			testString = helperParser("12:01:38.0	OFF");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:38.0	OFF");
 			assertNull(sysCont.getEventLog());
 			assertNull(sysCont.getTimer());
 			assertNull(sysCont.getChannels());
 			assertFalse(sysCont.getIsPrinterOn());
 			
-
-			testString = helperParser("12:01:40.0	EXIT");
-			sysCont.executeCommand(testString.get(4), testString);
+			sysCont.executeCommand("12:01:40.0	EXIT");
 			assertNull(sysCont.getSystemTime());
 			assertNull(sysCont.getEventLog());
 			assertNull(sysCont.getTimer());
@@ -250,16 +215,5 @@ public class SystemControllerTest {
 			e.printStackTrace();
 		}
 		System.out.println("\t-------Successfully tested executeCommand()-------\n");
-	}
-	
-	public ArrayList<String> helperParser(String str) {
-		String [] atrArr = str.split("[:. \\t]");
-		ArrayList<String> parsedList = new ArrayList<String>();
-		
-		for (String stri : atrArr) {
-			parsedList.add(stri);
-		}
-		
-		return parsedList;
 	}
 }

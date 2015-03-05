@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -50,28 +49,17 @@ public class ChronoTimerSystemTests {
 		john = null;
 	}
 	
-	private ArrayList<String> helperParser(String str) {
-		String [] atrArr = str.split("[:. \\t]");
-		ArrayList<String> parsedList = new ArrayList<String>();
-		
-		for (String stri : atrArr) {
-			parsedList.add(stri);
-		}
-		
-		return parsedList;
-	}
-	
 	@Test
 	public void testOneStartAndFinished() {
 		// Arrange
-		ArrayList<String> testString;
+		String arguments;
 		Participant competitor;
 		
 		long startTime = 0;
 		long finishTime = 0;
 		long elapsedTime = 0;
 		
-		commandList.add("10:00:00.0	TIME 10:01:00");
+		commandList.add("10:00:00.0	TIME 10:01:00.0");
 		commandList.add("10:01:02.0	ON");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
@@ -80,20 +68,18 @@ public class ChronoTimerSystemTests {
 		timer.resetEventId();
 		
 		// Act
-		while(!commandList.isEmpty()) {
-			testString = helperParser(commandList.poll());
-			try {
-				if (testString.get(4).equalsIgnoreCase("START")) {
-					startTime = systemTime.getTime();
-				}
-				if (testString.get(4).equalsIgnoreCase("FIN")) {
-					finishTime = systemTime.getTime();
-				}
-				systemController.executeCommand(testString.get(4), testString);
+		while (!commandList.isEmpty()) {
+			arguments = commandList.poll();
+			try {			
+				systemController.executeCommand(arguments);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		startTime = SystemTime.getTimeInMillis("10:01:22.0");
+		finishTime = SystemTime.getTimeInMillis("10:02:26.0");
+		elapsedTime = finishTime - startTime;
 		
 		timer = systemController.getTimer();
 		competitor = timer.findParticipant(555);
@@ -111,7 +97,7 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testOneStartAndDNF() {
 		// Arrange
-		ArrayList<String> testString;
+		String arguments;
 		Participant competitor;
 		
 		long startTime = 0;
@@ -121,20 +107,22 @@ public class ChronoTimerSystemTests {
 		commandList.add("10:01:02.0	ON");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
-		commandList.add("10:03:26.0	DNF");
+		commandList.add("10:02:00.0	DNF");
 		
 		// Act
 		while (!commandList.isEmpty()) {
-			testString = helperParser(commandList.poll());
+			arguments = commandList.poll();
 			try {
-				if (testString.get(4).equalsIgnoreCase("START")) {
+				if (arguments.contains("START")) {
 					startTime = systemTime.getTime();
 				}
-				systemController.executeCommand(testString.get(4), testString);
+				systemController.executeCommand(arguments);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		startTime = SystemTime.getTimeInMillis("10:01:22.0");
 		
 		timer = systemController.getTimer();
 		competitor = timer.findParticipant(555);

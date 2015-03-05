@@ -1,21 +1,13 @@
 package com.zerocool.controllers;
 
-/*
- * AWESOME WORK SO FAR GUYS!!! ^___^
- * 
- * KEEP UP THE GREAT WORK!!!!!
- * */
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
+import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
@@ -26,13 +18,10 @@ public class SystemController {
 
 	public ArrayList<Channel> channels;
 
-	public Queue<ArrayList<String>> commandList;
-
+	public TaskList taskList;
 	public SystemTime systemTime;
 	public Timer currentTimer;
 	public EventLog eventLog;
-
-	public String validCommands;
 
 	public int id;
 
@@ -40,12 +29,8 @@ public class SystemController {
 
 	public SystemController() {
 		channels = new ArrayList<Channel>();
-		// create a Queue collection to store each line in a FIFO
-		// mentality using .add() and .remove()
-		commandList = new LinkedList<ArrayList<String>>();
 
-		validCommands = "ON, OFF, EXIT, RESET, TIME, TOGGLE, CONN, DISC, EVENT, NEWRUN, ENDRUN, PRINT, EXPORT, NUM, CLR, "
-				+ "SWAP, RCL, START, FIN, TRIG, DNF";
+		taskList = new TaskList();
 
 		systemTime = new SystemTime();
 
@@ -53,7 +38,7 @@ public class SystemController {
 		eventLog = new EventLog();
 
 		id = 0;
-		
+
 		systemTime.start();
 	}
 
@@ -79,151 +64,121 @@ public class SystemController {
 	}
 
 	/**
-	 * Read in timestamp and commands from a file. Each line is parsed into a
-	 * String[] using String.split(regex) and then that array is pushed into a
-	 * Queue. The entire file will be read in and stored in the queue (FIFO
-	 * mentality) before actual execution of each command takes place
-	 * 
-	 * @param file
-	 *            - The file to read from.
+	 * Takes in a file and sends it to the TaskList to add all the commands from the file
+	 * to the Queue.  Then it goes and executes all of the commands in the queue leaving
+	 * out any invalid ones that may have been in the file.
+	 * @param file - The file to read the commands from.
 	 */
 	public void readFile(File file) {
-
-		try {
-
-			// read in file from given path
-			Scanner inFile = new Scanner(new FileReader(file));
-			String[] parsedLine = null;
-
-			// while there is another line to read...read it
-			while (inFile.hasNextLine()) {
-				String line = inFile.nextLine();
-
-				// call parsing method
-				parsedLine = parse(line, "[:. \\t]");
-				ArrayList<String> parsedList = new ArrayList<String>();
-				for (String str : parsedLine) {
-					parsedList.add(str);
-				}
-
-				// check to see if the cmd is TIME, if it is Execute that
-				// immediately
-				if (parsedList.get(4).equals("TIME")) {
-					executeCommand(parsedList.get(4), parsedList);
-				} else {
-					// add line to the queue
-					commandList.add(parsedList);
+		taskList.addTask(file);
+		while (!taskList.isEmpty()) {
+			if (taskList.nextTaskCommand().equals("TIME") || taskList.nextTaskTime().equals(systemTime.toString())) {
+				Task t = taskList.pollNextTask();
+				try {
+					executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-
-			inFile.close();
-
-			// Uncomment to see the results of the input
-			while (!commandList.isEmpty() && isValidCommand(commandList.peek().get(4))) {
-				ArrayList<String> currentLine = commandList.remove();
-				String[] systemTimeArr = parse(systemTime.toString(),
-						"[:.]");
-
-				while (!(currentLine.get(0).equals(systemTimeArr[0])
-						&& currentLine.get(1).equals(systemTimeArr[1]) && currentLine
-						.get(2).equals(systemTimeArr[2]))) {
-					// KEEP CHECKING!!!!!!!!!!
-					systemTimeArr = parse(systemTime.toString(), "[:.]");
-				}
-				System.out.println(systemTime.toString() + "\t"
-						+ currentLine.get(4));
-				executeCommand(currentLine.get(4), currentLine);
-			}
-
-		} catch (Exception e) {
-			System.err.println("ERROR: " + e.getMessage());
-			e.getStackTrace();			
-			System.exit(1);
 		}
-
 	}
+	
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * This is a testing method used to just test the TaskList reading the commands
+	 * from a file without executing them all.
+	 * @param file - The file to read the commands from.
+	 */
+	public void testReadFile(File file) {
+		taskList.addTask(file);
+	}
+
 
 	/**
-	 * Helper method that parses the given string by the given regex
-	 * 
-	 * @param line
-	 *            - String that needs parsing
-	 * @param regex
-	 *            - Regular Expression which determines how to parse the String
-	 * @return newLine - String array of parsed string
-	 * **/
-	private String[] parse(String line, String regex) {
-		String[] newLine = line.split(regex);
-		return newLine;
-	}
-
-	private boolean isValidCommand(String str) {
-		return validCommands.contains(str);
-	}
-
-	/**
-	 * 
-	 * @param args
-	 * @return
+	 * When this method is called, you can enter commands from the console for the
+	 * SystemController to execute.  It scans from the console and executes the command
+	 * only if it's a valid one.  It has some error handling meaning you can enter an
+	 * invalid command and continue to enter commands.  So make some typos!
 	 */
 	public void readInput() {
-
 		try {
+			Scanner in = new Scanner(System.in);
+			String input;
+			String command;
 
-			Scanner stdIn = new Scanner(System.in);
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			String[] parsedLine = null;
 			boolean exit = false;
+
 			do {
 				System.out.print("mainframe$ ");
-				/*
-				 * Now in between parsing the command entered, and
-				 * executing/storing it for now in the queue we need to
-				 * append a timestamp of when the use typed in said command
-				 * in the format <hour>:<min>:<second>.<millisecond>
-				 */
 
-				String input = br.readLine();
-				if (input.equals("EXIT")) {
-					exit = true;
+				input = systemTime + "\t" + in.nextLine();
+
+				command = executeCommand(input, false);
+				exit = command != null ? command.equalsIgnoreCase("exit") : false;
+				
+				if (command == null) {
+					System.err.println("\nInvalid Command!\n");
+					System.err.flush();
+					System.out.flush();
 				}
 
-				// call parsing method for line
-				parsedLine = parse((systemTime.toString() + "\t" + input),
-						"[:. \\t]");
-				ArrayList<String> parsedList = new ArrayList<String>();
-				for (String str : parsedLine) {
-					parsedList.add(str);
-				}
-
-				// add line to the queue
-				commandList.add(parsedList);
-
-				if(isValidCommand(parsedList.get(4))){
-					// check to see if the cmd is TIME, if it is Execute that
-					// immediately
-					executeCommand(parsedList.get(4), parsedList);
-				}else{
-					exit = true;
-				}
-
-				// keep reading in lines from the terminal until exit has been
-				// entered
 			} while (!exit);
 
-			// Uncomment to see the results of the input
-			/*while (!commandList.isEmpty()) {
-				for (String str : commandList.remove()) {
-					System.out.println("LINE: " + str);
-				}
-			}*/
-
+			in.close();
 		} catch (Exception e) {
 			System.err.println("ERROR: " + e.getMessage());
 			e.getStackTrace();
 			System.exit(1);
 		}
 
+	}
+
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * This method returns the TaskList of the SystemController.  This is very dangerous and
+	 * should only be used for testing the SystemController.
+	 * @return - The TaskList.
+	 */
+	public TaskList getTaskList() {
+		return taskList;
+	}
+	
+	/**
+	 * Executes a command.
+	 * @param arguments - The String to parse and execute.
+	 * @return - True if executed else false.
+	 */
+	public String executeCommand(String arguments) {
+		return executeCommand(arguments, true);
+	}
+	
+	/**
+	 * This method is private because of the boolean which decides whether or not to wait for the command
+	 * to execute.  This is only used internally for readInput() otherwise it should always be waiting for
+	 * the time of the Task to execute.  This method adds a new Task to the TaskList (only if the string was
+	 * valid) and then executes it.
+	 * @param arguments - The command to execute.
+	 * @param doWait - True for timed executing else false.
+	 * @return - True if executed without issues else false.
+	 */
+	private String executeCommand(String arguments, boolean doWait) {
+		String command = null;		
+		
+		taskList.addTask(arguments);
+
+		if (!taskList.isEmpty()) {
+			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { }
+
+			Task t = taskList.pollNextTask();
+			command = t.getTaskCommand();
+			try {
+				executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return command;
 	}
 
 	/**
@@ -268,7 +223,7 @@ public class SystemController {
 	 *            case statement body.
 	 * 
 	 */
-	public void executeCommand(String cmd, ArrayList<String> args) throws Exception {
+	public void executeCommand(String cmd, String ...args) throws Exception {
 		switch (cmd) {
 		case "ON":
 			/*
@@ -301,19 +256,19 @@ public class SystemController {
 			/*
 			 * --Set the current time--
 			 */
-			cmdTime(args);
+			cmdTime(args[0]);
 			break;
 		case "TOG":
 			// stuff
-			cmdTog(Integer.parseInt(args.get(5)));
+			cmdTog(Integer.parseInt(args[0]));
 			break;
 		case "CONN":
 			// stuff
-			cmdConn(args.get(5), Integer.parseInt(args.get(6)));
+			cmdConn(args[0], Integer.parseInt(args[1]));
 			break;
 		case "DISC":
 			// stuff
-			cmdDisc(Integer.parseInt(args.get(5)));
+			cmdDisc(Integer.parseInt(args[0]));
 			break;
 		case "EVENT":
 			/*
@@ -321,7 +276,7 @@ public class SystemController {
 			 * 
 			 * --I guess this just creates a new Event? lets go with that --
 			 */
-			cmdEvent(args);
+			cmdEvent(args[0]);
 			break;
 		case "NEWRUN":
 			// stuff
@@ -338,7 +293,7 @@ public class SystemController {
 			break;
 		case "NUM":
 			// stuff
-			cmdNum(Integer.parseInt(args.get(5)));
+			cmdNum(Integer.parseInt(args[0]));
 			break;
 		case "CLR":
 			// stuff
@@ -420,19 +375,21 @@ public class SystemController {
 	 *            HR:MIN:SEC.MIL EVENT ARG **which will either be (IND, PARIND,
 	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
 	 **/
-	public void cmdEvent(ArrayList<String> args) throws Exception {
-		if (args.get(5).equals("IND")) {
+	public void cmdEvent(String event) {
+		if (event.equals("IND")) {
 			currentTimer.createEvent(EventType.IND,
 					EventType.IND.toString());
-		} else if (args.get(5).equals("PARIND")) {
+		} else if (event.equals("PARIND")) {
 			currentTimer.createEvent(EventType.PARIND,
 					EventType.PARIND.toString());
-		} else if (args.get(5).equals("GRP")) {
+		} else if (event.equals("GRP")) {
 			currentTimer.createEvent(EventType.GRP,
 					EventType.GRP.toString());
-		} else if (args.get(5).equals("PARGRP")) {
+		} else if (event.equals("PARGRP")) {
 			currentTimer.createEvent(EventType.PARGRP,
 					EventType.PARGRP.toString());
+		} else {
+			throw new IllegalArgumentException("Not a valid Event type.");
 		}
 		eventLog.logEvent(currentTimer.getEventData(), systemTime);
 	}
@@ -459,9 +416,9 @@ public class SystemController {
 	 *            - ArrayList containing the line from the file looking like:
 	 *            HR:MIN:SEC.MIL TIME HR:MIN:SEC args: 0 1 2 3 4 5 6 7
 	 * **/
-	public void cmdTime(ArrayList<String> args) throws Exception {
+	public void cmdTime(String time) throws Exception {
 		// set the current time
-		systemTime.setTime(Integer.parseInt(args.get(5)), Integer.parseInt(args.get(6)), Integer.parseInt(args.get(7)));
+		systemTime.setTime(time);
 		systemTime.start();
 	}
 
@@ -547,11 +504,11 @@ public class SystemController {
 		}
 
 		System.out.println("\n\n");
-		
+
 		fileReader = new FileReader(eventLog.getParticipantFile());
 		reader = new BufferedReader(fileReader);
 		System.out.println("\tPARTICIPANT DATA:\n\n\n");
-		
+
 		while (reader.ready()) {
 			System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
 		}
@@ -569,7 +526,7 @@ public class SystemController {
 	 * 
 	 * @param participant - ID field of the participant
 	 * **/
-	public void cmdNum(int participantId) throws Exception {
+	public void cmdNum(int participantId) {
 		currentTimer.addParticipantToStart(participantId);
 	}
 
@@ -611,27 +568,27 @@ public class SystemController {
 		systemTime.exit();
 		systemTime = null;
 		isPrinterOn = false;
+
 		if (currentTimer != null) {
 			currentTimer.exit();
 			currentTimer = null;
 		}
-		if (commandList != null) {
-			while (!commandList.isEmpty()) {
-				commandList.remove();
-			}
-			commandList = null;
-		}
+
+		taskList.clearTasks();
+		taskList = null;
+
 		if (channels != null) {
 			for (Channel chnl : channels) {
 				chnl.exit();
 			}
 		}
+
 		id = -1;
 		if (eventLog != null) {
 			eventLog.exit();
 		}
 		//cannot totally system exit for testing purposes...
-		System.exit(1);
+		//System.exit(1);
 	}
 
 	/**
@@ -719,10 +676,6 @@ public class SystemController {
 		return this.id;
 	}
 
-	public Queue<ArrayList<String>> getCommandList() {
-		return this.commandList;
-	}
-
 	/**
 	 * Set's the Printer on or off.
 	 * 
@@ -742,6 +695,10 @@ public class SystemController {
 		return this.isPrinterOn;
 	}
 
+	/**
+	 * Get's the Systime's time.
+	 * @return - The System's time.
+	 */
 	public SystemTime getSystemTime() {
 		return systemTime;
 	}
