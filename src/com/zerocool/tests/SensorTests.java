@@ -6,49 +6,67 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zerocool.entities.Sensor;
+
 public class SensorTests {
 
+	Sensor sensor;
+	
 	@Before
 	public void setUp() throws Exception {
+		sensor = new Sensor();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		sensor = null;
 	}
 
 	@Test
 	public void testSensor() {
-		fail("Not yet implemented");
+		assertNotNull(sensor);
 	}
 
 	@Test
 	public void testSensorBoolean() {
-		fail("Not yet implemented");
+		sensor = new Sensor(true);
+		assertNotNull(sensor);
+		assertTrue(sensor.getState());
 	}
 
 	@Test
 	public void testGetState() {
-		fail("Not yet implemented");
+		assertFalse(sensor.getState());
 	}
 
 	@Test
 	public void testGetType() {
-		fail("Not yet implemented");
+		String type = sensor.getType();
+		assertNotNull(type);
 	}
 
 	@Test
 	public void testSetSensorType() {
-		fail("Not yet implemented");
+		sensor.setSensorType("EYE");
+		assertEquals("EYE", sensor.getType());
+		sensor.setSensorType("GATE");
+		assertEquals("GATE", sensor.getType());
+		sensor.setSensorType("PAD");
+		assertEquals("PAD", sensor.getType());
 	}
 
 	@Test
 	public void testSetState() {
-		fail("Not yet implemented");
+		sensor.setState(true);
+		assertTrue(sensor.getState());
+		sensor.setState(false);
+		assertFalse(sensor.getState());
 	}
 
 	@Test
 	public void testExit() {
-		fail("Not yet implemented");
+		sensor.exit();
+		assertFalse(sensor.getState());
 	}
 
 }

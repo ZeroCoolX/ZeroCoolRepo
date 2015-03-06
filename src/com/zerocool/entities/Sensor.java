@@ -42,21 +42,29 @@ public class Sensor {
 		return isArmed;
 	}
 	
+	/**
+	 * Gets the type of the sensor
+	 * @return a type of either EYE, GATE or PAD
+	 */
 	public String getType(){
 		return sensorType.toString();
 	}
 	
+	/**
+	 * Sets the type of the sensor
+	 * @param the type (a type of either EYE, GATE or PAD)
+	 */
 	public void setSensorType(String type){
-		switch(type){
-		case "EYE":
-			sensorType = SensorType.EYE;
-		break;
-		case "GATE":
-			sensorType = SensorType.GATE;
-		break;
-		case "PAD":
-			sensorType = SensorType.PAD;
-		break;
+		switch(type) { 
+			case "EYE":
+				sensorType = SensorType.EYE;
+				break;
+			case "GATE":
+				sensorType = SensorType.GATE;
+				break;
+			case "PAD":
+				sensorType = SensorType.PAD;
+				break;
 		}
 	}
 	
@@ -71,6 +79,9 @@ public class Sensor {
 		isArmed = arm;
 	}
 	
+	/**
+	 * Exits the sensor when the system is exited
+	 */
 	public void exit(){
 		signal = -1;
 		isArmed = false;
