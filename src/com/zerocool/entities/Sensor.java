@@ -65,6 +65,8 @@ public class Sensor {
 			case "PAD":
 				sensorType = SensorType.PAD;
 				break;
+			default:
+				break;
 		}
 	}
 	

@@ -1,7 +1,4 @@
 package com.zerocool.entities;
-
-
-
 /**
  * 
  * @author ZeroCool
@@ -23,24 +20,27 @@ public class Channel {
 	 * Default constructor.  Nothing to do.
 	 */
 	public Channel() {
-		// nothign to do
+		// nothing to do
 	}
 	
 	/**
 	 * Constructor to add a sensor.
-	 * @param sensor - sensor to add to the channel.
+	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 */
-	public Channel(Sensor sensor) {
-		currentSensor = sensor;
+	public Channel(String type) throws IllegalArgumentException{
+		if(!type.equalsIgnoreCase("EYE") || !type.equalsIgnoreCase("GATE") || !type.equalsIgnoreCase("PAD"))
+			throw new IllegalArgumentException();
+		currentSensor = new Sensor();
+		currentSensor.setSensorType(type);
 	}
 	
 	/**
 	 * Constructor to add a sensor and set the channel active er naw.
-	 * @param sensor - sensor to add to the channel.
+	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 * @param active - set the channel to be active er naw.
 	 */
-	public Channel(Sensor sensor, boolean active) {
-		this(sensor);
+	public Channel(String type, boolean active) {
+		this(type);
 		isActive = active;
 	}
 	
@@ -55,17 +55,24 @@ public class Channel {
 		currentSensor = sensor;
 	}
 	
-	public void addSensor(String type) {
+	/**
+	 * Adds a sensor of the type of passed in string
+	 * @param type - should either be EYE, GATE, or PAD
+	 */
+	public void addSensor(String type) throws IllegalArgumentException {
+		if(!type.equalsIgnoreCase("EYE") || !type.equalsIgnoreCase("GATE") || !type.equalsIgnoreCase("PAD"))
+			throw new IllegalArgumentException();
 		currentSensor = new Sensor();
 		currentSensor.setSensorType(type);
 		currentSensor.setState(false);
 	}
 	
+	/**
+	 * Disconnects the current sensor by setting it to null.
+	 */
 	public void disconnectSensor(){
 		currentSensor = null;
 	}
-	
-	
 	
 	/**
 	 * Removes the channel's current sensor.
@@ -94,10 +101,18 @@ public class Channel {
 		return currentSensor != null ? currentSensor.getState() : false;
 	}
 	
+	/**
+	 * Gets the sensor type.  If there is no sensor type
+	 * @return
+	 */
 	public String getSensorType(){
 		return currentSensor != null ? currentSensor.getType() : null;
 	}
 	
+	/**
+	 * Gets the id of the Channel
+	 * @return - an integer representing the Channel's id number.
+	 */
 	public int getId(){
 		return id;
 	}

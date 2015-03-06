@@ -4,12 +4,23 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import com.zerocool.entities.Channel;
+import com.zerocool.entities.Sensor;
 
 public class ChannelTests {
 
+	Channel channel;
+	
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	@Before
 	public void setUp() throws Exception {
+		channel = new Channel();
 	}
 
 	@After
@@ -18,22 +29,46 @@ public class ChannelTests {
 
 	@Test
 	public void testChannel() {
-		fail("Not yet implemented");
+		assertNotNull(channel);
+		assertNull(channel.getSensorType());
+		assertFalse(channel.getState());
+		assertEquals(0, channel.getId());
 	}
 
 	@Test
-	public void testChannelSensor() {
-		fail("Not yet implemented");
+	public void testChannelString() {
+		channel = new Channel("GATE");
+		assertFalse(channel.getState());
+		assertEquals(0, channel.getId());
+		assertEquals("GATE", channel.getSensorType());
+	}
+	
+	@Test
+	public void testBadChannelString() {
+		exception.expect(IllegalArgumentException.class);
+		channel = new Channel("you suck");
 	}
 
 	@Test
-	public void testChannelSensorBoolean() {
-		fail("Not yet implemented");
+	public void testChannelStringBoolean() {
+		channel = new Channel("PAD", true);
+		assertTrue(channel.getState());
+		assertEquals(0, channel.getId());
+		assertEquals("PAD", channel.getSensorType());
+	}
+	
+	@Test
+	public void testBadChannelStringBoolean() {
+		exception.expect(IllegalArgumentException.class);
+		channel = new Channel("you suck", true);
 	}
 
 	@Test
 	public void testAddSensorSensor() {
-		fail("Not yet implemented");
+		Sensor s = new Sensor();
+		s.setSensorType("EYE");
+		channel.addSensor(s);
+		assertEquals("EYE", channel.getSensorType());
 	}
 
 	@Test
