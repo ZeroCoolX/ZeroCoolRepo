@@ -25,7 +25,7 @@ public class ParIndividual extends AbstractEvent {
 		super.finishParticipant(participant, finishTime, setDNF);
 		participant.setIsCompeting(false);
 		competingParticipants.remove(participant);
-		participant.getLastRecord().setFinishTime(setDNF ? -1 : finishTime);
+		participant.getLastRecord().setFinishTime(finishTime);
 		participant.getLastRecord().setDnf(setDNF);
 	}
 	

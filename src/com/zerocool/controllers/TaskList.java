@@ -98,14 +98,13 @@ public class TaskList {
 	 * Reads in from a file and Queues all the valid tasks.
 	 * @param file - The file to read from.
 	 * @return - True if no exceptions were thrown else false.
-	 * @throws IllegalArgumentException - File can't be null.
 	 * 
 	 * (Note: could return true even tho there are no Tasks in the Queue 
 	 * 	if all the arguments in the file were invalid.)
 	 */
 	public boolean addTask(File file) {
 		if (file == null) {
-			throw new IllegalArgumentException("Can't read from a null file can we?");
+			return false;
 		}
 		
 		try {

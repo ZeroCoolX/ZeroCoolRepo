@@ -71,7 +71,7 @@ public class SystemController {
 	 */
 	public void readFile(File file) {
 		taskList.addTask(file);
-		while (!taskList.isEmpty()) {
+		while (taskList != null && !taskList.isEmpty()) {
 			if (taskList.nextTaskCommand().equals("TIME") || taskList.nextTaskTime().equals(systemTime.toString())) {
 				Task t = taskList.pollNextTask();
 				try {
@@ -159,7 +159,7 @@ public class SystemController {
 	 * valid) and then executes it.
 	 * @param arguments - The command to execute.
 	 * @param doWait - True for timed executing else false.
-	 * @return - True if executed without issues else false.
+	 * @return - The command executed.  Null if command was invalid.
 	 */
 	private String executeCommand(String arguments, boolean doWait) {
 		String command = null;		
