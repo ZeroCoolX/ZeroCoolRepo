@@ -1,7 +1,5 @@
 package com.zerocool.entities;
 
-import com.zerocool.services.SystemTime;
-
 /**
  * @author ZeroCool
  * The Record Class.
@@ -22,9 +20,12 @@ public class Record {
 	private boolean dnf;
 	
 	/**
-	 * Creates a new instance of the Record class without values
+	 * Creates a new instance of the Record class without values.
 	 */
 	public Record() {
+		eventId = -1;
+		startTime = -1;
+		finishTime = -1;
 		elapsedTime = -1;
 	}
 	
@@ -34,6 +35,7 @@ public class Record {
 	 * @param eventId - The ID of the event.
 	 */
 	public Record(String eventName, int eventId) {
+		this();
 		this.eventName = eventName;
 		this.eventId = eventId;
 	}
@@ -48,8 +50,8 @@ public class Record {
 	 */
 	public Record(String eventName, int eventId, long startTime, long finishTime, boolean dnf) {
 		this(eventName, eventId);
-		this.startTime = startTime;
-		this.finishTime = finishTime;
+		setStartTime(startTime);
+		setFinishTime(finishTime);
 		this.dnf = dnf;
 	}
 
@@ -57,21 +59,24 @@ public class Record {
 	// ----- Access ----- \\
 	
 	/**
-	 * @return If the participant finished the event
+	 * Checks whether the Participant finished the race er naw.
+	 * @return - True if not finished else false.
 	 */
 	public boolean getDnf() {
 		return this.dnf;
 	}
 	
 	/**
-	 * @return The finish time
+	 * Gets the finish time.
+	 * @return - -1 if the race was not finished else the finish time.
 	 */
 	public long getFinishTime() {
-		return this.finishTime;
+		return dnf ? -1 : finishTime;
 	}
 	
 	/**
-	 * @return The start time
+	 * Gets the start time of the race.
+	 * @return - The start time.
 	 */
 	public long getStartTime() {
 		return this.startTime;
@@ -79,30 +84,25 @@ public class Record {
 	
 	/**
 	 * Gets the time it took to complete the race.
-	 * @return The total time from start to finish of the race or -1 if DNF or not finished.
+	 * @return - -1 if the race was not finished or finish time was not entered yet else the
+	 * 	total time from start to finish.
 	 */
 	public long getElapsedTime() {
-		return elapsedTime;
-	}
-	
-	/**
-	 * Gets the time it took to complete the race.
-	 * @return The total time from start to finish of the race or -1 if DNF or not finished.
-	 */
-	public long getElapsedTime(SystemTime systime) {
-		return (systime.getTime() - this.startTime);
+		return dnf ? -1 : elapsedTime;
 	}
 	
 	
 	/**
-	 * @return The event name this record is for
+	 * Gets the name of the Event this record is for.
+	 * @return - The event name of the record.
 	 */
 	public String getEventName() {
 		return this.eventName;
 	}
 	
 	/**
-	 * @return The event Id
+	 * Gets the id of the event this record is for.
+	 * @return - The event id of the record.
 	 */
 	public int getEventId() {
 		return this.eventId;
@@ -112,41 +112,56 @@ public class Record {
 	// ----- Mutate ----- \\
 	
 	/**
-	 * Sets the event's name
-	 * @param eventName
+	 * Sets the name of the Event this record is for.
+	 * @param eventName - The name of the event.
 	 */
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
 	
 	/**
-	 * Sets the start time of the participant's record
-	 * @param startTime
+	 * Sets the start time of the race.  The start time can't be negative and
+	 * if there was a finish time set it can't be greater than it.
+	 * @param startTime - The time to set the start time to.
+	 * @throws IllegalArgumentException - Start time is negative or greater than finish time.
 	 */
 	public void setStartTime(long startTime) {
+		if (startTime < 0 || (finishTime > -1 && startTime > finishTime)) {
+			throw new IllegalArgumentException("Start Time (" + startTime + ") can't be negative or greater than"
+					+ " the Finish Time (" + finishTime + ").");
+		}
+		
 		this.startTime = startTime;
+		elapsedTime = finishTime > -1 ? (finishTime - startTime) : elapsedTime;
 	}
 	
 	/**
-	 * Sets the finish time of the participant's record
-	 * @param finishTime
+	 * Sets the finish time of the race.  The finish time can't be negative and
+	 * finish time has to be greater than the start time.
+	 * @param finishTime - The time to set the finish time to.
+	 * @throws IllegalArgumentException - Finish time is negative or smaller than start time.
 	 */
 	public void setFinishTime(long finishTime) {
+		if (finishTime < 0 || finishTime < startTime) {
+			throw new IllegalArgumentException("Finish Time (" + finishTime + ") can't be negative or less "
+					+ "than the Start Time (" + startTime + ").");
+		}
+		
 		this.finishTime = finishTime;
-		elapsedTime = (this.finishTime - this.startTime);
+		elapsedTime = startTime > -1 ? (finishTime - startTime) : elapsedTime;
 	}
 	
 	/**
-	 * Sets whether the participant finished the event or not
-	 * @param dnf
+	 * Sets whether the participant finished the event or not.
+	 * @param dnf - True if not finished else false if finished (default).
 	 */
 	public void setDnf(boolean dnf) {
 		this.dnf = dnf;
-		finishTime = dnf ? -1 : finishTime;
 	}
 	
 	/**
-	 * @param eventId
+	 * Sets the id of the event.
+	 * @param eventId - The id to set the event id to.
 	 */
 	public void setEventId(int eventId) {
 		this.eventId = eventId;
@@ -156,14 +171,12 @@ public class Record {
 	 * Resets all the variables to 'gracefully exit'.
 	 */
 	public void exit() {
-		System.out.println("exiting rec");
 		eventName = null;
 		eventId = -1;
 		startTime = -1;
 		finishTime = -1;
 		elapsedTime = -1;
 		dnf = false;
-		System.out.println("exiting rec");
 	}
 	
 }
