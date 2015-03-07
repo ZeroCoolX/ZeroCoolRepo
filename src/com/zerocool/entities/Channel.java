@@ -60,11 +60,13 @@ public class Channel {
 	 * @param type - should either be EYE, GATE, or PAD
 	 */
 	public void addSensor(String type) throws IllegalArgumentException {
-		if(!type.equalsIgnoreCase("EYE") || !type.equalsIgnoreCase("GATE") || !type.equalsIgnoreCase("PAD"))
+		if(type.equalsIgnoreCase("EYE") || type.equalsIgnoreCase("GATE") || type.equalsIgnoreCase("PAD")){
+			currentSensor = new Sensor();
+			currentSensor.setSensorType(type);
+			currentSensor.setState(false);
+		}else{
 			throw new IllegalArgumentException();
-		currentSensor = new Sensor();
-		currentSensor.setSensorType(type);
-		currentSensor.setState(false);
+		}
 	}
 	
 	/**

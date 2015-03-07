@@ -1,5 +1,7 @@
 package com.zerocool.entities;
 
+import com.zerocool.services.SystemTime;
+
 /**
  * @author ZeroCool
  * The Record Class.
@@ -81,6 +83,14 @@ public class Record {
 	 */
 	public long getElapsedTime() {
 		return elapsedTime;
+	}
+	
+	/**
+	 * Gets the time it took to complete the race.
+	 * @return The total time from start to finish of the race or -1 if DNF or not finished.
+	 */
+	public long getElapsedTime(SystemTime systime) {
+		return (systime.getTime() - this.startTime);
 	}
 	
 	

@@ -89,6 +89,19 @@ public class Participant {
 		Record rec = this.getLastRecord();
 		return rec.getEventId() + "\t" + id + "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}
+	
+	/**
+	 * Returns the formatted data for the participant's most recent
+	 * Event
+	 * Format - <Event ID> <Participant Number> <Elapsed Time>
+	 * @param eventID
+	 * @return a empty string if no data for the event ID.  Otherwise
+	 * a string of event data in the format above
+	 */
+	public String getElapsedFormattedData(SystemTime systime) {
+		Record rec = this.getLastRecord();
+		return "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime(systime)));
+	}
 
 	/**
 	 * Get's the ID of the participant.

@@ -185,7 +185,7 @@ public class SystemController {
 	 * Execute a command.
 	 * 
 	 * @param time
-	 *            - The current time ?
+	 *            - The current time
 	 * @param cmd
 	 *            - The command to execute.
 	 * @param args
@@ -318,6 +318,14 @@ public class SystemController {
 		case "DNF":
 			// stuff
 			cmdDnf();
+			break;
+		case "ELAPSED":
+			// stuff
+			cmdElapsed();
+			break;
+		case "CANCEL":
+			// stuff
+			cmdCancel();
 			break;
 		}
 	}
@@ -535,6 +543,22 @@ public class SystemController {
 	 * **/
 	public void cmdStart() throws Exception {
 		currentTimer.startNextParticipant();
+	}
+	
+	
+	/**
+	 * stop the current participant from competing but keep them as the next queued to go
+	 * **/
+	public void cmdCancel(){
+		currentTimer.cancelStart();
+	}
+	
+	/**
+	 * get the current time
+	 * **/
+	public void cmdElapsed(){
+		System.out.println("\nElapsed Time: " + currentTimer.getEventParticipantElapsedData(systemTime)+
+				"\n");
 	}
 
 	/**
