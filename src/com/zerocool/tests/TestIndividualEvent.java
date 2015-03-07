@@ -129,5 +129,36 @@ public class TestIndividualEvent {
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
 		}
 	}
+	
+	@Test
+	public void testNextParticipant() {
+		addEvents();
+		addParticipants(1);
+		
+		for (Individual eve: events) {
+
+			long startTime = stopWatch.getTime();
+			System.out.println("Start: " + SystemTime.formatTime(startTime));
+			
+			eve.startNextParticipant(startTime);
+			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
+
+			// waits 1 second showing our participant ran the race.
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) { };
+			
+			long finishTime = stopWatch.getTime();
+			
+			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
+			
+			eve.finishParticipant(eve.getCompetingParticipants().get(0), finishTime, false);
+			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
+			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
+			
+		}
+	}
 
 }
