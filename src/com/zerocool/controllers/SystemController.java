@@ -16,16 +16,16 @@ import com.zerocool.services.SystemTime;
 
 public class SystemController {
 
-	public ArrayList<Channel> channels;
+	private ArrayList<Channel> channels;
 
-	public TaskList taskList;
-	public SystemTime systemTime;
-	public Timer currentTimer;
-	public EventLog eventLog;
+	private TaskList taskList;
+	private SystemTime systemTime;
+	private Timer currentTimer;
+	private EventLog eventLog;
 
-	public int id;
+	private int id;
 
-	public boolean isPrinterOn;
+	private boolean isPrinterOn;
 
 	public SystemController() {
 		channels = new ArrayList<Channel>();
