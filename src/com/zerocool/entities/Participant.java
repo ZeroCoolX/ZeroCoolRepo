@@ -98,7 +98,7 @@ public class Participant {
 	 * @return a empty string if no data for the event ID.  Otherwise
 	 * a string of event data in the format above
 	 */
-	public String getElapsedFormattedData(SystemTime systime) {
+	public String getElapsedFormattedData() {
 		Record rec = this.getLastRecord();
 		return "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}

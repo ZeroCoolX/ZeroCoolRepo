@@ -85,6 +85,7 @@ public class SystemController {
 	
 	/**
 	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
 	 * This is a testing method used to just test the TaskList reading the commands
 	 * from a file without executing them all.
 	 * @param file - The file to read the commands from.
@@ -135,6 +136,7 @@ public class SystemController {
 
 	/**
 	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
 	 * This method returns the TaskList of the SystemController.  This is very dangerous and
 	 * should only be used for testing the SystemController.
 	 * @return - The TaskList.
@@ -339,7 +341,7 @@ public class SystemController {
 	/**
 	 * Instantiates all the variables to initial states
 	 * **/
-	public void cmdOn() throws Exception {
+	private void cmdOn() {
 		// When the command ON is entered/read then the time needs to start.
 		// As
 		// of now upon instantiation of this class the systemTime is
@@ -365,7 +367,7 @@ public class SystemController {
 	/**
 	 * KEEP THE systemTime running set everything else to null
 	 * **/
-	public void cmdOff() throws Exception {
+	private void cmdOff() {
 		// When the command OFF is entered/read then the time needs to stop.
 		eventLog = null;
 		currentTimer = null;
@@ -383,7 +385,7 @@ public class SystemController {
 	 *            HR:MIN:SEC.MIL EVENT ARG **which will either be (IND, PARIND,
 	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
 	 **/
-	public void cmdEvent(String event) {
+	private void cmdEvent(String event) {
 		if (event.equals("IND")) {
 			currentTimer.createEvent(EventType.IND,
 					EventType.IND.toString());
@@ -405,7 +407,7 @@ public class SystemController {
 	/**
 	 * Instantiates all the variables to initial states
 	 * **/
-	public void cmdReset() throws Exception {
+	private void cmdReset() {
 		eventLog = new EventLog();
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
 				+ "", new ArrayList<Participant>());
@@ -424,7 +426,7 @@ public class SystemController {
 	 *            - ArrayList containing the line from the file looking like:
 	 *            HR:MIN:SEC.MIL TIME HR:MIN:SEC args: 0 1 2 3 4 5 6 7
 	 * **/
-	public void cmdTime(String time) throws Exception {
+	private void cmdTime(String time) {
 		// set the current time
 		systemTime.setTime(time);
 		systemTime.start();
@@ -438,7 +440,7 @@ public class SystemController {
 	 * 
 	 * @param channel - the channel ID to either set state or create new instance of
 	 * **/
-	public void cmdTog(int channel) throws Exception {
+	private void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
 			toggle.setSensorState((toggle.getSensorState() == true ? false : true));
@@ -466,7 +468,7 @@ public class SystemController {
 	 * @param channel
 	 *            - ID field for a channel to connect a sensor too
 	 * **/
-	public void cmdConn(String sensorType, int channel) throws Exception {
+	private void cmdConn(String sensorType, int channel) {
 		Channel connect = findChannel(channel);
 		if (connect != null) {
 			connect.addSensor(sensorType);
@@ -488,7 +490,7 @@ public class SystemController {
 	 * 
 	 * @param channel - the channel ID with which to set the sensor state
 	 */
-	public void cmdDisc(int channel) throws Exception {
+	private void cmdDisc(int channel) {
 		Channel disc = findChannel(channel);
 		if (disc != null) {
 			disc.setSensorState(false);
@@ -501,7 +503,7 @@ public class SystemController {
 	 * stuff) method to output stats to the console
 	 * @throws IOException 
 	 * **/
-	public void cmdPrint() throws IOException {
+	private void cmdPrint() throws IOException {
 		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
 		FileReader fileReader = new FileReader(eventLog.getEventFile());
 		BufferedReader reader = new BufferedReader(fileReader);
@@ -534,14 +536,14 @@ public class SystemController {
 	 * 
 	 * @param participant - ID field of the participant
 	 * **/
-	public void cmdNum(int participantId) {
+	private void cmdNum(int participantId) {
 		currentTimer.addParticipantToStart(participantId);
 	}
 
 	/**
 	 * start the participant within event
 	 * **/
-	public void cmdStart() throws Exception {
+	private void cmdStart() {
 		currentTimer.startNextParticipant();
 	}
 	
@@ -549,22 +551,21 @@ public class SystemController {
 	/**
 	 * stop the current participant from competing but keep them as the next queued to go
 	 * **/
-	public void cmdCancel(){
+	private void cmdCancel() {
 		currentTimer.cancelStart();
 	}
 	
 	/**
 	 * get the current time
 	 * **/
-	public void cmdElapsed(){
-		System.out.println("\nElapsed Time: " + currentTimer.getEventParticipantElapsedData(systemTime)+
-				"\n");
+	private void cmdElapsed() {
+		System.out.println("\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n");
 	}
 
 	/**
 	 * End the participant within event
 	 * **/
-	public void cmdFinish() throws Exception {
+	private void cmdFinish() {
 		currentTimer.finishAllParticipants(false);
 		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
@@ -574,7 +575,7 @@ public class SystemController {
 	/**
 	 * End the participant within event..but...not as cool as the REGULAR finish.
 	 * **/
-	public void cmdDnf() throws Exception {
+	private void cmdDnf() {
 		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
 		currentTimer.finishAllParticipants(true);
 		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
@@ -586,7 +587,7 @@ public class SystemController {
 	 * Exit the entire system. Go through all global variables calling their
 	 * .exit() function and/or set them to null
 	 * **/
-	public void cmdExit() throws Exception {
+	private void cmdExit() {
 		// when the command EXIT is entered/read then the time needs to
 		// completely die
 		systemTime.exit();

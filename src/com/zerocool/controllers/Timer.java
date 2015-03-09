@@ -143,11 +143,11 @@ public class Timer {
 		return data;
 	}
 	
-	public String getEventParticipantElapsedData(SystemTime systime) {
+	public String getEventParticipantElapsedData() {
 		String data = "";
 		
 		for (Participant par : currentEvent.getCurrentParticipants()) {
-			data += par.getElapsedFormattedData(systime) + "\n";
+			data += par.getElapsedFormattedData() + "\n";
 		}
 		
 		return data;
