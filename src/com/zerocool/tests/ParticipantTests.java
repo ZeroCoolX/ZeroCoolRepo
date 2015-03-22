@@ -88,7 +88,12 @@ public class ParticipantTests {
 
 	@Test
 	public void testGetFormattedData() {
-		fail("Not yet implemented");
+		// Arrange
+		AbstractEvent e1 = new Individual("event1", 0);
+				
+		// Act
+		participant1.createNewRecord(e1.getEventName(), e1.getEventId());
+		assertNotNull(participant1.getFormattedData());
 	}
 
 	@Test
@@ -133,7 +138,7 @@ public class ParticipantTests {
 	}
 
 	@Test
-	public void testSetIsCompeting() {
+	public void testSetIsCompetingTrue() {
 		// Act 
 		participant1.setIsCompeting(true);
 		participant2.setIsCompeting(true);
@@ -143,6 +148,17 @@ public class ParticipantTests {
 		assertTrue(participant2.getIsCompeting());
 	}
 
+	@Test
+	public void testSetIsCompetingFalse() {
+		// Act 
+		participant1.setIsCompeting(false);
+		participant2.setIsCompeting(false);
+		
+		// Assert
+		assertFalse(participant1.getIsCompeting());
+		assertFalse(participant2.getIsCompeting());
+	}
+	
 	@Test
 	public void testExit() {
 		// Act
