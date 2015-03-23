@@ -2,8 +2,13 @@ package com.zerocool.controllers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,6 +27,7 @@ public class SystemController {
 	private SystemTime systemTime;
 	private Timer currentTimer;
 	private EventLog eventLog;
+	private AutoDetect detector;
 
 	private int id;
 
@@ -36,6 +42,8 @@ public class SystemController {
 
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
 		eventLog = new EventLog();
+		
+		detector = new AutoDetect();
 
 		id = 0;
 
@@ -75,6 +83,7 @@ public class SystemController {
 			if (taskList.nextTaskCommand().equals("TIME") || taskList.nextTaskTime().equals(systemTime.toString())) {
 				Task t = taskList.pollNextTask();
 				try {
+					System.out.println("executing: " + t.getTaskCommand());
 					executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -292,6 +301,7 @@ public class SystemController {
 			break;
 		case "EXPORT":
 			// stuff
+			cmdExport();
 			break;
 		case "NUM":
 			// stuff
@@ -504,7 +514,6 @@ public class SystemController {
 	 * @throws IOException 
 	 * **/
 	private void cmdPrint() throws IOException {
-		//HAHA I think we're adding to the eventLog like 9X as much...we should have 3 entries...instead we have 27
 		FileReader fileReader = new FileReader(eventLog.getEventFile());
 		BufferedReader reader = new BufferedReader(fileReader);
 		System.out.println("\tEVENTLOG DATA:\n\n\n");
@@ -524,6 +533,52 @@ public class SystemController {
 		}
 
 		reader.close();
+	}
+	
+	/**
+	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected
+	 * @throws FileNotFoundException 
+	 * **/
+	private void cmdExport() throws FileNotFoundException{
+	   	InputStream inStream = null;
+		OutputStream outStream = null;
+	 
+		//check to see that there actually is a usb drive ready for export
+		if(!detector.usbDrives.isEmpty()){
+	    	try{
+	 
+	    	    File exportFile =new File(""+detector.usbDrives.peek()+"/RUN.txt");
+	    	    File eventLogFile = eventLog.getEventFile().getAbsoluteFile();
+	 
+	    	    inStream = new FileInputStream(eventLogFile);
+	    	    outStream = new FileOutputStream(exportFile);
+	 
+	    	    byte[] buffer = new byte[1024];
+	 
+	    	    int length;
+	    	    //copy the file content in bytes 
+	    	    while ((length = inStream.read(buffer)) > 0){
+	 
+	    	    	outStream.write(buffer, 0, length);
+	 
+	    	    }
+	 
+	    	    inStream.close();
+	    	    outStream.close();
+	 
+	    	    //delete the original file
+	    	    eventLogFile.delete();
+	 
+	    	    System.out.println("File is copied successful!");
+	 
+	    	}catch(IOException e){
+	    	    e.printStackTrace();
+	    	}
+		}else{
+			//there isn't a usb drive to export to...throw error and gtfo.
+			System.out.println("NO USB DRIVE DETECTED");
+			throw new FileNotFoundException();
+		}
 	}
 
 	/**
@@ -727,5 +782,15 @@ public class SystemController {
 	public SystemTime getSystemTime() {
 		return systemTime;
 	}
+	
+	
+	
+	
+	private boolean exportData(){
+		
+		return false;
+	}
+	
+	
 
 }
