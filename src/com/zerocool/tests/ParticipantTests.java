@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.Individual;
@@ -14,6 +16,9 @@ public class ParticipantTests {
 	Participant participant1;
 	Participant participant2;
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	@Before
 	public void setUp() throws Exception {
 		participant1 = new Participant("Name 1", 1);
@@ -94,6 +99,11 @@ public class ParticipantTests {
 		// Act
 		participant1.createNewRecord(e1.getEventName(), e1.getEventId());
 		assertNotNull(participant1.getFormattedData());
+	}
+	
+	@Test
+	public void testGetFormattedData_NoRecord() {
+		exception.expect(IllegalArgumentException.class);
 	}
 
 	@Test
