@@ -3,6 +3,7 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -186,6 +187,10 @@ public class TaskList {
 	 */
 	public String nextTaskCommand() {
 		return tasks.isEmpty() ? null : tasks.peek().getTaskCommand();
+	}
+	
+	public String[] getCommandList() {
+		return validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
 	}
 	
 	/**

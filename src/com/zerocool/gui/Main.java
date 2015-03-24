@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import com.zerocool.controllers.SystemController;
+
 import net.miginfocom.swing.MigLayout;
 
 
@@ -22,6 +24,8 @@ public class Main extends JFrame {
 	private final String title = "ChronoTimer 1009";
 	private final String version = "v0.00";
 
+	private SystemController admin;
+	
 	public static void main(String[] args) {
 		new Main();
 	}
@@ -38,6 +42,10 @@ public class Main extends JFrame {
 	}
 	
 	private void createContents() {
+		admin = new SystemController();
+		printerPanel = new Printer(admin);
+		consolePanel = new Console(admin, printerPanel);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		// A while ago I found the best layout ever and it's extremely easy to use and get complicated
@@ -66,7 +74,7 @@ public class Main extends JFrame {
 		functionButton = new JButton("Function");
 		leftPanel.add(functionButton, "cell 0 1");
 		
-		arrowPanel = new Arrows();
+		arrowPanel = new Arrows(consolePanel);
 		
 		// Done with arrowPanel so add it to the Left Panel.
 		leftPanel.add(arrowPanel, "cell 0 2");
@@ -101,7 +109,7 @@ public class Main extends JFrame {
 		// Done with the channelPanel so add it to the Center Panel.
 		centerPanel.add(channelPanel, "cell 0 0");
 		
-		consolePanel = new Console();
+		// TODO MOVED TO TOP
 		
 		// Done with the console so add it to the Center Panel.
 		centerPanel.add(consolePanel, "cell 0 1, right");		
@@ -112,7 +120,7 @@ public class Main extends JFrame {
 		rightPanel.setBorder(null);
 		rightPanel.setLayout(new MigLayout("gapy 0", "[center]", "[] 17 [] 25"));
 		
-		printerPanel = new Printer();
+		// TODO MOVED TO TOP
 		
 		// Done with the printerPanel so add it to the Right Panel.
 		rightPanel.add(printerPanel, "cell 0 0");

@@ -843,6 +843,15 @@ public class SystemController {
 	public ArrayList<Channel> getChannels() {
 		return this.channels;
 	}
+	
+	/**
+	 * Get's the list of all the valid commands.
+	 * 
+	 * @return The list of valid commands.
+	 */
+	public String[] getCommandList() {
+		return taskList.getCommandList();
+	}
 
 	/**
 	 * Get's the system's current ID.

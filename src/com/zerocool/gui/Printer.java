@@ -9,6 +9,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import com.zerocool.controllers.SystemController;
+
 import net.miginfocom.swing.MigLayout;
 
 
@@ -16,13 +18,16 @@ public class Printer extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	public Printer() {
+	private SystemController admin;
+	
+	public Printer(SystemController systemController) {
+		admin = systemController;
 		setBorder(null);
 		setLayout(new MigLayout("insets 0", "[center]", "[] 15 []"));
 		createContents();
 	}
 	
-	private void createContents() {		
+	private void createContents() {
 		powerButton = new JButton("Printer Pwr");
 		add(powerButton, "cell 0 0");
 		
@@ -37,6 +42,10 @@ public class Printer extends JPanel {
 		scrollPane = new LightScrollPane(textArea, 150, 150);
 		
 		add(scrollPane, "cell 0 1");
+	}
+	
+	public void addText(String text) {
+		textArea.setText(textArea.getText() + "\n" + text);
 	}
 	
 	private JButton powerButton;
