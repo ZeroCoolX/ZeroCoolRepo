@@ -12,6 +12,20 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
@@ -540,7 +554,8 @@ public class SystemController {
 	 * @throws FileNotFoundException 
 	 * **/
 	private void cmdExport() throws FileNotFoundException{
-	   	InputStream inStream = null;
+	   /*
+		InputStream inStream = null;
 		OutputStream outStream = null;
 	 
 		//check to see that there actually is a usb drive ready for export
@@ -579,6 +594,88 @@ public class SystemController {
 			System.out.println("NO USB DRIVE DETECTED");
 			throw new FileNotFoundException();
 		}
+		*/
+		if(!detector.usbDrives.isEmpty()){
+	
+		try {
+			 
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	 
+			// root elements
+			Document doc = docBuilder.newDocument();
+			Element rootElement = doc.createElement("event");
+			doc.appendChild(rootElement);
+	 
+			// staff elements
+			Element run = doc.createElement("run");
+			rootElement.appendChild(run);
+	 
+			// set attribute to staff element
+			/*Attr attr = doc.createAttribute("id");
+			attr.setValue("1");
+			staff.setAttributeNode(attr);*/
+	 
+			// shorten way
+			// staff.setAttribute("id", "1");
+	 
+			// firstname elements
+			Element firstname = doc.createElement("timestamp");
+			firstname.appendChild(doc.createTextNode(""+currentTimer.getEventTime()));
+			run.appendChild(firstname);
+	 
+			// lastname elements
+			Element lastname = doc.createElement("event");
+			lastname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
+			run.appendChild(lastname);
+	 
+			// staff elements
+			Element eventData = doc.createElement("event_data");
+			rootElement.appendChild(eventData);
+			
+			
+			
+			// nickname elements
+			Element nickname = doc.createElement("event_ID");
+			nickname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+			eventData.appendChild(nickname);
+	 
+			// salary elements
+			Element salary = doc.createElement("event_type");
+			salary.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
+			eventData.appendChild(salary);
+			
+			// salary elements
+			Element eventTime = doc.createElement("event_time");
+			eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventTime()));
+			eventData.appendChild(salary);
+	 
+			// write the content into xml file
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(""+detector.usbDrives.peek()+"/"+currentTimer.getCurrentEvent().getEventName()+".txt"));
+	 
+			// Output to console for testing
+			// StreamResult result = new StreamResult(System.out);
+	 
+			transformer.transform(source, result);
+	 
+			System.out.println("File saved!");
+	 
+		  } catch (ParserConfigurationException pce) {
+			pce.printStackTrace();
+		  } catch (TransformerException tfe) {
+			tfe.printStackTrace();
+		  }	
+		}else{
+			//there isn't a usb drive to export to...throw error and gtfo.
+			System.out.println("NO USB DRIVE DETECTED");
+			throw new FileNotFoundException();
+		}
+		return;
 	}
 
 	/**
