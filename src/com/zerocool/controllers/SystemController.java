@@ -656,7 +656,7 @@ public class SystemController {
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(""+detector.usbDrives.peek()+"/"+currentTimer.getCurrentEvent().getEventName()+".txt"));
+			StreamResult result = new StreamResult(new File(""+detector.usbDrives.peek()+"/"+currentTimer.getCurrentEvent().getEventName()+".xml"));
 	 
 			// Output to console for testing
 			// StreamResult result = new StreamResult(System.out);
