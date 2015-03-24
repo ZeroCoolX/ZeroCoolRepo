@@ -180,7 +180,7 @@ public class Main extends JFrame {
 			
 			public class clickedListener implements ActionListener{
 				public void actionPerformed(ActionEvent e){
-					admin.executeCommand(admin.getSystemTime().toString()+"\tON", false);
+					admin.executeCommand(admin.getSystemTime().toString()+"\tON");
 				}
 			}
 }

@@ -61,7 +61,7 @@ public class Console extends JPanel {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = textArea.getText().trim();
 					printer.addText(text);
-					admin.executeCommand(text);
+					admin.executeCommand(admin.getSystemTime().toString()+"\t"+text);
 					textArea.setText("");
 				}
 			}
