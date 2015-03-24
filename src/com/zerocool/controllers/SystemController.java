@@ -48,6 +48,7 @@ public class SystemController {
 	private boolean isPrinterOn;
 
 	public SystemController() {
+		System.out.println("dfsafgdsdfsg");
 		channels = new ArrayList<Channel>();
 
 		taskList = new TaskList();
@@ -174,6 +175,7 @@ public class SystemController {
 	 * @return - True if executed else false.
 	 */
 	public String executeCommand(String arguments) {
+		System.out.println("execute");
 		return executeCommand(arguments, true);
 	}
 	
@@ -186,13 +188,11 @@ public class SystemController {
 	 * @param doWait - True for timed executing else false.
 	 * @return - The command executed.  Null if command was invalid.
 	 */
-	private String executeCommand(String arguments, boolean doWait) {
+	public String executeCommand(String arguments, boolean doWait) {
 		String command = null;		
-		
 		taskList.addTask(arguments);
-
 		if (!taskList.isEmpty()) {
-			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { }
+			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) {}
 
 			Task t = taskList.pollNextTask();
 			command = t.getTaskCommand();
@@ -202,7 +202,6 @@ public class SystemController {
 				e.printStackTrace();
 			}
 		}
-
 		return command;
 	}
 
@@ -256,6 +255,7 @@ public class SystemController {
 			 * create new ArrayList<Channel> set isPrinterOn = false
 			 * (default state) set ID = 0 (default state)
 			 */
+			System.out.println("ON command");
 			cmdOn();
 			break;
 		case "OFF":
@@ -647,7 +647,7 @@ public class SystemController {
 			
 			// salary elements
 			Element eventTime = doc.createElement("event_time");
-			eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventTime()));
+			eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
 			eventData.appendChild(salary);
 	 
 			// write the content into xml file

@@ -130,6 +130,7 @@ public class TaskList {
 	 * @return - True if valid arguments else false.
 	 */
 	public boolean addTask(String input) {
+		System.out.println("input = " + input);
 		if (input == null) {
 			return false;
 		}
@@ -218,11 +219,13 @@ public class TaskList {
 	 */
 	private boolean parse(String input, ArrayList<String> arguments) {
 		if (!validCommands.matcher(input).find()) {
+			System.out.println("returning false");
 			return false;
 		}
 		
 		String[] split = input.split("[:. \\t]");
 		for (String s : split) {
+			System.out.println("addding = " + s);
 			arguments.add(s);
 		}
 		

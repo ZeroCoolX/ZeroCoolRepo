@@ -226,6 +226,10 @@ public abstract class AbstractEvent {
 	public long getEventTime() {
 		return eventTime;
 	}
+	
+	public String getFormattedEventTime(){
+		return SystemTime.formatTime(eventTime);
+	}
 
 	/**
 	 * Gets the event id.

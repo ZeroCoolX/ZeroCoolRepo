@@ -1,5 +1,7 @@
 package com.zerocool.gui;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -8,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.xml.bind.Marshaller.Listener;
 
 import com.zerocool.controllers.SystemController;
 
@@ -17,6 +20,8 @@ import net.miginfocom.swing.MigLayout;
 public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	private Listener clickedListener;
 	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
@@ -69,6 +74,7 @@ public class Main extends JFrame {
 		leftPanel.setLayout(new MigLayout("", "[left]", "10 [] 182 [] 15 [] 50 [] 81"));
 		
 		powerButton = new JButton("Power");
+		powerButton.addActionListener(new clickedListener());
 		leftPanel.add(powerButton, "cell 0 0");
 		
 		functionButton = new JButton("Function");
@@ -170,4 +176,11 @@ public class Main extends JFrame {
 			private JLabel backChannel;
 			private ChannelCluster backCluster;
 			private USBPort portPanel;
+			
+			
+			public class clickedListener implements ActionListener{
+				public void actionPerformed(ActionEvent e){
+					admin.executeCommand(admin.getSystemTime().toString()+"\tON", false);
+				}
+			}
 }
