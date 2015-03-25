@@ -1,6 +1,10 @@
 package com.zerocool.gui;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -54,6 +58,19 @@ public class Console extends JPanel {
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		textArea.setText("type command then enter");
 		// TEMPORARY! =OOOOOOOOOOO
+		textArea.addFocusListener(new FocusListener(){
+				@Override
+				public void focusGained(FocusEvent e) {
+					textArea.setText("");
+				}
+
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			
+		});
 		textArea.addKeyListener(new KeyListener() {
 
 			@Override
@@ -61,7 +78,7 @@ public class Console extends JPanel {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = textArea.getText().trim();
 					printer.addText(text);
-					admin.executeCommand(admin.getSystemTime().toString()+"\t"+text);
+					admin.executeCommand(admin.getSystemTime().toString()+"\t"+text.toUpperCase(), false);
 					textArea.setText("");
 				}
 			}
@@ -120,5 +137,7 @@ public class Console extends JPanel {
 	private LightScrollPane scrollPane;
 	private JTextArea textArea;
 	private JLabel description;
+	
+	
 
 }

@@ -375,11 +375,13 @@ public class SystemController {
 		// we need to converse on this
 		// printer set to false for default state
 		if (eventLog == null) {
+			System.out.println("new eventLog created");
 			eventLog = new EventLog();
 		}
 		if (currentTimer == null) {
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
 			eventLog.logEvent(currentTimer.getEventData(), systemTime);
+			System.out.println("logging event: " + currentTimer.getEventData() + "\n" + systemTime);
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();
@@ -554,47 +556,6 @@ public class SystemController {
 	 * @throws FileNotFoundException 
 	 * **/
 	private void cmdExport() throws FileNotFoundException{
-	   /*
-		InputStream inStream = null;
-		OutputStream outStream = null;
-	 
-		//check to see that there actually is a usb drive ready for export
-		if(!detector.usbDrives.isEmpty()){
-	    	try{
-	 
-	    	    File exportFile =new File(""+detector.usbDrives.peek()+"/RUN.txt");
-	    	    File eventLogFile = eventLog.getEventFile().getAbsoluteFile();
-	 
-	    	    inStream = new FileInputStream(eventLogFile);
-	    	    outStream = new FileOutputStream(exportFile);
-	 
-	    	    byte[] buffer = new byte[1024];
-	 
-	    	    int length;
-	    	    //copy the file content in bytes 
-	    	    while ((length = inStream.read(buffer)) > 0){
-	 
-	    	    	outStream.write(buffer, 0, length);
-	 
-	    	    }
-	 
-	    	    inStream.close();
-	    	    outStream.close();
-	 
-	    	    //delete the original file
-	    	    eventLogFile.delete();
-	 
-	    	    System.out.println("File is copied successful!");
-	 
-	    	}catch(IOException e){
-	    	    e.printStackTrace();
-	    	}
-		}else{
-			//there isn't a usb drive to export to...throw error and gtfo.
-			System.out.println("NO USB DRIVE DETECTED");
-			throw new FileNotFoundException();
-		}
-		*/
 		if(!detector.usbDrives.isEmpty()){
 	
 		try {
@@ -607,45 +568,31 @@ public class SystemController {
 			Element rootElement = doc.createElement("event");
 			doc.appendChild(rootElement);
 	 
-			// staff elements
 			Element run = doc.createElement("run");
 			rootElement.appendChild(run);
 	 
-			// set attribute to staff element
-			/*Attr attr = doc.createAttribute("id");
-			attr.setValue("1");
-			staff.setAttributeNode(attr);*/
-	 
-			// shorten way
-			// staff.setAttribute("id", "1");
-	 
-			// firstname elements
+
 			Element firstname = doc.createElement("timestamp");
 			firstname.appendChild(doc.createTextNode(""+currentTimer.getEventTime()));
 			run.appendChild(firstname);
 	 
-			// lastname elements
 			Element lastname = doc.createElement("event");
 			lastname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
 			run.appendChild(lastname);
 	 
-			// staff elements
 			Element eventData = doc.createElement("event_data");
 			rootElement.appendChild(eventData);
 			
 			
 			
-			// nickname elements
 			Element nickname = doc.createElement("event_ID");
 			nickname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
 			eventData.appendChild(nickname);
 	 
-			// salary elements
 			Element salary = doc.createElement("event_type");
 			salary.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
 			eventData.appendChild(salary);
 			
-			// salary elements
 			Element eventTime = doc.createElement("event_time");
 			eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
 			eventData.appendChild(salary);
@@ -720,8 +667,9 @@ public class SystemController {
 	private void cmdFinish() {
 		currentTimer.finishAllParticipants(false);
 		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
+			System.out.println("ittis empty");
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}
+		}else{System.out.println("don't really think this should happen");}
 	}
 
 	/**
