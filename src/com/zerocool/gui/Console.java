@@ -144,6 +144,8 @@ public class Console extends JPanel {
 	private JTextArea textArea;
 	private JLabel description;
 	
-	
+	public ConsoleView getConsoleView(){
+		return view;
+	}
 
 }

@@ -1,5 +1,7 @@
 package com.zerocool.gui;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -12,8 +14,10 @@ public class KeyPad extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private Key[] keys;
-	
-	public KeyPad() {
+	private ConsoleView view;
+
+	public KeyPad(Console console) {
+		this.view = console.getConsoleView();
 		setBorder(null);
 		setLayout(new MigLayout("gapy 0, gapx 0", "[fill] [fill] [fill]", "[] [] [] [] []"));
 		
@@ -26,6 +30,15 @@ public class KeyPad extends JPanel {
 		String[] keyNames = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#", "< Back" };
 		for (int i = 0; i < keys.length; ++i) {
 			keys[i] = new Key(keyNames[i]);
+			keys[i].setActionCommand(keyNames[i]);
+			keys[i].addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//Basically need to append the number pressed to the end of the current command in the ConsoleView console. 
+				}
+				
+			});
 		}
 		
 		add(keys[0], "cell 0 0");

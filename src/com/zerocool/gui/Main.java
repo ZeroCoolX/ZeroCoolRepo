@@ -150,7 +150,7 @@ public class Main extends JFrame {
 		// Done with the printerPanel so add it to the Right Panel.
 		rightPanel.add(printerPanel, "cell 0 0");
 		
-		keyPanel = new KeyPad();
+		keyPanel = new KeyPad(consolePanel);
 		
 		// Done with the keyPanel so add it to the Right Panel;
 		rightPanel.add(keyPanel, "cell 0 1");
