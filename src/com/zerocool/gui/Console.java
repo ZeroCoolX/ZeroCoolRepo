@@ -1,8 +1,6 @@
 package com.zerocool.gui;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -58,7 +56,8 @@ public class Console extends JPanel {
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		textArea.setText("type command then enter");
 		// TEMPORARY! =OOOOOOOOOOO
-		textArea.addFocusListener(new FocusListener(){
+		textArea.addFocusListener(new FocusListener() {
+			
 				@Override
 				public void focusGained(FocusEvent e) {
 					textArea.setText("");
@@ -66,8 +65,7 @@ public class Console extends JPanel {
 
 				@Override
 				public void focusLost(FocusEvent e) {
-					// TODO Auto-generated method stub
-					
+					// do nothing
 				}
 			
 		});
@@ -77,10 +75,12 @@ public class Console extends JPanel {
 			public void keyPressed(KeyEvent key) {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = textArea.getText().trim();
-					if(printer.on()){//meaning the printer is turned on
+					
+					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}
-					admin.executeCommand(admin.getSystemTime().toString()+"\t"+text.toUpperCase(), false);
+					
+					admin.executeCommand(admin.getSystemTime().toString() + "\t" + text.toUpperCase(), false);
 					textArea.setText("");
 				}
 			}

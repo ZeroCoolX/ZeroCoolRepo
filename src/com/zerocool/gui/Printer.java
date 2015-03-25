@@ -21,8 +21,6 @@ public class Printer extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private SystemController admin;
-	private int printerCounter = 1;
-	public static boolean printerIsOn = false;
 	
 	public Printer(SystemController systemController) {
 		admin = systemController;
@@ -33,17 +31,13 @@ public class Printer extends JPanel {
 	
 	private void createContents() {
 		powerButton = new JButton("Printer Pwr");
-		powerButton.addActionListener(new ActionListener(){
+		powerButton.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(printerCounter%2!=0){
-					printerIsOn = true;
-				}else{
-					printerIsOn = false;
-				}
-				++printerCounter;
+			public void actionPerformed(ActionEvent arg0) {
+				admin.setIsPrinterOn(!admin.getIsPrinterOn());
 			}
+			
 		});
 		add(powerButton, "cell 0 0");
 		
@@ -62,10 +56,6 @@ public class Printer extends JPanel {
 	
 	public void addText(String text) {
 		textArea.setText(textArea.getText() + "\n" + text);
-	}
-	
-	public boolean on(){
-		return printerIsOn;
 	}
 	
 	private JButton powerButton;

@@ -21,6 +21,6 @@ public class USBPort extends JPanel {
 		add(description);
 	}
 	
-	public static JLabel port;
+	private JLabel port;
 	private JLabel description;	
 }

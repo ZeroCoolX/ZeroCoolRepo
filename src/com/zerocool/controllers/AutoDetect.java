@@ -3,7 +3,6 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.util.Stack;
 
-import com.zerocool.gui.USBPort;
 /**
  * AutoDetect FIRST stores a list of the writable open directories within the system
  * Then, it continuously creates/(overwrites each time) another list of the writable open directories within the system AT THIS MOMENT IN TIME
@@ -25,47 +24,44 @@ import com.zerocool.gui.USBPort;
 public class AutoDetect {
 
 	private static File volumes = new File("/Volumes");
-    private static File oldFiles[] = volumes.listFiles();
-    private static File files[];
-    
-    public static Stack<File> usbDrives = new Stack<File>();
-    
-    	public AutoDetect(){
-    		main(new String[1]);
-    	}
+	private static File oldFiles[] = volumes.listFiles();
+	private static File files[];
 
- 
-	    public static void main(String[] args) {
-	        AutoDetect.waitForNotifying();
-	    }
+	public static Stack<File> usbDrives = new Stack<File>();
 
-	    public static void waitForNotifying() {
-	        Thread t = new Thread(new Runnable() {
-	            public void run() {
-	                while (true) {
-	                    try {
-	                        Thread.sleep(100);
-	                        volumes = new File("/Volumes");
-	                        files = volumes.listFiles();
-	                    } catch (InterruptedException e) {
-	                        e.printStackTrace();
-	                    }
-	                    if (files.length > oldFiles.length) {
-	                        System.out.println("new drive detected");
-	                        USBPort.port.setText("[connected]");
-	                        oldFiles = volumes.listFiles();
-	                        System.out.println("drive"+oldFiles[oldFiles.length-1]+" detected");
-	                        usbDrives.push(oldFiles[oldFiles.length-1]);
-	                    } else if (files.length < oldFiles.length) {
-	                    System.out.println(oldFiles[oldFiles.length-1]+" drive removed");
-            			USBPort.port.setText("[         ]");
-	                        oldFiles = volumes.listFiles();
-	                        usbDrives.pop();
-	                    }
+	public AutoDetect(){
+		main(new String[1]);
+	}
 
-	                }
-	            }
-	        });
-	        t.start();
-	    }
+
+	public static void main(String[] args) {
+		AutoDetect.waitForNotifying();
+	}
+
+	public static void waitForNotifying() {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100);
+						volumes = new File("/Volumes");
+						files = volumes.listFiles();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (files.length > oldFiles.length) {
+						System.out.println("new drive detected");
+						oldFiles = volumes.listFiles();
+						System.out.println("drive"+oldFiles[oldFiles.length-1]+" detected");
+						usbDrives.push(oldFiles[oldFiles.length-1]);
+					} else if (files.length < oldFiles.length) {
+						System.out.println(oldFiles[oldFiles.length-1]+" drive removed");
+						oldFiles = volumes.listFiles();
+						usbDrives.pop();
+					}
+				}
+			}
+		});
+		t.start();
+	}
 }

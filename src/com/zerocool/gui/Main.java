@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.xml.bind.Marshaller.Listener;
 
 import com.zerocool.controllers.SystemController;
 
@@ -21,17 +20,15 @@ public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Listener clickedListener;
-	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
 	
 	private final String title = "ChronoTimer 1009";
 	private final String version = "v0.00";
-	
-	private int powerCounter = 1;
 
 	private SystemController admin;
+	
+	private boolean powerButtonPressed;
 	
 	public static void main(String[] args) {
 		new Main();
@@ -76,7 +73,16 @@ public class Main extends JFrame {
 		leftPanel.setLayout(new MigLayout("", "[left]", "10 [] 182 [] 15 [] 50 [] 81"));
 		
 		powerButton = new JButton("Power");
-		powerButton.addActionListener(new clickedListener());
+		powerButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String time = admin.getSystemTime().toString();
+				admin.executeCommand(!powerButtonPressed ? time + "\tON" : time + "\tOFF", false);
+				powerButtonPressed = !powerButtonPressed;
+			}
+			
+		});
 		leftPanel.add(powerButton, "cell 0 0");
 		
 		functionButton = new JButton("Function");
@@ -178,16 +184,4 @@ public class Main extends JFrame {
 			private JLabel backChannel;
 			private ChannelCluster backCluster;
 			private USBPort portPanel;
-			
-			
-			public class clickedListener implements ActionListener{
-				public void actionPerformed(ActionEvent e){
-					if(powerCounter%2!=0){
-						admin.executeCommand(admin.getSystemTime().toString()+"\tON", false);
-					}else{
-						admin.executeCommand(admin.getSystemTime().toString()+"\tOFF", false);
-					}
-					++powerCounter;
-				}
-			}
 }

@@ -53,7 +53,6 @@ public class SystemController {
 	private boolean isPrinterOn;
 
 	public SystemController() {
-		System.out.println("dfsafgdsdfsg");
 		channels = new ArrayList<Channel>();
 
 		taskList = new TaskList();
