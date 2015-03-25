@@ -102,7 +102,6 @@ public class SystemController {
 			if (taskList.nextTaskCommand().equals("TIME") || taskList.nextTaskTime().equals(systemTime.toString())) {
 				Task t = taskList.pollNextTask();
 				try {
-					System.out.println("executing: " + t.getTaskCommand());
 					executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -179,7 +178,6 @@ public class SystemController {
 	 * @return - True if executed else false.
 	 */
 	public String executeCommand(String arguments) {
-		System.out.println("execute");
 		return executeCommand(arguments, true);
 	}
 	
@@ -259,7 +257,6 @@ public class SystemController {
 			 * create new ArrayList<Channel> set isPrinterOn = false
 			 * (default state) set ID = 0 (default state)
 			 */
-			System.out.println("ON command");
 			cmdOn();
 			break;
 		case "OFF":
@@ -287,7 +284,7 @@ public class SystemController {
 			 */
 			cmdTime(args[0]);
 			break;
-		case "TOG":
+		case "TOGGLE":
 			// stuff
 			cmdTog(Integer.parseInt(args[0]));
 			break;
@@ -495,12 +492,13 @@ public class SystemController {
 	private void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
-			toggle.setSensorState((toggle.getSensorState() == true ? false : true));
+			toggle.setState(false);
+			//toggle.setSensorState((toggle.getSensorState() == true ? false : true));
 		} else {
 			Channel chnl = new Channel();
 			chnl.setID(channel);
 			chnl.setState(true);
-			chnl.setSensorState(true);
+			//chnl.setSensorState(true);
 			channels.add(chnl);
 		}
 	}
@@ -693,7 +691,6 @@ public class SystemController {
 	private void cmdFinish() {
 		currentTimer.finishAllParticipants(false);
 		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
-			System.out.println("ittis empty");
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}else{System.out.println("don't really think this should happen");}
 	}

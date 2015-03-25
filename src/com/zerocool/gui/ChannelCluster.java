@@ -32,11 +32,18 @@ public class ChannelCluster extends JPanel {
 			add(labels[i], "cell " + i % 4 + " " + (i < 4 ? 0 : 2));
 			
 			radios[i] = new JRadioButton();
+			radios[i].setActionCommand(""+(i+1));
 			radios[i].addActionListener(new ActionListener(){
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//need to connect the channel...or maybe this doesn't need ot happen here...idk
+					if(((JRadioButton)e.getSource()).isSelected()){
+						System.out.println("toggle channel " + e.getActionCommand());
+						Main.admin.executeCommand(Main.admin.getSystemTime() + "\tTOGGLE "+e.getActionCommand(), false);
+					}else{
+						System.out.println("toggle channel " + e.getActionCommand());
+						Main.admin.executeCommand(Main.admin.getSystemTime() + "\tTOGGLE "+e.getActionCommand(), false);
+					}
 				}
 			});
 			add(radios[i], "cell " + i % 4 + " " + (i < 4 ? 1 : 3));
