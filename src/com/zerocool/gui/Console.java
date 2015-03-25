@@ -77,7 +77,9 @@ public class Console extends JPanel {
 			public void keyPressed(KeyEvent key) {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = textArea.getText().trim();
-					printer.addText(text);
+					if(printer.on()){//meaning the printer is turned on
+						printer.addText(text);
+					}
 					admin.executeCommand(admin.getSystemTime().toString()+"\t"+text.toUpperCase(), false);
 					textArea.setText("");
 				}
