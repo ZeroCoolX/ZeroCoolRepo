@@ -28,6 +28,8 @@ public class Main extends JFrame {
 	
 	private final String title = "ChronoTimer 1009";
 	private final String version = "v0.00";
+	
+	private int powerCounter = 1;
 
 	private SystemController admin;
 	
@@ -180,7 +182,12 @@ public class Main extends JFrame {
 			
 			public class clickedListener implements ActionListener{
 				public void actionPerformed(ActionEvent e){
-					admin.executeCommand(admin.getSystemTime().toString()+"\tON", false);
+					if(powerCounter%2!=0){
+						admin.executeCommand(admin.getSystemTime().toString()+"\tON", false);
+					}else{
+						admin.executeCommand(admin.getSystemTime().toString()+"\tOFF", false);
+					}
+					++powerCounter;
 				}
 			}
 }

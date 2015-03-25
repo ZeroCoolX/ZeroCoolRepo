@@ -380,8 +380,8 @@ public class SystemController {
 		}
 		if (currentTimer == null) {
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
-			eventLog.logEvent(currentTimer.getEventData(), systemTime);
-			System.out.println("logging event: " + currentTimer.getEventData() + "\n" + systemTime);
+			//NO event should be logging because...there isn't en event to be logged till the user specifies what event to run with the cmd "for example": EVENT IND
+			//eventLog.logEvent(currentTimer.getEventData(), systemTime);
 		}
 		if (channels == null) {
 			channels = new ArrayList<Channel>();
