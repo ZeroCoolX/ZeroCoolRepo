@@ -116,10 +116,10 @@ public class Main extends JFrame {
 		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
 		channelPanel.add(titleLabel, "cell 0 0");
 		
-		startGroup = new ChannelGroup(true);
+		startGroup = new ChannelGroup(true, admin);
 		channelPanel.add(startGroup, "cell 0 1");
 		
-		finishGroup = new ChannelGroup(false);
+		finishGroup = new ChannelGroup(false, admin);
 		channelPanel.add(finishGroup, "cell 0 2");
 		
 		// Done with the channelPanel so add it to the Center Panel.
