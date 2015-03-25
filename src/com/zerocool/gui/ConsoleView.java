@@ -24,7 +24,9 @@ public class ConsoleView {
 		running = new ArrayList<Participant>();
 		finished = new ArrayList<Participant>();
 		admin = systemController;
-		cmds = admin.getCommandList();
+		//boolean parameter indicates if the extended command list should be used or not. 
+		//The NON extended list has cammands like: EVENT, CONN...etc  The extended list has commands like EVENT IND, EVENT PARIND, EVENT GRP, EVENT PARGRP, CONN GATE, CONN EYE...etc
+		cmds = admin.getCommandList(true);
 		index = -1;
 	}
 	

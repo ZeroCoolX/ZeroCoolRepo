@@ -85,6 +85,7 @@ public class TaskList {
 	
 	// Holds all the valid commands to search through when parsing.
 	private Pattern validCommands;
+	private Pattern extendedCommands;
 	
 	/**
 	 * Default constructor that initializes the Queue and valid commands.
@@ -92,6 +93,8 @@ public class TaskList {
 	public TaskList() {
 		tasks = new LinkedList<Task>();
 		validCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN|DISC|EVENT|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|"
+				+ "START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
+		extendedCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN GATE|CONN EYE|CONN PAD|DISC|EVENT IND|EVENT GRP|EVENT PARIND|EVENT PARGRP|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|"
 				+ "START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
 	}
 	
@@ -190,8 +193,8 @@ public class TaskList {
 		return tasks.isEmpty() ? null : tasks.peek().getTaskCommand();
 	}
 	
-	public String[] getCommandList() {
-		return validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
+	public String[] getCommandList(boolean useExtendedList) {
+		return useExtendedList ? extendedCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|") : validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
 	}
 	
 	/**

@@ -820,8 +820,8 @@ public class SystemController {
 	 * 
 	 * @return The list of valid commands.
 	 */
-	public String[] getCommandList() {
-		return taskList.getCommandList();
+	public String[] getCommandList(boolean useExtendedList) {
+		return taskList.getCommandList(useExtendedList);
 	}
 
 	/**
