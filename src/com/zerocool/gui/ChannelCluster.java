@@ -1,4 +1,7 @@
 package com.zerocool.gui;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -29,6 +32,13 @@ public class ChannelCluster extends JPanel {
 			add(labels[i], "cell " + i % 4 + " " + (i < 4 ? 0 : 2));
 			
 			radios[i] = new JRadioButton();
+			radios[i].addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//need to connect the channel...or maybe this doesn't need ot happen here...idk
+				}
+			});
 			add(radios[i], "cell " + i % 4 + " " + (i < 4 ? 1 : 3));
 		}
 	}
