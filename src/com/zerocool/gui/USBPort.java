@@ -14,13 +14,13 @@ public class USBPort extends JPanel {
 	}
 	
 	private void createContents() {
-		port = new JLabel("[        ]");
+		port = new JLabel("[         ]");
 		add(port);
 		
 		description = new JLabel("USB PORT");
 		add(description);
 	}
 	
-	private JLabel port;
+	public static JLabel port;
 	private JLabel description;	
 }

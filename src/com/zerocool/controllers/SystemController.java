@@ -34,6 +34,7 @@ import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
+import com.zerocool.gui.USBPort;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
