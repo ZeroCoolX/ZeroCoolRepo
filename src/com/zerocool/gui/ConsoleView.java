@@ -16,6 +16,9 @@ public class ConsoleView {
 	private int index;
 	private int currentLine;
 	
+	private String commandArgCombo = "";
+	private String args = "";
+	
 	public ConsoleView(SystemController systemController) {
 		waiting = new ArrayList<Participant>();
 		running = new ArrayList<Participant>();
@@ -26,7 +29,23 @@ public class ConsoleView {
 	}
 	
 	public void prevCommand() {
+		args = "";
 		moveIndex(index - 1);
+	}
+	
+	public void setCommandArgCombo(String arg){
+		System.out.println("setting command arg combo");
+		args += arg;
+		commandArgCombo = getCurrentCommand()+" "+args;
+	}
+	
+	public String getArgs(){
+		return args;
+	}
+	
+	public String getCommandArgCombo(){
+		System.out.println("command arg combo = " + commandArgCombo);
+		return commandArgCombo;
 	}
 	
 	public String currentCommand() {
@@ -34,6 +53,7 @@ public class ConsoleView {
 	}
 	
 	public void nextCommand() {
+		args = "";
 		moveIndex(index + 1);
 	}
 	
@@ -67,17 +87,17 @@ public class ConsoleView {
 		return index == - 1 ? "" : cmds[index];
 	}
 	
-	public String getView() {
+	public String getView(boolean useCombo) {
 		String text = "";
 		
 		if (waiting.isEmpty() && running.isEmpty() && finished.isEmpty()) {
-			text = ">" + getCurrentCommand();
+			text = ">" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
 		} else {
 			int line = 0;
 			for (Participant par : waiting) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -88,7 +108,7 @@ public class ConsoleView {
 			for (Participant par : running) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -99,7 +119,7 @@ public class ConsoleView {
 			for (Participant par : finished) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;

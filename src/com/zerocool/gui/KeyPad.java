@@ -14,10 +14,10 @@ public class KeyPad extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private Key[] keys;
-	private ConsoleView view;
+	private Console console;
 
 	public KeyPad(Console console) {
-		this.view = console.getConsoleView();
+		this.console = console;
 		setBorder(null);
 		setLayout(new MigLayout("gapy 0, gapx 0", "[fill] [fill] [fill]", "[] [] [] [] []"));
 		
@@ -35,7 +35,10 @@ public class KeyPad extends JPanel {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					System.out.println("pressing number button : " + e.getActionCommand());
 					//Basically need to append the number pressed to the end of the current command in the ConsoleView console. 
+					console.getConsoleView().setCommandArgCombo(""+e.getActionCommand());
+					console.setCommandArgComboView();
 				}
 				
 			});

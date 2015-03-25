@@ -93,7 +93,7 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(consolePanel.currentCommand());
-				admin.executeCommand(admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " ", false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+				admin.executeCommand(admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs(), false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
 			}
 			
 		});

@@ -109,26 +109,31 @@ public class Console extends JPanel {
 
 	public void prevCommand() {
 		view.prevCommand();
-		textArea.setText(view.getView());
+		textArea.setText(view.getView(false));
 	}
 
 	public void nextCommand() {
 		view.nextCommand();
-		textArea.setText(view.getView());
+		textArea.setText(view.getView(false));
 	}
 	
 	public String currentCommand() {
 		return view.currentCommand();
 	}
+	
+	public void setCommandArgComboView(){
+		System.out.println("setting text view as: " + view.getView(true));
+		textArea.setText(view.getView(true));
+	}
 
 	public void moveUp() {
 		view.moveUp();
-		textArea.setText(view.getView());
+		textArea.setText(view.getView(false));
 	}
 
 	public void moveDown() {
 		view.moveDown();
-		textArea.setText(view.getView());
+		textArea.setText(view.getView(false));
 	}
 	
 	
