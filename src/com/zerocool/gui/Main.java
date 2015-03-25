@@ -50,6 +50,7 @@ public class Main extends JFrame {
 	private void createContents() {
 		admin = new SystemController();
 		printerPanel = new Printer(admin);
+		admin.setPrinter(printerPanel);
 		consolePanel = new Console(admin, printerPanel);
 		
 		contentPane = new JPanel();

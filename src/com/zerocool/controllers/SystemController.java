@@ -34,6 +34,7 @@ import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
+import com.zerocool.gui.Printer;
 import com.zerocool.gui.USBPort;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
@@ -47,6 +48,7 @@ public class SystemController {
 	private Timer currentTimer;
 	private EventLog eventLog;
 	private AutoDetect detector;
+	private Printer printer;
 
 	private int id;
 
@@ -554,25 +556,27 @@ public class SystemController {
 	 * @throws IOException 
 	 * **/
 	private void cmdPrint() throws IOException {
+		String printData = "";
+		
 		FileReader fileReader = new FileReader(eventLog.getEventFile());
 		BufferedReader reader = new BufferedReader(fileReader);
-		System.out.println("\tEVENTLOG DATA:\n\n\n");
+		printData += "\tEVENTLOG DATA:\n\n";
 
 		while (reader.ready()) {
-			System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
+			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
 		}
 
-		System.out.println("\n\n");
+		printData += "\n\n";
 
 		fileReader = new FileReader(eventLog.getParticipantFile());
 		reader = new BufferedReader(fileReader);
-		System.out.println("\tPARTICIPANT DATA:\n\n\n");
+		printData += "\tPARTICIPANT DATA:\n\n";
 
 		while (reader.ready()) {
-			System.out.println("\t"+reader.readLine()+"\n\t"+reader.readLine()+"\n");
+			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
 		}
-
 		reader.close();
+		printer.addText(printData);
 	}
 	
 	/**
@@ -864,6 +868,8 @@ public class SystemController {
 		return detector;
 	}
 	
-	
+	public void setPrinter(Printer printer){
+		this.printer = printer;
+	}
 
 }

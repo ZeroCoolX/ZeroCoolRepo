@@ -31,7 +31,7 @@ public class Console extends JPanel {
 
 	public Console(SystemController systemController, Printer printer) {
 		//		try {
-		//			img = ImageIO.read(new File("america.jpg"));
+		//			img = ImageIO.read(new File("america.jpg"));     //<------- america? hahahah MURRICA! 
 		//		} catch (IOException e) {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
