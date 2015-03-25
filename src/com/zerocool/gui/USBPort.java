@@ -21,6 +21,10 @@ public class USBPort extends JPanel {
 		add(description);
 	}
 	
+	public void setNewText(String text){
+		port.setText(text);
+	}
+	
 	private JLabel port;
 	private JLabel description;	
 }

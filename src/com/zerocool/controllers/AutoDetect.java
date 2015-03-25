@@ -3,6 +3,8 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.util.Stack;
 
+import com.zerocool.gui.USBPort;
+
 /**
  * AutoDetect FIRST stores a list of the writable open directories within the system
  * Then, it continuously creates/(overwrites each time) another list of the writable open directories within the system AT THIS MOMENT IN TIME
@@ -26,19 +28,24 @@ public class AutoDetect {
 	private static File volumes = new File("/Volumes");
 	private static File oldFiles[] = volumes.listFiles();
 	private static File files[];
-
+	private USBPort usb;
+	
 	public static Stack<File> usbDrives = new Stack<File>();
 
 	public AutoDetect(){
 		main(new String[1]);
 	}
-
-
-	public static void main(String[] args) {
-		AutoDetect.waitForNotifying();
+	
+	public void setUsbPort(USBPort usbPort){
+		this.usb = usbPort;
 	}
 
-	public static void waitForNotifying() {
+
+	public void main(String[] args) {
+		waitForNotifying();
+	}
+
+	public void waitForNotifying() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
@@ -52,11 +59,13 @@ public class AutoDetect {
 					if (files.length > oldFiles.length) {
 						System.out.println("new drive detected");
 						oldFiles = volumes.listFiles();
+						usb.setNewText("[connected]");
 						System.out.println("drive"+oldFiles[oldFiles.length-1]+" detected");
 						usbDrives.push(oldFiles[oldFiles.length-1]);
 					} else if (files.length < oldFiles.length) {
 						System.out.println(oldFiles[oldFiles.length-1]+" drive removed");
 						oldFiles = volumes.listFiles();
+						usb.setNewText("[         ]");
 						usbDrives.pop();
 					}
 				}

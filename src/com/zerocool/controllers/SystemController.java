@@ -860,12 +860,8 @@ public class SystemController {
 		return systemTime;
 	}
 	
-	
-	
-	
-	private boolean exportData(){
-		
-		return false;
+	public AutoDetect getAutoDetect(){
+		return detector;
 	}
 	
 	

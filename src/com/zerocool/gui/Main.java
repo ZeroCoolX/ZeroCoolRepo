@@ -161,6 +161,7 @@ public class Main extends JFrame {
 		backView.add(backCluster, "cell 1 0");
 		
 		portPanel = new USBPort();
+		admin.getAutoDetect().setUsbPort(portPanel);
 		backView.add(portPanel, "cell 2 0");
 		
 		contentPane.add(backView, "cell 0 1");
