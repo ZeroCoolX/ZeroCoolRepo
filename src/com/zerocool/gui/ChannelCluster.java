@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import com.zerocool.controllers.SystemController;
+
 import net.miginfocom.swing.MigLayout;
 
 
@@ -15,8 +17,10 @@ public class ChannelCluster extends JPanel {
 
 	private JLabel[] labels;
 	private JRadioButton[] radios;
+	private SystemController privateAdmin;
 	
-	public ChannelCluster() {
+	public ChannelCluster(SystemController privateAdmin) {
+		this.privateAdmin = privateAdmin;
 		setBorder(null);
 		setLayout(new MigLayout("", "[center] [center] [center] [center]", "[] [] [] []"));
 		
@@ -39,10 +43,10 @@ public class ChannelCluster extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					if(((JRadioButton)e.getSource()).isSelected()){
 						System.out.println("toggle channel " + e.getActionCommand());
-						Main.admin.executeCommand(Main.admin.getSystemTime() + "\tTOGGLE "+e.getActionCommand(), false);
+						privateAdmin.executeCommand(privateAdmin.getSystemTime() + "\tCONN GATE "+e.getActionCommand(), false);
 					}else{
 						System.out.println("toggle channel " + e.getActionCommand());
-						Main.admin.executeCommand(Main.admin.getSystemTime() + "\tTOGGLE "+e.getActionCommand(), false);
+						privateAdmin.executeCommand(privateAdmin.getSystemTime() + "\tDISC "+e.getActionCommand(), false);
 					}
 				}
 			});

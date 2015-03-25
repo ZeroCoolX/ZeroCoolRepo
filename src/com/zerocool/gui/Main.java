@@ -157,7 +157,7 @@ public class Main extends JFrame {
 		backChannel = new JLabel("CHAN");
 		backView.add(backChannel, "cell 0 0, top");
 		
-		backCluster = new ChannelCluster();
+		backCluster = new ChannelCluster(admin);
 		backView.add(backCluster, "cell 1 0");
 		
 		portPanel = new USBPort();
