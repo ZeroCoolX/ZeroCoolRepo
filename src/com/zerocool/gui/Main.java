@@ -88,6 +88,15 @@ public class Main extends JFrame {
 		leftPanel.add(powerButton, "cell 0 0");
 		
 		functionButton = new JButton("Function");
+		functionButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(consolePanel.currentCommand());
+				admin.executeCommand(admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " ", false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+			}
+			
+		});
 		leftPanel.add(functionButton, "cell 0 1");
 		
 		arrowPanel = new Arrows(consolePanel);

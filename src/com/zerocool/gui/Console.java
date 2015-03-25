@@ -116,6 +116,10 @@ public class Console extends JPanel {
 		view.nextCommand();
 		textArea.setText(view.getView());
 	}
+	
+	public String currentCommand() {
+		return view.currentCommand();
+	}
 
 	public void moveUp() {
 		view.moveUp();

@@ -29,6 +29,10 @@ public class ConsoleView {
 		moveIndex(index - 1);
 	}
 	
+	public String currentCommand() {
+		return getCurrentCommand();
+	}
+	
 	public void nextCommand() {
 		moveIndex(index + 1);
 	}
