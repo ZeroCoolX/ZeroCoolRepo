@@ -9,6 +9,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -394,6 +398,28 @@ public class SystemController {
 	 * KEEP THE systemTime running set everything else to null
 	 * **/
 	private void cmdOff() {
+		Path event = eventLog.getEventFile().toPath();
+		Path partic = eventLog.getParticipantFile().toPath();
+		try {
+		    Files.delete(event);
+		} catch (NoSuchFileException x) {
+		    System.err.format("%s: no such" + " file or directory%n", event);
+		} catch (DirectoryNotEmptyException x) {
+		    System.err.format("%s not empty%n", event);
+		} catch (IOException x) {
+		    // File permission problems are caught here.
+		    System.err.println(x);
+		}
+		try {
+		    Files.delete(partic);
+		} catch (NoSuchFileException x) {
+		    System.err.format("%s: no such" + " file or directory%n", partic);
+		} catch (DirectoryNotEmptyException x) {
+		    System.err.format("%s not empty%n", partic);
+		} catch (IOException x) {
+		    // File permission problems are caught here.
+		    System.err.println(x);
+		}
 		// When the command OFF is entered/read then the time needs to stop.
 		eventLog = null;
 		currentTimer = null;
