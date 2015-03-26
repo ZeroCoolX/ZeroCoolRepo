@@ -91,14 +91,15 @@ public class AutoDetect {
                 }
                 if (File.listRoots().length > oldListRoot.length) {
                     System.out.println("new drive detected");
+					usb.setNewText("[connected]");
                     oldListRoot = File.listRoots();
                     System.out.println("drive"+oldListRoot[oldListRoot.length-1]+" detected");
-
+					usbDrives.push(oldFiles[oldFiles.length-1]);
                 } else if (File.listRoots().length < oldListRoot.length) {
-    System.out.println(oldListRoot[oldListRoot.length-1]+" drive removed");
-
+                	System.out.println(oldListRoot[oldListRoot.length-1]+" drive removed");
+					usb.setNewText("[         ]");
                     oldListRoot = File.listRoots();
-
+					usbDrives.pop();
                 }
 
             }
