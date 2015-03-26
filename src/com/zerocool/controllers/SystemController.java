@@ -593,37 +593,66 @@ public class SystemController {
 	 
 			// root elements
 			Document doc = docBuilder.newDocument();
-			Element rootElement = doc.createElement("event");
+			Element rootElement = doc.createElement("logged_data");
 			doc.appendChild(rootElement);
-	 
-			Element run = doc.createElement("run");
-			rootElement.appendChild(run);
+			
+				Element eventData = doc.createElement("event_data");
+				rootElement.appendChild(eventData);	
 	 
 
-			Element firstname = doc.createElement("timestamp");
-			firstname.appendChild(doc.createTextNode(""+currentTimer.getEventTime()));
-			run.appendChild(firstname);
+					Element timestamp = doc.createElement("timestamp");
+					timestamp.appendChild(doc.createTextNode(""+systemTime));
+					eventData.appendChild(timestamp);
 	 
-			Element lastname = doc.createElement("event");
-			lastname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
-			run.appendChild(lastname);
+					Element eventName = doc.createElement("event_name");
+					eventName.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
+					eventData.appendChild(eventName);	
+			
+					Element eventId = doc.createElement("event_ID");
+					eventId.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+					eventData.appendChild(eventId);
 	 
-			Element eventData = doc.createElement("event_data");
-			rootElement.appendChild(eventData);
+					Element eventType = doc.createElement("event_type");
+					eventType.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
+					eventData.appendChild(eventType);
 			
+					Element eventTime = doc.createElement("event_time");
+					eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
+					eventData.appendChild(eventTime);
+					
+				//END event_data root child element
+					
 			
-			
-			Element nickname = doc.createElement("event_ID");
-			nickname.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
-			eventData.appendChild(nickname);
-	 
-			Element salary = doc.createElement("event_type");
-			salary.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
-			eventData.appendChild(salary);
-			
-			Element eventTime = doc.createElement("event_time");
-			eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
-			eventData.appendChild(salary);
+				Element parRun = doc.createElement("participant_data");
+				rootElement.appendChild(parRun);
+				
+				int i = 0;
+				ArrayList<Element> elements = new ArrayList<Element>();
+				for(Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()){
+					int k = i;
+					
+					elements.add(doc.createElement("participant_event_ID_"+k));
+					elements.get(i).appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+					parRun.appendChild(elements.get(i));
+					
+					++i;
+					
+					elements.add(doc.createElement("participant_BIB_"+k));
+					elements.get(i).appendChild(doc.createTextNode(""+p.getId()));
+					parRun.appendChild(elements.get(i));
+					
+					++i;
+					
+					elements.add(doc.createElement("participant_time_"+k));
+					elements.get(i).appendChild(doc.createTextNode(""+SystemTime.formatTime(p.getLastRecord().getElapsedTime())));
+					parRun.appendChild(elements.get(i));
+					
+					++i;
+				}
+				
+				//END participant_run root child element
+				
+			//END participant root element
 	 
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
