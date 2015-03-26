@@ -26,7 +26,7 @@ public class ChannelGroup extends JPanel {
 		this.privateAdmin = privateAdmin;
 		arguments = start ? new String[] { "Start", "1", "3", "5", "7" } : new String[] { "Finish", "2", "4", "6", "8" };
 		setBorder(null);
-		setLayout(new MigLayout("", "[right] 15 [center] 15 [center] 15 [center] 15 [center]", "[] 5 [] 5 []"));
+		setLayout(new MigLayout("", "[right] 15px [center] 15px [center] 15px [center] 15px [center]", "[] 5px [] 5px []"));
 		createContents();
 	}
 	

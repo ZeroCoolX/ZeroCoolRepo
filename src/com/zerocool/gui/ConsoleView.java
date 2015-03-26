@@ -35,17 +35,17 @@ public class ConsoleView {
 		moveIndex(index - 1);
 	}
 	
-	public void setCommandArgCombo(String arg){
+	public void setCommandArgCombo(String arg) {
 		System.out.println("setting command arg combo");
 		args += arg;
-		commandArgCombo = getCurrentCommand()+" "+args;
+		commandArgCombo = getCurrentCommand() + " " + args;
 	}
 	
-	public String getArgs(){
+	public String getArgs() {
 		return args;
 	}
 	
-	public String getCommandArgCombo(){
+	public String getCommandArgCombo() {
 		System.out.println("command arg combo = " + commandArgCombo);
 		return commandArgCombo;
 	}

@@ -18,7 +18,7 @@ public class Arrows extends JPanel {
 		this.console = console;
 		
 		setBorder(null);
-		setLayout(new MigLayout("gapx 0, gapy 0", "[] [] 15 [] []", "[]"));
+		setLayout(new MigLayout("gapx 0px, gapy 0px", "[] [] 15px [] []", "[]"));
 		
 		createContents();
 	}
