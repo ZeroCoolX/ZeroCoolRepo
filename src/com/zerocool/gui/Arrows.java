@@ -22,7 +22,7 @@ public class Arrows extends JPanel {
 		
 		createContents();
 	}
-	
+
 	private void createContents() {
 		up = new JButton("U");
 		up.addActionListener(new ActionListener() {
