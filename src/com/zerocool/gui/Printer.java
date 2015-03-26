@@ -25,7 +25,7 @@ public class Printer extends JPanel {
 	public Printer(SystemController systemController) {
 		admin = systemController;
 		setBorder(null);
-		setLayout(new MigLayout("insets 0px", "[center]", "[] 15px []"));
+		setLayout(new MigLayout("insets 0px", "[center]", "[] 0px:15px []"));
 		createContents();
 	}
 	

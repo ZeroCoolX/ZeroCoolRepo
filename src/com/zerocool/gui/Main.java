@@ -27,7 +27,7 @@ public class Main extends JFrame {
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
 
-	protected static SystemController admin;
+	private SystemController admin;
 	
 	private boolean powerButtonPressed;
 	
@@ -57,7 +57,7 @@ public class Main extends JFrame {
 		// A while ago I found the best layout ever and it's extremely easy to use and get complicated
 		//  layouts rather easily.  It's called 'MigLayout' and you can read more about it at their
 		//  website (http://www.miglayout.com/).
-		contentPane.setLayout(new MigLayout("", "[center]", "[] 15px []"));
+		contentPane.setLayout(new MigLayout("fill", "[center]", "[] 0px:15px []"));
 		//contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
 		
@@ -68,12 +68,12 @@ public class Main extends JFrame {
 		//	life.
 		topView = new JPanel();
 		topView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Top View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		topView.setLayout(new MigLayout("gapx 0px", "50px [] [] 50px [] 50px", "[]"));
+		topView.setLayout(new MigLayout("fill, gapx 0px", "0px:50px [] [] 0px:50px [] 0px:50px", "[]"));
 		
 		// This panel is going to hold the Power, Function, Swap and Arrow buttons.
 		leftPanel = new JPanel();
 		leftPanel.setBorder(null);
-		leftPanel.setLayout(new MigLayout("", "[left]", "10px [] 182px [] 15px [] 50px [] 81px"));
+		leftPanel.setLayout(new MigLayout("fill", "[left]", "0px:10px [] 0px:182px [] 0px:15px [] 0px:50px [] 0px:81px"));
 		
 		powerButton = new JButton("Power");
 		powerButton.addActionListener(new ActionListener() {
@@ -115,12 +115,12 @@ public class Main extends JFrame {
 		//  second will contain the console.
 		centerPanel = new JPanel();
 		centerPanel.setBorder(null);
-		centerPanel.setLayout(new MigLayout("", "[center]", "[] []"));
+		centerPanel.setLayout(new MigLayout("fill", "[center]", "[] []"));
 		
 		// Holds all the channels and junk.
 		channelPanel = new JPanel();
 		channelPanel.setBorder(null);
-		channelPanel.setLayout(new MigLayout("", "[center]", "[] 5px [] []"));
+		channelPanel.setLayout(new MigLayout("fill", "[center]", "[] 0px:5px [] []"));
 		
 		titleLabel = new JLabel(title + "  ");
 		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
@@ -144,7 +144,7 @@ public class Main extends JFrame {
 		
 		rightPanel = new JPanel();
 		rightPanel.setBorder(null);
-		rightPanel.setLayout(new MigLayout("gapy 0", "[center]", "[] 17px [] 25px"));
+		rightPanel.setLayout(new MigLayout("fill, gapy 0", "[center]", "[] 0px:17px [] 0px:25px"));
 		
 		// TODO MOVED TO TOP
 		
@@ -163,7 +163,7 @@ public class Main extends JFrame {
 		
 		backView = new JPanel();
 		backView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Back View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		backView.setLayout(new MigLayout("", "[] 15px [] 120px [] 50px", "[] 25px"));
+		backView.setLayout(new MigLayout("fill", "[] 0px:15px [] 0px:120px [] 0px:50px", "[] 0px:25px"));
 		
 		backChannel = new JLabel("CHAN");
 		backView.add(backChannel, "cell 0 0, top");
