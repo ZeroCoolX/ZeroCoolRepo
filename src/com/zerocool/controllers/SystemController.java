@@ -560,7 +560,7 @@ public class SystemController {
 		
 		FileReader fileReader = new FileReader(eventLog.getEventFile());
 		BufferedReader reader = new BufferedReader(fileReader);
-		printData += "\tEVENTLOG DATA:\n\n";
+		printData += "EVENTLOG\nDATA__________\n\n";
 
 		while (reader.ready()) {
 			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
@@ -570,7 +570,7 @@ public class SystemController {
 
 		fileReader = new FileReader(eventLog.getParticipantFile());
 		reader = new BufferedReader(fileReader);
-		printData += "\tPARTICIPANT DATA:\n\n";
+		printData += "PARTICIPANT\nDATA__________\n\n";
 
 		while (reader.ready()) {
 			printData += reader.readLine()+"\n"+reader.readLine()+"\n";

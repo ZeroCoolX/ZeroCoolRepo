@@ -24,6 +24,7 @@ import com.zerocool.gui.USBPort;
  * **/
 
 public class AutoDetect {
+	static File[] oldListRoot = File.listRoots();
 
 	private static File volumes = new File("/Volumes");
 	private static File oldFiles[] = volumes.listFiles();
@@ -42,10 +43,14 @@ public class AutoDetect {
 
 
 	public void main(String[] args) {
-		waitForNotifying();
+		if(System.getProperty("os.name").startsWith("Windows")){
+			pcWaitForNotifying();
+		}else{
+			macWaitForNotifying();
+		}
 	}
 
-	public void waitForNotifying() {
+	public void macWaitForNotifying() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
@@ -72,5 +77,33 @@ public class AutoDetect {
 			}
 		});
 		t.start();
+	}
+	
+	public void pcWaitForNotifying() {
+
+    Thread t = new Thread(new Runnable() {
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (File.listRoots().length > oldListRoot.length) {
+                    System.out.println("new drive detected");
+                    oldListRoot = File.listRoots();
+                    System.out.println("drive"+oldListRoot[oldListRoot.length-1]+" detected");
+
+                } else if (File.listRoots().length < oldListRoot.length) {
+    System.out.println(oldListRoot[oldListRoot.length-1]+" drive removed");
+
+                    oldListRoot = File.listRoots();
+
+                }
+
+            }
+        }
+    });
+    t.start();
 	}
 }
