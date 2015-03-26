@@ -18,12 +18,23 @@ public class Arrows extends JPanel {
 		this.console = console;
 		
 		setBorder(null);
-		setLayout(new MigLayout("gapx 0px, gapy 0px", "[] [] 15px [] []", "[]"));
+		setLayout(new MigLayout("gapx 0px, gapy 0px", "[center] 15px [center]", "[] 15px [] 15px []"));
 		
 		createContents();
 	}
 	
 	private void createContents() {
+		up = new JButton("U");
+		up.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				console.moveUp();
+			}
+			
+		});
+		add(up, "cell 0 0, span 2");
+		
 		left = new JButton("L");
 		left.addActionListener(new ActionListener() {
 
@@ -33,7 +44,7 @@ public class Arrows extends JPanel {
 			}
 			
 		});
-		add(left);
+		add(left, "cell 0 1");
 		
 		right = new JButton("R");
 		right.addActionListener(new ActionListener() {
@@ -44,7 +55,7 @@ public class Arrows extends JPanel {
 			}
 			
 		});
-		add(right);
+		add(right, "cell 1 1");
 		
 		down = new JButton("D");
 		down.addActionListener(new ActionListener() {
@@ -55,18 +66,7 @@ public class Arrows extends JPanel {
 			}
 			
 		});
-		add(down);
-		
-		up = new JButton("U");
-		up.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				console.moveUp();
-			}
-			
-		});
-		add(up);
+		add(down, "cell 0 2, span 2");
 	}
 	
 	private JButton	left;

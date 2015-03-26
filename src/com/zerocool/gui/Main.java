@@ -163,7 +163,7 @@ public class Main extends JFrame {
 		
 		backView = new JPanel();
 		backView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Back View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		backView.setLayout(new MigLayout("", "[] 15px [] 120px [] 388px", "[] 25px"));
+		backView.setLayout(new MigLayout("", "[] 15px [] 120px [] 50px", "[] 25px"));
 		
 		backChannel = new JLabel("CHAN");
 		backView.add(backChannel, "cell 0 0, top");
