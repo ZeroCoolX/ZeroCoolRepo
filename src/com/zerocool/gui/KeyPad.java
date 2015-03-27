@@ -1,10 +1,13 @@
 package com.zerocool.gui;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -20,7 +23,7 @@ public class KeyPad extends JPanel {
 		this.console = console;
 		setBorder(null);
 		setLayout(new MigLayout("gapy 0px, gapx 0px", "[fill] [fill] [fill]", "[] [] [] [] []"));
-		
+		setBackground(Color.BLACK);
 		createContents();
 	}
 	
@@ -73,7 +76,6 @@ public class KeyPad extends JPanel {
 		//	setMinimumSize(size);
 		//	setMaximumSize(size);
 			setPreferredSize(size);
-			
 			this.print = print;
 		}
 		

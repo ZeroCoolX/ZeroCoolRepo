@@ -31,7 +31,7 @@ public class Main extends JFrame {
 	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
-	
+		
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
 
@@ -171,6 +171,7 @@ public class Main extends JFrame {
 		rightPanel.add(printerPanel, "cell 0 0");
 		
 		keyPanel = new KeyPad(consolePanel);
+
 		
 		// Done with the keyPanel so add it to the Right Panel;
 		rightPanel.add(keyPanel, "cell 0 1");
@@ -214,7 +215,8 @@ public class Main extends JFrame {
 				private Console consolePanel;
 			private JPanel rightPanel;
 				private Printer printerPanel;
-				private KeyPad keyPanel;
+				private JPanel keypadPanel;
+					private KeyPad keyPanel;
 		private JPanel backView;
 			private JLabel backChannel;
 			private ChannelCluster backCluster;

@@ -26,6 +26,7 @@ public class Console extends JPanel {
 	private SystemController admin;
 	private ConsoleView view;
 	private Printer printer;
+	private Color dark_slate_green = new Color(47,79,79);
 	
 	BufferedImage img;
 
@@ -51,8 +52,8 @@ public class Console extends JPanel {
 		textArea.setLineWrap(true);
 		//	textArea.setEditable(false);
 		textArea.setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
-		textArea.setBackground(Color.LIGHT_GRAY);
-		textArea.setForeground(Color.DARK_GRAY);
+		textArea.setBackground(dark_slate_green);
+		textArea.setForeground(Color.WHITE);
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		// TEMPORARY! =OOOOOOOOOOO
 		textArea.addFocusListener(new FocusListener() {
