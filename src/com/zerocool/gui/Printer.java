@@ -21,11 +21,14 @@ public class Printer extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private SystemController admin;
+	private final Color gainsboro = new Color(220,220,220);
+	private final Color bleached_almond = new Color(255,235,205);
 		
 	public Printer(SystemController systemController) {
 		admin = systemController;
 		setBorder(null);
 		setLayout(new MigLayout("insets 0px", "[center]", "[] 0px:15px []"));
+		setBackground(gainsboro);
 		createContents();
 	}
 	
@@ -48,7 +51,7 @@ public class Printer extends JPanel {
 		textArea.setLineWrap(true);
 	//	textArea.setEditable(false);
 		textArea.setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
-		textArea.setBackground(Color.WHITE);
+		textArea.setBackground(bleached_almond);
 		textArea.setForeground(Color.DARK_GRAY);
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		

@@ -31,6 +31,9 @@ public class Main extends JFrame {
 	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
+	
+	private final Color gainsboro = new Color(220,220,220);
+	private final Color dark_grey = new Color(105,105,105);
 		
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
@@ -68,7 +71,7 @@ public class Main extends JFrame {
 		contentPane.setLayout(new MigLayout("fill", "[center]", "[] 0px:15px []"));
 		//contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
-		
+		contentPane.setBackground(gainsboro);
 		// This JPanel represents the top view of the ChronoTimer 1009 GUI.  It will have 3 sub JPanels
 		//	that contain all of the other components (Left, Center, Right).  I split it up in columns to
 		//	make it easier.  Of those 3 sub panels, 2 of them (Center, Right) will have 2 subsub panels each.
@@ -77,11 +80,13 @@ public class Main extends JFrame {
 		topView = new JPanel();
 		topView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Top View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		topView.setLayout(new MigLayout("fill, gapx 0px", "0px:50px [] [] 0px:50px [] 0px:50px", "[]"));
+		topView.setBackground(gainsboro);
 		
 		// This panel is going to hold the Power, Function, Swap and Arrow buttons.
 		leftPanel = new JPanel();
 		leftPanel.setBorder(null);
 		leftPanel.setLayout(new MigLayout("fill", "[left]", "0px:10px [] 0px:182px [] 0px:15px [] 0px:50px [] 0px:81px"));
+		leftPanel.setBackground(gainsboro);
 		
 		powerIndicator = new PowerIndicator();
 				
@@ -135,11 +140,13 @@ public class Main extends JFrame {
 		centerPanel = new JPanel();
 		centerPanel.setBorder(null);
 		centerPanel.setLayout(new MigLayout("fill", "[center]", "[] []"));
+		centerPanel.setBackground(gainsboro);
 		
 		// Holds all the channels and junk.
 		channelPanel = new JPanel();
 		channelPanel.setBorder(null);
 		channelPanel.setLayout(new MigLayout("fill", "[center]", "[] 0px:5px [] []"));
+		channelPanel.setBackground(gainsboro);
 		
 		titleLabel = new JLabel(title + "  ");
 		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
@@ -164,6 +171,7 @@ public class Main extends JFrame {
 		rightPanel = new JPanel();
 		rightPanel.setBorder(null);
 		rightPanel.setLayout(new MigLayout("fill, gapy 0", "[center]", "[] 0px:17px [] 0px:25px"));
+		rightPanel.setBackground(gainsboro);
 		
 		// TODO MOVED TO TOP
 		
@@ -184,8 +192,11 @@ public class Main extends JFrame {
 		backView = new JPanel();
 		backView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Back View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		backView.setLayout(new MigLayout("fill", "[] 0px:15px [] 0px:120px [] 0px:50px", "[] 0px:25px"));
+		backView.setBackground(dark_grey);
 		
 		backChannel = new JLabel("CHAN");
+		backChannel.setBackground(gainsboro);
+		backChannel.setForeground(Color.WHITE);
 		backView.add(backChannel, "cell 0 0, top");
 		
 		backCluster = new ChannelCluster(admin);
@@ -193,6 +204,7 @@ public class Main extends JFrame {
 		
 		portPanel = new USBPort();
 		admin.getAutoDetect().setUsbPort(portPanel);
+		portPanel.setBackground(dark_grey);
 		backView.add(portPanel, "cell 2 0");
 		
 		//contentPane.add(backView, "cell 0 1");
@@ -215,8 +227,7 @@ public class Main extends JFrame {
 				private Console consolePanel;
 			private JPanel rightPanel;
 				private Printer printerPanel;
-				private JPanel keypadPanel;
-					private KeyPad keyPanel;
+				private KeyPad keyPanel;
 		private JPanel backView;
 			private JLabel backChannel;
 			private ChannelCluster backCluster;

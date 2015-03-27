@@ -1,4 +1,5 @@
 package com.zerocool.gui;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 public class Arrows extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private final Color gainsboro = new Color(220,220,220);
 
 	private Console console;
 	
@@ -19,7 +21,7 @@ public class Arrows extends JPanel {
 		
 		setBorder(null);
 		setLayout(new MigLayout("gapx 0px, gapy 0px", "[center] 0px:15px [center]", "[] 0px:15px [] 0px:15px []"));
-		
+		setBackground(gainsboro);
 		createContents();
 	}
 

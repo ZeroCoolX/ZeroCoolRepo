@@ -27,6 +27,7 @@ public class Console extends JPanel {
 	private ConsoleView view;
 	private Printer printer;
 	private Color dark_slate_green = new Color(47,79,79);
+	private final Color gainsboro = new Color(220,220,220);
 	
 	BufferedImage img;
 
@@ -42,6 +43,7 @@ public class Console extends JPanel {
 		
 		setBorder(null);
 		setLayout(new MigLayout("", "[center]", "[] []"));
+		setBackground(gainsboro);
 		createContents();
 	}
 

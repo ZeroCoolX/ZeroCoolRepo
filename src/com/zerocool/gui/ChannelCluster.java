@@ -1,4 +1,5 @@
 package com.zerocool.gui;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,12 +19,13 @@ public class ChannelCluster extends JPanel {
 	private JLabel[] labels;
 	private JRadioButton[] radios;
 	private SystemController privateAdmin;
+	private final Color dark_grey = new Color(105,105,105);
 	
 	public ChannelCluster(SystemController privateAdmin) {
 		this.privateAdmin = privateAdmin;
 		setBorder(null);
 		setLayout(new MigLayout("", "[center] [center] [center] [center]", "[] [] [] []"));
-		
+		setBackground(dark_grey);
 		createContents();
 	}
 	
@@ -33,6 +35,7 @@ public class ChannelCluster extends JPanel {
 		
 		for (int i = 0; i < labels.length; ++i) {
 			labels[i] = new JLabel("" + (i + 1));
+			labels[i].setForeground(Color.WHITE);
 			add(labels[i], "cell " + i % 4 + " " + (i < 4 ? 0 : 2));
 			
 			radios[i] = new JRadioButton();
