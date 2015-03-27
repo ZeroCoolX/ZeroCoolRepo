@@ -31,8 +31,6 @@ public class Main extends JFrame {
 	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
-	private final Color chartreuse = new Color(127,255,0);
-	private final Color crimson = new Color(220,20,60);
 	
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
@@ -85,17 +83,7 @@ public class Main extends JFrame {
 		leftPanel.setBorder(null);
 		leftPanel.setLayout(new MigLayout("fill", "[left]", "0px:10px [] 0px:182px [] 0px:15px [] 0px:50px [] 0px:81px"));
 		
-		Dimension size = new Dimension(20,20);
-		powerIndicator = new JButton();
-		powerIndicator.setMinimumSize(size);
-		powerIndicator.setMaximumSize(size);
-		powerIndicator.setPreferredSize(size);
-
-		powerIndicator.setBackground(crimson);
-		powerIndicator.setContentAreaFilled(false);
-		powerIndicator.setOpaque(true);
-		powerIndicator.setBorderPainted(false);
-		
+		powerIndicator = new PowerIndicator();
 				
 		powerButton = new JButton("Power");
 		powerButton.addActionListener(new ActionListener() {
@@ -105,17 +93,9 @@ public class Main extends JFrame {
 				String time = admin.getSystemTime().toString();
 				admin.executeCommand(!powerButtonPressed ? time + "\tON" : time + "\tOFF", false);
 				powerButtonPressed = !powerButtonPressed;
-				if(powerButtonPressed){
-					powerIndicator.setBackground(chartreuse);
-					powerIndicator.setContentAreaFilled(false);
-					powerIndicator.setOpaque(true);
-					powerIndicator.setBorderPainted(false);
-				}else{
-					powerIndicator.setBackground(crimson);
-					powerIndicator.setContentAreaFilled(false);
-					powerIndicator.setOpaque(true);
-					powerIndicator.setBorderPainted(false);
-				}
+			    powerIndicator.togglePower(powerButtonPressed);
+			    consolePanel.toggleScreen(powerButtonPressed);
+			    printerPanel.clearScreen();
 			}
 			
 		});
@@ -129,7 +109,11 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(consolePanel.currentCommand());
-				admin.executeCommand(admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs(), false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+				String totalLine = (admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs());
+				admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+				if (admin.getIsPrinterOn()) {//meaning the printer is turned on
+					printerPanel.addText(totalLine);
+				}
 			}
 			
 		});
@@ -218,7 +202,7 @@ public class Main extends JFrame {
 		private JPanel topView;
 			private JPanel leftPanel;
 				private JButton powerButton;
-				private JButton powerIndicator;
+				private PowerIndicator powerIndicator;
 				private JButton functionButton;
 				private Arrows arrowPanel;
 				private JButton swapButton;

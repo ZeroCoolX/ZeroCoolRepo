@@ -54,7 +54,6 @@ public class Console extends JPanel {
 		textArea.setBackground(Color.LIGHT_GRAY);
 		textArea.setForeground(Color.DARK_GRAY);
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
-		textArea.setText("type command then enter");
 		// TEMPORARY! =OOOOOOOOOOO
 		textArea.addFocusListener(new FocusListener() {
 			
@@ -74,13 +73,13 @@ public class Console extends JPanel {
 			@Override
 			public void keyPressed(KeyEvent key) {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
-					String text = textArea.getText().trim();
+					String text = (admin.getSystemTime().toString() + "\t" + textArea.getText().trim().toUpperCase());
 					
 					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}
 					
-					admin.executeCommand(admin.getSystemTime().toString() + "\t" + text.toUpperCase(), false);
+					admin.executeCommand(text, false);
 					textArea.setText("");
 				}
 			}
@@ -105,6 +104,10 @@ public class Console extends JPanel {
 		description.setFont(new Font("Tahoma", Font.PLAIN, 10));
 
 		add(description, "cell 0 1");
+	}
+	
+	public void toggleScreen(boolean power){
+		textArea.setText((power ? "type command then enter" : ""));
 	}
 
 	public void prevCommand() {

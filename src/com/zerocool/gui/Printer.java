@@ -21,7 +21,7 @@ public class Printer extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private SystemController admin;
-	
+		
 	public Printer(SystemController systemController) {
 		admin = systemController;
 		setBorder(null);
@@ -31,15 +31,18 @@ public class Printer extends JPanel {
 	
 	private void createContents() {
 		powerButton = new JButton("Printer Pwr");
+		powerIndicator = new PowerIndicator();
 		powerButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				admin.setIsPrinterOn(!admin.getIsPrinterOn());
+				powerIndicator.togglePower(admin.getIsPrinterOn());
 			}
 			
 		});
 		add(powerButton, "cell 0 0");
+		add(powerIndicator, "cell 1 0");
 		
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
@@ -58,7 +61,12 @@ public class Printer extends JPanel {
 		textArea.setText(textArea.getText() + "\n" + text);
 	}
 	
+	public void clearScreen(){
+		textArea.setText("");
+	}
+	
 	private JButton powerButton;
+	private PowerIndicator powerIndicator;
 	private LightScrollPane scrollPane;
 	private JTextArea textArea;
 }
