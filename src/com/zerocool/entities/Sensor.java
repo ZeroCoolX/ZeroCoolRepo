@@ -13,24 +13,24 @@ package com.zerocool.entities;
  */
 public class Sensor {
 
+	public static enum SensorType {
+		EYE, GATE, PAD
+	};
+	
 	private int signal;
 	
 	private boolean isArmed;
 	
 	private SensorType sensorType;
 	
-	public enum SensorType {
-		EYE, GATE, PAD
-	};
-	
-	public Sensor() {
-		// do nothing
+	public Sensor(String sensorType) {
+		setSensorType(sensorType);
 	}
 	
-	public Sensor(boolean arm) {
+	public Sensor(String sensorType, boolean arm) {
+		this(sensorType);
 		isArmed = arm;
 	}
-	
 	
 	// ----- accessors ----- \\
 	
@@ -43,30 +43,21 @@ public class Sensor {
 	}
 	
 	/**
-	 * Gets the type of the sensor
-	 * @return a type of either EYE, GATE or PAD
+	 * Gets the type of the sensor.
+	 * @return - The type of Sensor.
 	 */
-	public String getType(){
+	public String getType() {
 		return sensorType.toString();
 	}
 	
 	/**
-	 * Sets the type of the sensor
-	 * @param the type (a type of either EYE, GATE or PAD)
+	 * Sets the type of the sensor.
+	 * @param sensorType - The type of sensor to set.  Must be a valid SensorType.
+	 * @throws IllegalArgumentException - If the string entered was not a valid SensorType.
 	 */
-	public void setSensorType(String type){
-		switch(type) { 
-			case "EYE":
-				sensorType = SensorType.EYE;
-				break;
-			case "GATE":
-				sensorType = SensorType.GATE;
-				break;
-			case "PAD":
-				sensorType = SensorType.PAD;
-				break;
-			default:
-				break;
+	public void setSensorType(String sensorType) {
+		if (sensorType != null) {
+			this.sensorType = SensorType.valueOf(sensorType);
 		}
 	}
 	
@@ -84,7 +75,7 @@ public class Sensor {
 	/**
 	 * Exits the sensor when the system is exited
 	 */
-	public void exit(){
+	public void exit() {
 		signal = -1;
 		isArmed = false;
 	}

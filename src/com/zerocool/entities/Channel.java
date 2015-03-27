@@ -1,4 +1,5 @@
 package com.zerocool.entities;
+
 /**
  * 
  * @author ZeroCool
@@ -11,42 +12,37 @@ package com.zerocool.entities;
 public class Channel {
 
 	private Sensor currentSensor;
-	
+
 	private int id;
-	
+
 	private boolean isActive;
-	
-	/**
-	 * Default constructor.  Nothing to do.
-	 */
-	public Channel() {
-		// nothing to do
+
+	public Channel(String sensorType) {
+		currentSensor = new Sensor(sensorType);
 	}
 	
 	/**
 	 * Constructor to add a sensor.
 	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 */
-	public Channel(String type) throws IllegalArgumentException{
-		if(!type.equalsIgnoreCase("EYE") || !type.equalsIgnoreCase("GATE") || !type.equalsIgnoreCase("PAD"))
-			throw new IllegalArgumentException();
-		currentSensor = new Sensor();
-		currentSensor.setSensorType(type);
+	public Channel(String sensorType, int id) {
+		this(sensorType);
+		this.id = id;
 	}
-	
+
 	/**
 	 * Constructor to add a sensor and set the channel active er naw.
 	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 * @param active - set the channel to be active er naw.
 	 */
-	public Channel(String type, boolean active) {
-		this(type);
+	public Channel(String sensorType, int id, boolean active) {
+		this(sensorType, id);
 		isActive = active;
 	}
-	
-	
+
+
 	// ----- functional methods ----- \\
-	
+
 	/**
 	 * Add/Change the channel's sensor.
 	 * @param sensor - the sensor to add/change to the channel.
@@ -54,38 +50,32 @@ public class Channel {
 	public void addSensor(Sensor sensor) {
 		currentSensor = sensor;
 	}
-	
+
 	/**
 	 * Adds a sensor of the type of passed in string
 	 * @param type - should either be EYE, GATE, or PAD
 	 */
-	public void addSensor(String type) throws IllegalArgumentException {
-		if(type.equalsIgnoreCase("EYE") || type.equalsIgnoreCase("GATE") || type.equalsIgnoreCase("PAD")){
-			currentSensor = new Sensor();
-			currentSensor.setSensorType(type);
-			currentSensor.setState(false);
-		}else{
-			throw new IllegalArgumentException();
-		}
+	public void addSensor(String sensorType) throws IllegalArgumentException {
+		currentSensor = new Sensor(sensorType, false);
 	}
-	
+
 	/**
 	 * Disconnects the current sensor by setting it to null.
 	 */
 	public void disconnectSensor(){
 		currentSensor = null;
 	}
-	
+
 	/**
 	 * Removes the channel's current sensor.
 	 */
 	public void removeSensor() {
 		currentSensor = null;
 	}
-	
-	
+
+
 	// ----- accessors ----- \\
-	
+
 	/**
 	 * Check if the current channel is activated er naw.
 	 * @return - true if isActive else false.
@@ -93,8 +83,8 @@ public class Channel {
 	public boolean getState() {
 		return isActive;
 	}
-	
-	
+
+
 	/**
 	 * Check if the sensor is armed or not.
 	 * @return - true if the sensor is armed else false.
@@ -102,7 +92,7 @@ public class Channel {
 	public boolean getSensorState() {
 		return currentSensor != null ? currentSensor.getState() : false;
 	}
-	
+
 	/**
 	 * Gets the sensor type.  If there is no sensor type
 	 * @return
@@ -110,7 +100,7 @@ public class Channel {
 	public String getSensorType(){
 		return currentSensor != null ? currentSensor.getType() : null;
 	}
-	
+
 	/**
 	 * Gets the id of the Channel
 	 * @return - an integer representing the Channel's id number.
@@ -118,10 +108,10 @@ public class Channel {
 	public int getId(){
 		return id;
 	}
-	
-	
+
+
 	// ----- mutators ----- \\
-	
+
 	/**
 	 * Sets the state of the channel to active er naw.
 	 * @param active - The state to set the channel to.
@@ -129,7 +119,7 @@ public class Channel {
 	public void setState(boolean active) {
 		this.isActive = active;
 	}
-	
+
 	/**
 	 * Sets the state of the current sensor.
 	 * @param state - The state to set the sensor to.
@@ -137,20 +127,20 @@ public class Channel {
 	public void setSensorState(boolean state) {
 		currentSensor.setState(state);
 	}
-	
-	public void setSensorType(String type){
-		currentSensor.setSensorType(type);
+
+	public void setSensorType(String sensorType) {
+		currentSensor.setSensorType(sensorType);
 	}
-	
+
 	public void setID(int id){
 		this.id = id;
 	}
-	
+
 	public void exit(){
 		id = -1;
 		isActive = false;
 		currentSensor.exit();
 		currentSensor = null;
 	}
-	
+
 }

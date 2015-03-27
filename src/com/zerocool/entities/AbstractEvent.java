@@ -73,18 +73,18 @@ public abstract class AbstractEvent {
 	 * Starts all the Participants in the starting queue.
 	 * @param startTime - The time the Participant started.
 	 */
-	public void startAllParticipants(long startTime) {
-		startNextParticipants(startingQueue.size(), startTime);
-	}
+//	public void startAllParticipants(long startTime) {
+//		startNextParticipants(startingQueue.size(), startTime);
+//	}
 
 	/**
 	 * Override in subclass for more functionality.
-	 * Starts the next Participant in the starting queue.
+	 * Starts the Event.
 	 * @param startTime - The time the Participant started.
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void startNextParticipant(long startTime) {
+	public void start(long startTime) {
 		if (startingQueue.isEmpty()) {
 			throw new IllegalStateException("There are no participants in the starting queue.");
 		}
@@ -100,26 +100,26 @@ public abstract class AbstractEvent {
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void startNextParticipants(int numOfParticipants, long startTime) {
-		if (numOfParticipants < 0 || numOfParticipants > startingQueue.size()) {
-			throw new IllegalArgumentException("Start queue does not have " + numOfParticipants + ".");
-		}
-
-		for (int i = 0; i < numOfParticipants; i++) {
-			startNextParticipant(startTime);
-		}
-	}
+//	public void startNextParticipants(int numOfParticipants, long startTime) {
+//		if (numOfParticipants < 0 || numOfParticipants > startingQueue.size()) {
+//			throw new IllegalArgumentException("Start queue does not have " + numOfParticipants + ".");
+//		}
+//
+//		for (int i = 0; i < numOfParticipants; i++) {
+//			startNextParticipant(startTime);
+//		}
+//	}
 
 	/**
 	 * No need to override this one because it just calls finishParticipant() anyway.
 	 * Finish all the Participants currently competing.
 	 * @param finishTime - The time at which the Participants finished.
 	 */
-	public void finishAllParticipants(long finishTime, boolean setDNF) {
-		while (!competingParticipants.isEmpty()) {
-			finishParticipant(competingParticipants.get(0), finishTime, setDNF);
-		}
-	}
+//	public void finishAllParticipants(long finishTime, boolean setDNF) {
+//		while (!competingParticipants.isEmpty()) {
+//			finishParticipant(competingParticipants.get(0), finishTime, setDNF);
+//		}
+//	}
 
 	/**
 	 * Override in subclass for more detailed functionality.
@@ -132,7 +132,7 @@ public abstract class AbstractEvent {
 	 * @throws IllegalStateException - The Participant is not currently
 	 * 	competing.
 	 */
-	public void finishParticipant(Participant participant, long finishTime, boolean setDNF) {
+	public void finish(Participant participant, long finishTime, boolean setDNF) {
 		if (participant == null) {
 			throw new IllegalArgumentException("Participant can't be null.");
 		}
@@ -227,7 +227,11 @@ public abstract class AbstractEvent {
 		return eventTime;
 	}
 	
-	public String getFormattedEventTime(){
+	/**
+	 * Gets the formatted event time.
+	 * @return The formatted event time.
+	 */
+	public String getFormattedEventTime() {
 		return SystemTime.formatTime(eventTime);
 	}
 

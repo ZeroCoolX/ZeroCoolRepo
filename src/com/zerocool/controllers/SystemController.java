@@ -333,14 +333,14 @@ public class SystemController {
 			break;
 		case "FIN":
 			// stuff
-			cmdFinish();
+			cmdFinish(Integer.parseInt(args[0]));
 			break;
 		case "TRIG":
 			// stuff
 			break;
 		case "DNF":
 			// stuff
-			cmdDnf();
+			cmdDnf(Integer.parseInt(args[0]));
 			break;
 		case "ELAPSED":
 			// stuff
@@ -488,14 +488,9 @@ public class SystemController {
 	private void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
-			toggle.setState(false);
-			//toggle.setSensorState((toggle.getSensorState() == true ? false : true));
+			toggle.setSensorState(!toggle.getSensorState());
 		} else {
-			Channel chnl = new Channel();
-			chnl.setID(channel);
-			chnl.setState(true);
-			//chnl.setSensorState(true);
-			channels.add(chnl);
+			channels.add(new Channel(null, channel, true));
 		}
 	}
 
@@ -518,12 +513,8 @@ public class SystemController {
 		Channel connect = findChannel(channel);
 		if (connect != null) {
 			connect.addSensor(sensorType);
-		}else{
-			Channel chnl = new Channel();
-			chnl.setID(channel);
-			chnl.setState(true);
-			chnl.addSensor(sensorType);
-			channels.add(chnl);
+		} else {
+			channels.add(new Channel(sensorType, channel, true));
 		}
 	}
 
@@ -577,8 +568,8 @@ public class SystemController {
 	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected
 	 * @throws FileNotFoundException 
 	 * **/
-	private void cmdExport() throws FileNotFoundException{
-		if(!detector.usbDrives.isEmpty()){
+	private void cmdExport() throws FileNotFoundException {
+		if (!detector.driveConnected()) {
 	
 		try {
 			 
@@ -622,7 +613,7 @@ public class SystemController {
 				
 				int i = 0;
 				ArrayList<Element> elements = new ArrayList<Element>();
-				for(Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()){
+				for (Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()) {
 					int k = i;
 					
 					elements.add(doc.createElement("participant_event_ID_"+k));
@@ -654,7 +645,7 @@ public class SystemController {
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(""+detector.usbDrives.peek()+"/"+currentTimer.getCurrentEvent().getEventName()+".xml"));
+			StreamResult result = new StreamResult(new File("" + detector.getDrive() + "/" + currentTimer.getCurrentEvent().getEventName() + ".xml"));
 	 
 			// Output to console for testing
 			// StreamResult result = new StreamResult(System.out);
@@ -668,12 +659,11 @@ public class SystemController {
 		  } catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		  }	
-		}else{
+		} else {
 			//there isn't a usb drive to export to...throw error and gtfo.
 			System.out.println("NO USB DRIVE DETECTED");
 			throw new FileNotFoundException();
 		}
-		return;
 	}
 
 	/**
@@ -694,7 +684,7 @@ public class SystemController {
 	 * start the participant within event
 	 * **/
 	private void cmdStart() {
-		currentTimer.startNextParticipant();
+		currentTimer.start();
 	}
 	
 	
@@ -715,19 +705,18 @@ public class SystemController {
 	/**
 	 * End the participant within event
 	 * **/
-	private void cmdFinish() {
-		currentTimer.finishAllParticipants(false);
-		if(currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()){
+	private void cmdFinish(int participantId) {
+		currentTimer.finish(participantId, false);
+		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}else{System.out.println("don't really think this should happen");}
+		}
 	}
 
 	/**
 	 * End the participant within event..but...not as cool as the REGULAR finish.
 	 * **/
-	private void cmdDnf() {
-		//System.out.println("Oh my gosh I'm tired...I'll do this later. lol");
-		currentTimer.finishAllParticipants(true);
+	private void cmdDnf(int participantId) {
+		currentTimer.finish(participantId, true);
 		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
@@ -887,11 +876,11 @@ public class SystemController {
 		return systemTime;
 	}
 	
-	public AutoDetect getAutoDetect(){
+	public AutoDetect getAutoDetect() {
 		return detector;
 	}
 	
-	public void setPrinter(Printer printer){
+	public void setPrinter(Printer printer) {
 		this.printer = printer;
 	}
 

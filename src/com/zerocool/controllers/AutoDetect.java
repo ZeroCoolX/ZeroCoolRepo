@@ -3,6 +3,8 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.util.Stack;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import com.zerocool.gui.USBPort;
 
 /**
@@ -24,33 +26,43 @@ import com.zerocool.gui.USBPort;
  * **/
 
 public class AutoDetect {
-	static File[] oldListRoot = File.listRoots();
-
-	private static File volumes = new File("/Volumes");
-	private static File oldFiles[] = volumes.listFiles();
-	private static File files[];
+	
+	private Stack<File> usbDrives = new Stack<File>();
+	
+	private File[] oldListRoot;
+	private File volumes;
+	private File oldFiles[];
+	private File files[];
+	
 	private USBPort usb;
-	
-	public static Stack<File> usbDrives = new Stack<File>();
 
-	public AutoDetect(){
-		main(new String[1]);
-	}
-	
-	public void setUsbPort(USBPort usbPort){
-		this.usb = usbPort;
-	}
-
-
-	public void main(String[] args) {
-		if(System.getProperty("os.name").startsWith("Windows")){
+	public AutoDetect() {
+		oldListRoot = File.listRoots();
+		volumes = new File("/Volumes");
+		oldFiles = volumes.listFiles();
+		
+		if (SystemUtils.IS_OS_WINDOWS) {
 			pcWaitForNotifying();
-		}else{
+		} else if (SystemUtils.IS_OS_MAC) {
 			macWaitForNotifying();
+		} else {
+			System.err.println("Your OS '" + SystemUtils.OS_NAME + "' is not supported!");
 		}
 	}
 
-	public void macWaitForNotifying() {
+	public void setUsbPort(USBPort usbPort){
+		this.usb = usbPort;
+	}
+	
+	public File getDrive() {
+		return usbDrives.peek();
+	}
+	
+	public boolean driveConnected() {
+		return usbDrives.isEmpty();
+	}
+
+	private void macWaitForNotifying() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
@@ -65,10 +77,10 @@ public class AutoDetect {
 						System.out.println("new drive detected");
 						oldFiles = volumes.listFiles();
 						usb.setNewText("[connected]");
-						System.out.println("drive"+oldFiles[oldFiles.length-1]+" detected");
-						usbDrives.push(oldFiles[oldFiles.length-1]);
+						System.out.println("drive" + oldFiles[oldFiles.length - 1] + " detected");
+						usbDrives.push(oldFiles[oldFiles.length - 1]);
 					} else if (files.length < oldFiles.length) {
-						System.out.println(oldFiles[oldFiles.length-1]+" drive removed");
+						System.out.println(oldFiles[oldFiles.length - 1] + " drive removed");
 						oldFiles = volumes.listFiles();
 						usb.setNewText("[         ]");
 						usbDrives.pop();
@@ -78,33 +90,32 @@ public class AutoDetect {
 		});
 		t.start();
 	}
-	
-	public void pcWaitForNotifying() {
 
-    Thread t = new Thread(new Runnable() {
-        public void run() {
-            while (true) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (File.listRoots().length > oldListRoot.length) {
-                    System.out.println("new drive detected");
-					usb.setNewText("[connected]");
-                    oldListRoot = File.listRoots();
-                    System.out.println("drive"+oldListRoot[oldListRoot.length-1]+" detected");
-					usbDrives.push(oldFiles[oldFiles.length-1]);
-                } else if (File.listRoots().length < oldListRoot.length) {
-                	System.out.println(oldListRoot[oldListRoot.length-1]+" drive removed");
-					usb.setNewText("[         ]");
-                    oldListRoot = File.listRoots();
-					usbDrives.pop();
-                }
+	private void pcWaitForNotifying() {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (File.listRoots().length > oldListRoot.length) {
+						System.out.println("new drive detected");
+						usb.setNewText("[connected]");
+						oldListRoot = File.listRoots();
+						System.out.println("drive" + oldListRoot[oldListRoot.length - 1] + " detected");
+						usbDrives.push(oldFiles[oldFiles.length - 1]);
+					} else if (File.listRoots().length < oldListRoot.length) {
+						System.out.println(oldListRoot[oldListRoot.length - 1] + " drive removed");
+						usb.setNewText("[         ]");
+						oldListRoot = File.listRoots();
+						usbDrives.pop();
+					}
 
-            }
-        }
-    });
-    t.start();
+				}
+			}
+		});
+		t.start();
 	}
 }
