@@ -1,13 +1,21 @@
 package com.zerocool.gui;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -23,13 +31,15 @@ public class Main extends JFrame {
 	
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
+	private final Color chartreuse = new Color(127,255,0);
+	private final Color crimson = new Color(220,20,60);
 	
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
 
 	private SystemController admin;
 	
-	private boolean powerButtonPressed;
+	private boolean powerButtonPressed = false;
 	
 	public static void main(String[] args) {
 		new Main();
@@ -75,6 +85,18 @@ public class Main extends JFrame {
 		leftPanel.setBorder(null);
 		leftPanel.setLayout(new MigLayout("fill", "[left]", "0px:10px [] 0px:182px [] 0px:15px [] 0px:50px [] 0px:81px"));
 		
+		Dimension size = new Dimension(20,20);
+		powerIndicator = new JButton();
+		powerIndicator.setMinimumSize(size);
+		powerIndicator.setMaximumSize(size);
+		powerIndicator.setPreferredSize(size);
+
+		powerIndicator.setBackground(crimson);
+		powerIndicator.setContentAreaFilled(false);
+		powerIndicator.setOpaque(true);
+		powerIndicator.setBorderPainted(false);
+		
+				
 		powerButton = new JButton("Power");
 		powerButton.addActionListener(new ActionListener() {
 
@@ -83,10 +105,23 @@ public class Main extends JFrame {
 				String time = admin.getSystemTime().toString();
 				admin.executeCommand(!powerButtonPressed ? time + "\tON" : time + "\tOFF", false);
 				powerButtonPressed = !powerButtonPressed;
+				if(powerButtonPressed){
+					powerIndicator.setBackground(chartreuse);
+					powerIndicator.setContentAreaFilled(false);
+					powerIndicator.setOpaque(true);
+					powerIndicator.setBorderPainted(false);
+				}else{
+					powerIndicator.setBackground(crimson);
+					powerIndicator.setContentAreaFilled(false);
+					powerIndicator.setOpaque(true);
+					powerIndicator.setBorderPainted(false);
+				}
 			}
 			
 		});
 		leftPanel.add(powerButton, "cell 0 0");
+		leftPanel.add(powerIndicator, "cell 0 0");
+		
 		
 		functionButton = new JButton("Function");
 		functionButton.addActionListener(new ActionListener(){
@@ -183,6 +218,7 @@ public class Main extends JFrame {
 		private JPanel topView;
 			private JPanel leftPanel;
 				private JButton powerButton;
+				private JButton powerIndicator;
 				private JButton functionButton;
 				private Arrows arrowPanel;
 				private JButton swapButton;
