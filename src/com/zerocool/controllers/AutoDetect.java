@@ -3,6 +3,8 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.util.Stack;
 
+import javax.swing.filechooser.FileSystemView;
+
 import org.apache.commons.lang3.SystemUtils;
 
 import com.zerocool.gui.USBPort;
@@ -29,25 +31,17 @@ public class AutoDetect {
 	
 	private Stack<File> usbDrives = new Stack<File>();
 	
-	private File[] oldListRoot;
-	private File volumes;
-	private File oldFiles[];
-	private File files[];
+	private File[] rootList;
+	private File[] oldFiles;
+	private File rootFile;
 	
 	private USBPort usb;
 
 	public AutoDetect() {
-		oldListRoot = File.listRoots();
-		volumes = new File("/Volumes");
-		oldFiles = volumes.listFiles();
-		
-		if (SystemUtils.IS_OS_WINDOWS) {
-			pcWaitForNotifying();
-		} else if (SystemUtils.IS_OS_MAC) {
-			macWaitForNotifying();
-		} else {
-			System.err.println("Your OS '" + SystemUtils.OS_NAME + "' is not supported!");
-		}
+		rootFile = SystemUtils.IS_OS_MAC ? new File("/Volumes") : SystemUtils.IS_OS_LINUX ? new File("/media/" + SystemUtils.USER_NAME) : null;
+		rootList = rootList();
+		oldFiles = rootList();
+		waitForNotify();
 	}
 
 	public void setUsbPort(USBPort usbPort){
@@ -62,28 +56,29 @@ public class AutoDetect {
 		return usbDrives.isEmpty();
 	}
 
-	private void macWaitForNotifying() {
+	private void waitForNotify() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
 					try {
 						Thread.sleep(100);
-						volumes = new File("/Volumes");
-						files = volumes.listFiles();
+						rootList = rootList();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					if (files.length > oldFiles.length) {
+					if (rootList.length > oldFiles.length) {
 						System.out.println("new drive detected");
-						oldFiles = volumes.listFiles();
+						oldFiles = rootList;
 						usb.setNewText("[connected]");
 						System.out.println("drive" + oldFiles[oldFiles.length - 1] + " detected");
 						usbDrives.push(oldFiles[oldFiles.length - 1]);
-					} else if (files.length < oldFiles.length) {
+					} else if (rootList.length < oldFiles.length) {
 						System.out.println(oldFiles[oldFiles.length - 1] + " drive removed");
-						oldFiles = volumes.listFiles();
+						oldFiles = rootList;
 						usb.setNewText("[         ]");
-						usbDrives.pop();
+						if (!usbDrives.isEmpty()) {
+							usbDrives.pop();
+						}
 					}
 				}
 			}
@@ -91,31 +86,7 @@ public class AutoDetect {
 		t.start();
 	}
 
-	private void pcWaitForNotifying() {
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					if (File.listRoots().length > oldListRoot.length) {
-						System.out.println("new drive detected");
-						usb.setNewText("[connected]");
-						oldListRoot = File.listRoots();
-						System.out.println("drive" + oldListRoot[oldListRoot.length - 1] + " detected");
-						usbDrives.push(oldFiles[oldFiles.length - 1]);
-					} else if (File.listRoots().length < oldListRoot.length) {
-						System.out.println(oldListRoot[oldListRoot.length - 1] + " drive removed");
-						usb.setNewText("[         ]");
-						oldListRoot = File.listRoots();
-						usbDrives.pop();
-					}
-
-				}
-			}
-		});
-		t.start();
+	private File[] rootList() {
+		return rootFile != null ? rootFile.listFiles() : File.listRoots(); 
 	}
 }
