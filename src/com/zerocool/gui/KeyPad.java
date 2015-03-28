@@ -1,4 +1,5 @@
 package com.zerocool.gui;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -6,8 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 

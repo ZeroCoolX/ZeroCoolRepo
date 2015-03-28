@@ -2,7 +2,6 @@ package com.zerocool.entities;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import com.zerocool.services.SystemTime;
@@ -60,7 +59,10 @@ public abstract class AbstractEvent {
 		competingParticipants = new LinkedList<Participant>();
 	}
 
-	// USE FOR TESTING ONLY!
+	/**
+	 * Use for testing only!
+	 * Resets the value of LASTID to 0.
+	 */
 	public void resetEventId() {
 		LASTID = 0;
 	}

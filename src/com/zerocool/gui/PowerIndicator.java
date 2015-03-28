@@ -7,6 +7,8 @@ import javax.swing.JButton;
 
 public class PowerIndicator extends JButton{	
 	
+	private static final long serialVersionUID = 1L;
+
 	private final Dimension size = new Dimension(20, 20);
 	
 	private final Color chartreuse = new Color(127,255,0);

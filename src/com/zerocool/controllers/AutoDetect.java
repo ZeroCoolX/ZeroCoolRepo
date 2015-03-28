@@ -3,8 +3,6 @@ package com.zerocool.controllers;
 import java.io.File;
 import java.util.Stack;
 
-import javax.swing.filechooser.FileSystemView;
-
 import org.apache.commons.lang3.SystemUtils;
 
 import com.zerocool.gui.USBPort;
@@ -40,7 +38,7 @@ public class AutoDetect {
 	public AutoDetect() {
 		rootFile = SystemUtils.IS_OS_MAC ? new File("/Volumes") : SystemUtils.IS_OS_LINUX ? new File("/media/" + SystemUtils.USER_NAME) : null;
 		rootList = rootList();
-		oldFiles = rootList();
+		oldFiles = rootList;
 		waitForNotify();
 	}
 
@@ -83,6 +81,7 @@ public class AutoDetect {
 				}
 			}
 		});
+		
 		t.start();
 	}
 

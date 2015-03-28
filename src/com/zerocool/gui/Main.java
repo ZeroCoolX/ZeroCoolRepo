@@ -1,21 +1,14 @@
 package com.zerocool.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -69,7 +62,6 @@ public class Main extends JFrame {
 		//  layouts rather easily.  It's called 'MigLayout' and you can read more about it at their
 		//  website (http://www.miglayout.com/).
 		contentPane.setLayout(new MigLayout("fill", "[center]", "[] 0px:15px []"));
-		//contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
 		contentPane.setBackground(gainsboro);
 		// This JPanel represents the top view of the ChronoTimer 1009 GUI.  It will have 3 sub JPanels
