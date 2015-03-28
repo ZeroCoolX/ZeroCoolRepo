@@ -114,6 +114,7 @@ public class Main extends JFrame {
 						printerPanel.addText(totalLine);
 					}
 					admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+					consolePanel.setNewText(">"+consolePanel.currentCommand());
 				}
 			}
 			
