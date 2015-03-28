@@ -11,7 +11,7 @@ public class ChannelButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
 	private final Color deep_sky_blue = new Color(0,191,255);
-	private final Color light_coral = new Color(240,128,128);
+	private final Color dark_orange = new Color(255,140,0);
 
 	Dimension size;
 	
@@ -37,7 +37,7 @@ public class ChannelButton extends JButton {
 	}
 	
 	public void toggleConnection(boolean on){
-		setBackground(on?light_coral:deep_sky_blue);
+		setBackground(on?dark_orange:deep_sky_blue);
 		setContentAreaFilled(false);
 		setOpaque(true);
 		setBorderPainted(false);	

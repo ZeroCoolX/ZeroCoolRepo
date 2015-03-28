@@ -1,4 +1,5 @@
 package com.zerocool.gui;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ public class ChannelGroup extends JPanel {
 
 	private Font labelFont;
 	private SystemController privateAdmin;
+	private final Color gainsboro = new Color(220,220,220);
 	
 	private String[] arguments;
 	
@@ -27,6 +29,7 @@ public class ChannelGroup extends JPanel {
 		arguments = start ? new String[] { "Start", "1", "3", "5", "7" } : new String[] { "Finish", "2", "4", "6", "8" };
 		setBorder(null);
 		setLayout(new MigLayout("", "[right] 0px:15px [center] 0px:15px [center] 0px:15px [center] 0px:15px [center]", "[] 0px:5px [] 0px:5px []"));
+		setBackground(gainsboro);
 		createContents();
 	}
 	
