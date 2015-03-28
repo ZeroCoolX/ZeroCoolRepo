@@ -23,7 +23,7 @@ public class ChannelGroup extends JPanel {
 	private final Color gainsboro = new Color(220,220,220);
 	
 	private String[] arguments;
-	
+		
 	public ChannelGroup(boolean start, SystemController privateAdmin) {
 		this.privateAdmin = privateAdmin;
 		arguments = start ? new String[] { "Start", "1", "3", "5", "7" } : new String[] { "Finish", "2", "4", "6", "8" };
@@ -78,16 +78,16 @@ public class ChannelGroup extends JPanel {
 		
 		
 		
-		channel1 = new ChannelButton();
+		channel1 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[1]));
 		add(channel1, "cell 1 1");
 		
-		channel2 = new ChannelButton();
+		channel2 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[2]));
 		add(channel2, "cell 2 1");
 		
-		channel3 = new ChannelButton();
+		channel3 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[3]));
 		add(channel3, "cell 3 1");
 		
-		channel4 = new ChannelButton();
+		channel4 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[4]));
 		add(channel4, "cell 4 1");
 		
 		enable = new JLabel("Enable/Disable");

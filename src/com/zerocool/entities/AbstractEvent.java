@@ -21,7 +21,7 @@ public abstract class AbstractEvent {
 
 	// participants actually competing in this event
 	protected ArrayList<Participant> currentParticipants;
-	protected ArrayList<Participant> competingParticipants;
+	protected Queue<Participant> competingParticipants;
 
 	protected Queue<Participant> startingQueue;
 	
@@ -57,7 +57,7 @@ public abstract class AbstractEvent {
 		eventId = ++LASTID;
 		startingQueue = new LinkedList<Participant>();
 		currentParticipants = new ArrayList<Participant>();
-		competingParticipants = new ArrayList<Participant>();
+		competingParticipants = new LinkedList<Participant>();
 	}
 
 	// USE FOR TESTING ONLY!
@@ -255,7 +255,7 @@ public abstract class AbstractEvent {
 	 * Gets the currently competing Participants of the event.
 	 * @return The competing Participants.
 	 */
-	public List<Participant> getCompetingParticipants() {
+	public Queue<Participant> getCompetingParticipants() {
 		return competingParticipants;
 	}
 
