@@ -115,10 +115,10 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(consolePanel.currentCommand());
 				String totalLine = (admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs());
-				admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
 				if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 					printerPanel.addText(totalLine);
 				}
+				admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
 			}
 			
 		});
