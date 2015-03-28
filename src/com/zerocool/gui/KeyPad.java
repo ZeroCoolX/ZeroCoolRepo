@@ -61,6 +61,12 @@ public class KeyPad extends JPanel {
 		add(keys[12], "cell 0 4 2 1");
 	}
 	
+	public void toggleEnabled(boolean powerOn){
+		for(Key k: keys){
+			k.setEnabled(powerOn);
+		}
+	}
+	
 	private class Key extends JButton {
 		
 		private static final long serialVersionUID = 1L;

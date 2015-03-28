@@ -21,10 +21,12 @@ public class ChannelGroup extends JPanel {
 	private Font labelFont;
 	private SystemController privateAdmin;
 	private final Color gainsboro = new Color(220,220,220);
+	private Console privateConsole;
 	
 	private String[] arguments;
 		
-	public ChannelGroup(boolean start, SystemController privateAdmin) {
+	public ChannelGroup(boolean start, SystemController privateAdmin, Console privateConsole) {
+		this.privateConsole = privateConsole;
 		this.privateAdmin = privateAdmin;
 		arguments = start ? new String[] { "Start", "1", "3", "5", "7" } : new String[] { "Finish", "2", "4", "6", "8" };
 		setBorder(null);
@@ -78,16 +80,16 @@ public class ChannelGroup extends JPanel {
 		
 		
 		
-		channel1 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[1]));
+		channel1 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[1]), privateConsole);
 		add(channel1, "cell 1 1");
 		
-		channel2 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[2]));
+		channel2 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[2]), privateConsole);
 		add(channel2, "cell 2 1");
 		
-		channel3 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[3]));
+		channel3 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[3]), privateConsole);
 		add(channel3, "cell 3 1");
 		
-		channel4 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[4]));
+		channel4 = new ChannelButton(privateAdmin, Integer.parseInt(arguments[4]), privateConsole);
 		add(channel4, "cell 4 1");
 		
 		enable = new JLabel("Enable/Disable");
@@ -114,6 +116,17 @@ public class ChannelGroup extends JPanel {
 				
 			});
 		}
+	}
+	
+	public void toggleEnabled(boolean powerOn){
+		channel1.setEnabled(powerOn);
+		channel2.setEnabled(powerOn);
+		channel3.setEnabled(powerOn);
+		channel4.setEnabled(powerOn);
+		enable1.setEnabled(powerOn);
+		enable2.setEnabled(powerOn);
+		enable3.setEnabled(powerOn);
+		enable4.setEnabled(powerOn);
 	}
 	
 	private JLabel start;

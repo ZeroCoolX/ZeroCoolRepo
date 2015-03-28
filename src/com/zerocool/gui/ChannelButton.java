@@ -19,12 +19,15 @@ public class ChannelButton extends JButton {
 	private final int id;
 	
 	private final SystemController privateAdmin;
-
+	
+	private Console privateConsole;
+	
 	private Dimension size;
 	
 	private boolean connected = false;
 	
-	public ChannelButton(final SystemController privateAdmin,final int id) {
+	public ChannelButton(final SystemController privateAdmin,final int id, final Console privateConsole) {
+		this.privateConsole = privateConsole;
 		this.id = id;
 		size = new Dimension(20, 20);
 		this.privateAdmin = privateAdmin;
@@ -38,8 +41,11 @@ public class ChannelButton extends JButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				connected = !connected;
-				privateAdmin.executeCommand(privateAdmin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + privateAdmin.getTimer().getCurrentEvent().getCompetingParticipants().peek().getId() : "\tSTART"), false);
-				//toggleConnection(connected);
+				if(privateAdmin.getTimer().getCurrentEvent().getCompetingParticipants().isEmpty() && id % 2 == 0){
+					privateConsole.setNewText("Participant competing queue empty...");
+					return;
+				}
+					privateAdmin.executeCommand(privateAdmin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + privateAdmin.getTimer().getCurrentEvent().getCompetingParticipants().peek().getId() : "\tSTART"), false);
 			}
 			
 		});

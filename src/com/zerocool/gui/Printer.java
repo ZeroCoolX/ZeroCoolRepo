@@ -64,6 +64,11 @@ public class Printer extends JPanel {
 		textArea.setText(textArea.getText() + "\n" + text);
 	}
 	
+	public void toggleEnabled(boolean powerOn){
+		textArea.setEnabled(powerOn);
+		powerButton.setEnabled(powerOn);
+	}
+	
 	public void clearScreen(){
 		textArea.setText("");
 	}

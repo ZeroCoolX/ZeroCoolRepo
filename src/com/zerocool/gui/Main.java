@@ -48,6 +48,7 @@ public class Main extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		toggleEnabled();
 	}
 	
 	private void createContents() {
@@ -90,6 +91,7 @@ public class Main extends JFrame {
 				String time = admin.getSystemTime().toString();
 				admin.executeCommand(!powerButtonPressed ? time + "\tON" : time + "\tOFF", false);
 				powerButtonPressed = !powerButtonPressed;
+				toggleEnabled();
 			    powerIndicator.togglePower(powerButtonPressed);
 			    consolePanel.toggleScreen(powerButtonPressed);
 			    printerPanel.clearScreen();
@@ -105,12 +107,14 @@ public class Main extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(consolePanel.currentCommand());
-				String totalLine = (admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs());
-				if (admin.getIsPrinterOn()) {//meaning the printer is turned on
-					printerPanel.addText(totalLine);
+				if(!consolePanel.isScanPrompting()){
+					System.out.println(consolePanel.currentCommand());
+					String totalLine = (admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs());
+					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
+						printerPanel.addText(totalLine);
+					}
+					admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
 				}
-				admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
 			}
 			
 		});
@@ -144,10 +148,10 @@ public class Main extends JFrame {
 		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
 		channelPanel.add(titleLabel, "cell 0 0");
 		
-		startGroup = new ChannelGroup(true, admin);
+		startGroup = new ChannelGroup(true, admin, consolePanel);
 		channelPanel.add(startGroup, "cell 0 1");
 		
-		finishGroup = new ChannelGroup(false, admin);
+		finishGroup = new ChannelGroup(false, admin, consolePanel);
 		channelPanel.add(finishGroup, "cell 0 2");
 		
 		// Done with the channelPanel so add it to the Center Panel.
@@ -191,7 +195,7 @@ public class Main extends JFrame {
 		backChannel.setForeground(Color.WHITE);
 		backView.add(backChannel, "cell 0 0, top");
 		
-		backCluster = new ChannelCluster(admin);
+		backCluster = new ChannelCluster(admin, consolePanel);
 		backView.add(backCluster, "cell 1 0");
 		
 		portPanel = new USBPort();
@@ -201,6 +205,18 @@ public class Main extends JFrame {
 		
 		//contentPane.add(backView, "cell 0 1");
 		contentPane.add(backView, BorderLayout.SOUTH);
+	}
+	
+	private void toggleEnabled(){
+		functionButton.setEnabled(powerButtonPressed);
+		arrowPanel.toggleEnabled(powerButtonPressed);
+		swapButton.setEnabled(powerButtonPressed);
+		startGroup.toggleEnabled(powerButtonPressed);
+		finishGroup.toggleEnabled(powerButtonPressed);
+		consolePanel.toggleEnabled(powerButtonPressed);
+		keyPanel.toggleEnabled(powerButtonPressed);
+		backCluster.toggleEnabled(powerButtonPressed);
+		printerPanel.toggleEnabled(powerButtonPressed);
 	}
 	
 	private JPanel contentPane;

@@ -71,6 +71,13 @@ public class Arrows extends JPanel {
 		add(down, "cell 0 2, span 2");
 	}
 	
+	public void toggleEnabled(boolean powerOn){
+		left.setEnabled(powerOn);
+		right.setEnabled(powerOn);
+		down.setEnabled(powerOn);
+		up.setEnabled(powerOn);
+	}
+	
 	private JButton	left;
 	private JButton right;
 	private JButton down;

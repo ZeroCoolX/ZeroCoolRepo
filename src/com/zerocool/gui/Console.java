@@ -28,6 +28,8 @@ public class Console extends JPanel {
 	private Printer printer;
 	private Color dark_slate_green = new Color(47,79,79);
 	private final Color gainsboro = new Color(220,220,220);
+	private static boolean scanPrompting = false;
+	private int scanNumToConnect = 0;
 	
 	BufferedImage img;
 
@@ -62,7 +64,9 @@ public class Console extends JPanel {
 			
 				@Override
 				public void focusGained(FocusEvent e) {
-					textArea.setText("");
+					if(!scanPrompting){
+						textArea.setText("");
+					}
 				}
 
 				@Override
@@ -78,12 +82,21 @@ public class Console extends JPanel {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = (admin.getSystemTime().toString() + "\t" + textArea.getText().trim().toUpperCase());
 					
+					if(!scanPrompting){
+						admin.executeCommand(text, false);
+						textArea.setText("");
+					}else{
+						System.out.println("inside console");
+						String []tempText = textArea.getText().trim().toUpperCase().split("[>]");
+						text = (admin.getSystemTime().toString() + "\tCONN" + tempText[1] +" "+ scanNumToConnect);
+						System.out.println(text);
+						admin.executeCommand(text, false);
+						scanPrompting = false;
+						textArea.setText(">"+view.currentCommand());
+					}
 					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}
-					
-					admin.executeCommand(text, false);
-					textArea.setText("");
 				}
 			}
 
@@ -154,6 +167,28 @@ public class Console extends JPanel {
 	private LightScrollPane scrollPane;
 	private JTextArea textArea;
 	private JLabel description;
+	
+	public void setNewText(String text){
+		textArea.setText(text);
+	}
+	
+	public boolean isScanPrompting(){
+		return scanPrompting;
+	}
+	
+	public void promptScanner(int num){
+		scanNumToConnect = num;
+		scanPrompting = true;
+		textArea.setText("Select scanner type:" +
+				"\nGATE" +
+				"\nEYE" +
+				"\nPAD" +
+				"\n> ");
+	}
+	
+	public void toggleEnabled(boolean powerOn){
+		textArea.setEnabled(powerOn);
+	}
 	
 	public ConsoleView getConsoleView(){
 		return view;

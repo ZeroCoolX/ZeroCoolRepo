@@ -20,13 +20,21 @@ public class ChannelCluster extends JPanel {
 	private JRadioButton[] radios;
 	private SystemController privateAdmin;
 	private final Color dark_grey = new Color(105,105,105);
+	private Console privateConsole;
 	
-	public ChannelCluster(SystemController privateAdmin) {
+	public ChannelCluster(SystemController privateAdmin, Console privateConsole) {
+		this.privateConsole = privateConsole;
 		this.privateAdmin = privateAdmin;
 		setBorder(null);
 		setLayout(new MigLayout("", "[center] [center] [center] [center]", "[] [] [] []"));
 		setBackground(dark_grey);
 		createContents();
+	}
+	
+	public void toggleEnabled(boolean powerOn){
+		for(JRadioButton jrb: radios){
+			jrb.setEnabled(powerOn);
+		}
 	}
 	
 	private void createContents() {
@@ -42,11 +50,13 @@ public class ChannelCluster extends JPanel {
 			radios[i].setActionCommand(""+(i+1));
 			radios[i].addActionListener(new ActionListener(){
 
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if(((JRadioButton)e.getSource()).isSelected()){
 						System.out.println("toggle channel " + e.getActionCommand());
-						privateAdmin.executeCommand(privateAdmin.getSystemTime() + "\tCONN GATE "+e.getActionCommand(), false);
+						privateConsole.promptScanner(Integer.parseInt(e.getActionCommand()));
+						//privateAdmin.executeCommand(privateAdmin.getSystemTime() + "\tCONN GATE "+e.getActionCommand(), false);
 					}else{
 						System.out.println("toggle channel " + e.getActionCommand());
 						privateAdmin.executeCommand(privateAdmin.getSystemTime() + "\tDISC "+e.getActionCommand(), false);
