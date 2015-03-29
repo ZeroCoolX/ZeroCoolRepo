@@ -14,6 +14,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.gui.buttons.PowerIndicator;
+import com.zerocool.gui.panels.ArrowPanel;
+import com.zerocool.gui.panels.BackChannelPanel;
+import com.zerocool.gui.panels.FrontChannelPanel;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -25,13 +29,14 @@ public class Main extends JFrame {
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
 	
-	private final Color gainsboro = new Color(220,220,220);
-	private final Color dark_grey = new Color(105,105,105);
+	private final Color gainsboro = new Color(220, 220, 220);
+	private final Color dark_grey = new Color(105, 105, 105);
 		
 	private final String title = "ChronoTimer 1009";
 	private final String version = "vSprint 2";
 
 	private SystemController admin;
+	private ChannelGroup channels;
 	
 	private boolean powerButtonPressed = false;
 	
@@ -56,6 +61,7 @@ public class Main extends JFrame {
 		printerPanel = new Printer(admin);
 		admin.setPrinter(printerPanel);
 		consolePanel = new Console(admin, printerPanel);
+		channels = new ChannelGroup(admin, consolePanel);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -121,7 +127,7 @@ public class Main extends JFrame {
 		});
 		leftPanel.add(functionButton, "cell 0 1");
 		
-		arrowPanel = new Arrows(consolePanel);
+		arrowPanel = new ArrowPanel(consolePanel);
 		
 		// Done with arrowPanel so add it to the Left Panel.
 		leftPanel.add(arrowPanel, "cell 0 2");
@@ -149,11 +155,11 @@ public class Main extends JFrame {
 		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
 		channelPanel.add(titleLabel, "cell 0 0");
 		
-		startGroup = new ChannelGroup(true, admin, consolePanel);
-		channelPanel.add(startGroup, "cell 0 1");
+		frontChannelPanel = new FrontChannelPanel(channels, gainsboro);
+		channelPanel.add(frontChannelPanel, "cell 0 1");
 		
-		finishGroup = new ChannelGroup(false, admin, consolePanel);
-		channelPanel.add(finishGroup, "cell 0 2");
+		//finishGroup = new FrontChannelPanel(false, admin, consolePanel);
+		//channelPanel.add(finishGroup, "cell 0 2");
 		
 		// Done with the channelPanel so add it to the Center Panel.
 		centerPanel.add(channelPanel, "cell 0 0");
@@ -196,8 +202,8 @@ public class Main extends JFrame {
 		backChannel.setForeground(Color.WHITE);
 		backView.add(backChannel, "cell 0 0, top");
 		
-		backCluster = new ChannelCluster(admin, consolePanel);
-		backView.add(backCluster, "cell 1 0");
+		backChannelPanel = new BackChannelPanel(channels, dark_grey);
+		backView.add(backChannelPanel, "cell 1 0");
 		
 		portPanel = new USBPort();
 		admin.getAutoDetect().setUsbPort(portPanel);
@@ -212,11 +218,11 @@ public class Main extends JFrame {
 		functionButton.setEnabled(powerButtonPressed);
 		arrowPanel.toggleEnabled(powerButtonPressed);
 		swapButton.setEnabled(powerButtonPressed);
-		startGroup.toggleEnabled(powerButtonPressed);
-		finishGroup.toggleEnabled(powerButtonPressed);
+//		startGroup.toggleEnabled(powerButtonPressed);
+//		finishGroup.toggleEnabled(powerButtonPressed);
 		consolePanel.toggleEnabled(powerButtonPressed);
 		keyPanel.toggleEnabled(powerButtonPressed);
-		backCluster.toggleEnabled(powerButtonPressed);
+//		backCluster.toggleEnabled(powerButtonPressed);
 		printerPanel.toggleEnabled(powerButtonPressed);
 	}
 	
@@ -226,19 +232,18 @@ public class Main extends JFrame {
 				private JButton powerButton;
 				private PowerIndicator powerIndicator;
 				private JButton functionButton;
-				private Arrows arrowPanel;
+				private ArrowPanel arrowPanel;
 				private JButton swapButton;
 			private JPanel centerPanel;
 				private JPanel channelPanel;
 					private JLabel titleLabel;
-					private ChannelGroup startGroup;
-					private ChannelGroup finishGroup;
+					private FrontChannelPanel frontChannelPanel;
 				private Console consolePanel;
 			private JPanel rightPanel;
 				private Printer printerPanel;
 				private KeyPad keyPanel;
 		private JPanel backView;
 			private JLabel backChannel;
-			private ChannelCluster backCluster;
+			private BackChannelPanel backChannelPanel;
 			private USBPort portPanel;
 }

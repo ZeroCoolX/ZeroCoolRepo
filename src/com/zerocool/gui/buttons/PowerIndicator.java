@@ -1,4 +1,4 @@
-package com.zerocool.gui;
+package com.zerocool.gui.buttons;
 
 import java.awt.Color;
 import java.awt.Dimension;

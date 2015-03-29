@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.gui.buttons.PowerIndicator;
 
 import net.miginfocom.swing.MigLayout;
 

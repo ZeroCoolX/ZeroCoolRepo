@@ -1,4 +1,4 @@
-package com.zerocool.gui;
+package com.zerocool.gui.panels;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,17 +6,19 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.zerocool.gui.Console;
+
 import net.miginfocom.swing.MigLayout;
 
 
-public class Arrows extends JPanel {
+public class ArrowPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private final Color gainsboro = new Color(220,220,220);
 
 	private Console console;
 	
-	public Arrows(Console console) {
+	public ArrowPanel(Console console) {
 		this.console = console;
 		
 		setBorder(null);
