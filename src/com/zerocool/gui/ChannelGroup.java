@@ -33,12 +33,15 @@ public class ChannelGroup {
 		return getChannel(channel).getEnableButton();
 	}
 	
-	public JLabel getChannelLabel(int channel) {
-		return getChannel(channel).getJLabel();
+	public JLabel getChannelLabel(int channel, boolean front) {
+		return getChannel(channel).getJLabel(front);
 	}
 	
 	public int getChannelCount() {
 		return channels.length;
 	}
 	
+	public void toggleEanbled(boolean enabled) {
+		
+	}
 }

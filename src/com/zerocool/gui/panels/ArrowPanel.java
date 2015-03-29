@@ -4,30 +4,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 
+import com.zerocool.controllers.SystemController;
+import com.zerocool.gui.ChannelGroup;
 import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
 import net.miginfocom.swing.MigLayout;
 
 
-public class ArrowPanel extends JPanel {
+public class ArrowPanel extends AbstractPanel {
 
 	private static final long serialVersionUID = 1L;
-	private final Color gainsboro = new Color(220,220,220);
-
-	private Console console;
 	
-	public ArrowPanel(Console console) {
-		this.console = console;
-		
+	public ArrowPanel(Main main, SystemController admin, Console console, Printer printer, ChannelGroup channels, Color background) {
+		super(main, admin, console, printer, channels, background);
 		setBorder(null);
 		setLayout(new MigLayout("gapx 0px, gapy 0px", "[center] 0px:15px [center]", "[] 0px:15px [] 0px:15px []"));
-		setBackground(gainsboro);
 		createContents();
 	}
 
-	private void createContents() {
+	@Override
+	protected void createContents() {
 		up = new JButton("U");
 		up.addActionListener(new ActionListener() {
 
@@ -73,11 +73,17 @@ public class ArrowPanel extends JPanel {
 		add(down, "cell 0 2, span 2");
 	}
 	
-	public void toggleEnabled(boolean powerOn){
-		left.setEnabled(powerOn);
-		right.setEnabled(powerOn);
-		down.setEnabled(powerOn);
-		up.setEnabled(powerOn);
+	@Override
+	public void update() {
+		// do nothing
+	}
+
+	@Override
+	public void toggleEnabled(boolean enabled) {
+		left.setEnabled(enabled);
+		right.setEnabled(enabled);
+		down.setEnabled(enabled);
+		up.setEnabled(enabled);
 	}
 	
 	private JButton	left;

@@ -122,7 +122,7 @@ public class Console extends JPanel {
 		add(description, "cell 0 1");
 	}
 	
-	public void toggleScreen(boolean power){
+	public void toggleScreen(boolean power) {
 		textArea.setText((power ? "type command then enter" : ""));
 	}
 

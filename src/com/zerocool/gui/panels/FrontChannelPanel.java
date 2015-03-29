@@ -3,29 +3,31 @@ import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.ChannelGroup;
+import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
 import net.miginfocom.swing.MigLayout;
 
-public class FrontChannelPanel extends JPanel {
+public class FrontChannelPanel extends AbstractPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Font labelFont;
-	private ChannelGroup channels;
 		
-	public FrontChannelPanel(ChannelGroup channels, Color background) {
-		this.channels = channels;
+	public FrontChannelPanel(Main main, SystemController admin, Console console, Printer printer, ChannelGroup channels, Color background) {
+		super(main, admin, console, printer, channels, background);
 		setBorder(null);
-		setLayout(new MigLayout("", "[right] 0px:15px [center] 0px:15px [center] 0px:15px [center] 0px:15px [center]", "[] 0px:5px [] 0px:5px ["
-				+ "] 0px:15px [] 0px:5px [] 0px:5px []"));
-		setBackground(background);
+		setLayout(new MigLayout("", "[right] 0px:15px [center] 0px:15px [center] 0px:15px [center] 0px:15px [center]", 
+				"[] 0px:5px [] 0px:5px [] 0px:15px [] 0px:5px [] 0px:5px []"));
 		createContents();
 	}
 	
-	private void createContents() {
+	@Override
+	protected void createContents() {
 		labelFont = new Font("Tahoma", Font.PLAIN, 14);
 		
 		start = new JLabel("Start");
@@ -54,12 +56,21 @@ public class FrontChannelPanel extends JPanel {
 		int col = channel % 2 == 0 ? (channel / 2) : Math.floorDiv(channel, 2) + 1;
 		int row = channel % 2 == 0 ? 3 : 0;
 		channels.getChannelEnableButton(channel).setBackground(getBackground());
-		System.out.println("cell " + col + " " + row);
-		add(channels.getChannelLabel(channel), "cell " + col + " " + row++);
-		System.out.println("cell " + col + " " + row);
+		add(channels.getChannelLabel(channel, true), "cell " + col + " " + row++);
 		add(channels.getChannel(channel), "cell " + col + " " + row++);
-		System.out.println("cell " + col + " " + row);
 		add(channels.getChannelEnableButton(channel), "cell " + col + " " + row);
+	}
+	
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void toggleEnabled(boolean enabled) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private JLabel start;

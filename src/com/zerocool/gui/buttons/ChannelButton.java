@@ -1,7 +1,6 @@
 package com.zerocool.gui.buttons;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -15,18 +14,18 @@ import javax.swing.JLabel;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
 
 public class ChannelButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final Color deep_sky_blue = new Color(0,191,255);
-	private final Color dark_orange = new Color(255,140,0);
-	
 	private SystemController admin;
 	private Console console;
 	private ToggleButton connectButton;
 	private ToggleButton enableButton;
+	private JLabel frontLabel;
+	private JLabel backLabel;
 	private Dimension size;
 	
 	private int id;
@@ -38,6 +37,8 @@ public class ChannelButton extends JButton {
 		this.id = id;
 		connectButton = new ToggleButton(admin, console, ToggleButton.Type.CONNECT, id);
 		enableButton = new ToggleButton(admin, console, ToggleButton.Type.ENABLE, id);
+		frontLabel = createLabel();
+		backLabel = createLabel();
 		size = new Dimension(20, 20);
 		setPrefs();
 	}
@@ -64,6 +65,13 @@ public class ChannelButton extends JButton {
 		
 	}
 	
+	private JLabel createLabel() {
+		JLabel l = new JLabel("" + id);
+		l.setHorizontalAlignment(JLabel.CENTER);
+		l.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		return l;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		int width = getWidth();
@@ -76,7 +84,7 @@ public class ChannelButton extends JButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(connectButton.isEnabled() ? dark_orange : deep_sky_blue);
+		g2.setPaint(connectButton.isEnabled() ? Main.DARK_ORANGE : Main.DEEP_SKY_BLUE);
 		g2.fillRect(0, 0, width, height);
 		
 		g2.dispose();
@@ -90,11 +98,8 @@ public class ChannelButton extends JButton {
 		return enableButton;
 	}
 	
-	public JLabel getJLabel() {
-		JLabel label = new JLabel("" + id);
-		label.setHorizontalAlignment(JLabel.CENTER);
-		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		return label;
+	public JLabel getJLabel(boolean front) {
+		return front ? frontLabel : backLabel;
 	}
 
 }

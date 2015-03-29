@@ -1,51 +1,48 @@
 package com.zerocool.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 import com.zerocool.controllers.SystemController;
-import com.zerocool.gui.buttons.PowerIndicator;
-import com.zerocool.gui.panels.ArrowPanel;
-import com.zerocool.gui.panels.BackChannelPanel;
-import com.zerocool.gui.panels.FrontChannelPanel;
+import com.zerocool.gui.views.BotView;
+import com.zerocool.gui.views.TopView;
 
 import net.miginfocom.swing.MigLayout;
 
 
-public class Main extends JFrame {
+public class Main extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final String TITLE = "ChronoTimer 1009";
+	public static final String VERSION = "vSprint 2";
+		
+	public static final Color BLACK = new Color(13, 13, 13);
+	public static final Color BLEACHED_ALMOND = new Color(255, 235, 205);
+	public static final Color DEEP_SKY_BLUE = new Color(0, 191, 255);
+	public static final Color DARK_ORANGE = new Color(255, 140, 0);
+	public static final Color GAINSBORO = new Color(220, 220, 220);
+	public static final Color GREEN = new Color(34, 178, 34);
+	public static final Color GREY = new Color(178, 178, 178);
+	public static final Color RED = new Color(178, 34, 34);
+
 	private static final int WIDTH = 900;
 	private static final int HEIGHT = 600;
 	
-	private final Color gainsboro = new Color(220, 220, 220);
-	private final Color dark_grey = new Color(105, 105, 105);
-		
-	private final String title = "ChronoTimer 1009";
-	private final String version = "vSprint 2";
-
 	private SystemController admin;
+	private Console console;
+	private Printer printer;
 	private ChannelGroup channels;
-	
-	private boolean powerButtonPressed = false;
 	
 	public static void main(String[] args) {
 		new Main();
 	}
 
 	public Main() {
-		setTitle(title + " " + version);
+		setTitle(TITLE + " " + VERSION);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, WIDTH, HEIGHT);
 	//	setResizable(false);
@@ -53,15 +50,14 @@ public class Main extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-		toggleEnabled();
 	}
 	
 	private void createContents() {
 		admin = new SystemController();
-		printerPanel = new Printer(admin);
-		admin.setPrinter(printerPanel);
-		consolePanel = new Console(admin, printerPanel);
-		channels = new ChannelGroup(admin, consolePanel);
+		printer = new Printer(this, admin, console, GAINSBORO);
+		admin.setPrinter(printer);
+		console = new Console(admin, printer);
+		channels = new ChannelGroup(admin, console);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,180 +66,33 @@ public class Main extends JFrame {
 		//  website (http://www.miglayout.com/).
 		contentPane.setLayout(new MigLayout("fill", "[center]", "[] 0px:15px []"));
 		setContentPane(contentPane);
-		contentPane.setBackground(gainsboro);
+		contentPane.setBackground(GAINSBORO);
 		// This JPanel represents the top view of the ChronoTimer 1009 GUI.  It will have 3 sub JPanels
 		//	that contain all of the other components (Left, Center, Right).  I split it up in columns to
 		//	make it easier.  Of those 3 sub panels, 2 of them (Center, Right) will have 2 subsub panels each.
 		//	It just made sense to do this otherwise those panels would get kinda messy, and we ain't about dat
 		//	life.
-		topView = new JPanel();
-		topView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Top View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		topView.setLayout(new MigLayout("fill, gapx 0px", "0px:50px [] [] 0px:50px [] 0px:50px", "[]"));
-		topView.setBackground(gainsboro);
-		
-		// This panel is going to hold the Power, Function, Swap and Arrow buttons.
-		leftPanel = new JPanel();
-		leftPanel.setBorder(null);
-		leftPanel.setLayout(new MigLayout("fill", "[left]", "0px:10px [] 0px:182px [] 0px:15px [] 0px:50px [] 0px:81px"));
-		leftPanel.setBackground(gainsboro);
-		
-		powerIndicator = new PowerIndicator();
-				
-		powerButton = new JButton("Power");
-		powerButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String time = admin.getSystemTime().toString();
-				admin.executeCommand(!powerButtonPressed ? time + "\tON" : time + "\tOFF", false);
-				powerButtonPressed = !powerButtonPressed;
-				toggleEnabled();
-			    powerIndicator.togglePower(powerButtonPressed);
-			    consolePanel.toggleScreen(powerButtonPressed);
-			    printerPanel.clearScreen();
-			}
-			
-		});
-		leftPanel.add(powerButton, "cell 0 0");
-		leftPanel.add(powerIndicator, "cell 0 0");
-		
-		
-		functionButton = new JButton("Function");
-		functionButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!consolePanel.isScanPrompting()){
-					System.out.println(consolePanel.currentCommand());
-					String totalLine = (admin.getSystemTime()+"\t"+consolePanel.currentCommand() + " " + consolePanel.getConsoleView().getArgs());
-					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
-						printerPanel.addText(totalLine);
-					}
-					admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
-					consolePanel.setNewText(">"+consolePanel.currentCommand());
-				}
-			}
-			
-		});
-		leftPanel.add(functionButton, "cell 0 1");
-		
-		arrowPanel = new ArrowPanel(consolePanel);
-		
-		// Done with arrowPanel so add it to the Left Panel.
-		leftPanel.add(arrowPanel, "cell 0 2");
-		
-		swapButton = new JButton("Swap");
-		leftPanel.add(swapButton, "cell 0 3");
-		
-		// Done with leftPanel so add it to the Top View.
-		topView.add(leftPanel, "cell 0 0");
-		
-		// This panel is going to be holding 2 sub panels.  The first contains all the channels and the
-		//  second will contain the console.
-		centerPanel = new JPanel();
-		centerPanel.setBorder(null);
-		centerPanel.setLayout(new MigLayout("fill", "[center]", "[] []"));
-		centerPanel.setBackground(gainsboro);
-		
-		// Holds all the channels and junk.
-		channelPanel = new JPanel();
-		channelPanel.setBorder(null);
-		channelPanel.setLayout(new MigLayout("fill", "[center]", "[] 0px:5px [] []"));
-		channelPanel.setBackground(gainsboro);
-		
-		titleLabel = new JLabel(title + "  ");
-		titleLabel.setFont(new Font("Tahoma", Font.ITALIC, 15));
-		channelPanel.add(titleLabel, "cell 0 0");
-		
-		frontChannelPanel = new FrontChannelPanel(channels, gainsboro);
-		channelPanel.add(frontChannelPanel, "cell 0 1");
-		
-		//finishGroup = new FrontChannelPanel(false, admin, consolePanel);
-		//channelPanel.add(finishGroup, "cell 0 2");
-		
-		// Done with the channelPanel so add it to the Center Panel.
-		centerPanel.add(channelPanel, "cell 0 0");
-		
-		// TODO MOVED TO TOP
-		
-		// Done with the console so add it to the Center Panel.
-		centerPanel.add(consolePanel, "cell 0 1, right");		
-		// Done with centerPanel so add it to the Top View.
-		topView.add(centerPanel, "cell 1 0");
-		
-		rightPanel = new JPanel();
-		rightPanel.setBorder(null);
-		rightPanel.setLayout(new MigLayout("fill, gapy 0", "[center]", "[] 0px:17px [] 0px:25px"));
-		rightPanel.setBackground(gainsboro);
-		
-		// TODO MOVED TO TOP
-		
-		// Done with the printerPanel so add it to the Right Panel.
-		rightPanel.add(printerPanel, "cell 0 0");
-		
-		keyPanel = new KeyPad(consolePanel);
-
-		
-		// Done with the keyPanel so add it to the Right Panel;
-		rightPanel.add(keyPanel, "cell 0 1");
-		// Done with rightPanel so add it to the Top View.
-		topView.add(rightPanel, "cell 2 0");
-		// Done with topView so add it to the Content Pane.
-		//contentPane.add(topView, "cell 0 0");
+		topView = new TopView(this, admin, console, printer, channels, GAINSBORO);
 		contentPane.add(topView, BorderLayout.NORTH);
 		
-		backView = new JPanel();
-		backView.setBorder(new TitledBorder(LineBorder.createBlackLineBorder(), "Back View", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		backView.setLayout(new MigLayout("fill", "[] 0px:15px [] 0px:120px [] 0px:50px", "[] 0px:25px"));
-		backView.setBackground(dark_grey);
+		botView = new BotView(this, admin, console, printer, channels, GREY);
+		contentPane.add(botView, BorderLayout.SOUTH);
 		
-		backChannel = new JLabel("CHAN");
-		backChannel.setBackground(gainsboro);
-		backChannel.setForeground(Color.WHITE);
-		backView.add(backChannel, "cell 0 0, top");
-		
-		backChannelPanel = new BackChannelPanel(channels, dark_grey);
-		backView.add(backChannelPanel, "cell 1 0");
-		
-		portPanel = new USBPort();
-		admin.getAutoDetect().setUsbPort(portPanel);
-		portPanel.setBackground(dark_grey);
-		backView.add(portPanel, "cell 2 0");
-		
-		//contentPane.add(backView, "cell 0 1");
-		contentPane.add(backView, BorderLayout.SOUTH);
+		toggleEnabled(false);
 	}
 	
-	private void toggleEnabled(){
-		functionButton.setEnabled(powerButtonPressed);
-		arrowPanel.toggleEnabled(powerButtonPressed);
-		swapButton.setEnabled(powerButtonPressed);
-//		startGroup.toggleEnabled(powerButtonPressed);
-//		finishGroup.toggleEnabled(powerButtonPressed);
-		consolePanel.toggleEnabled(powerButtonPressed);
-		keyPanel.toggleEnabled(powerButtonPressed);
-//		backCluster.toggleEnabled(powerButtonPressed);
-		printerPanel.toggleEnabled(powerButtonPressed);
+	@Override
+	public void update() {
+		topView.update();
+		botView.update();
+	}
+	
+	public void toggleEnabled(boolean enabled) {
+		topView.toggleEnabled(enabled);
+		botView.toggleEnabled(enabled);
 	}
 	
 	private JPanel contentPane;
-		private JPanel topView;
-			private JPanel leftPanel;
-				private JButton powerButton;
-				private PowerIndicator powerIndicator;
-				private JButton functionButton;
-				private ArrowPanel arrowPanel;
-				private JButton swapButton;
-			private JPanel centerPanel;
-				private JPanel channelPanel;
-					private JLabel titleLabel;
-					private FrontChannelPanel frontChannelPanel;
-				private Console consolePanel;
-			private JPanel rightPanel;
-				private Printer printerPanel;
-				private KeyPad keyPanel;
-		private JPanel backView;
-			private JLabel backChannel;
-			private BackChannelPanel backChannelPanel;
-			private USBPort portPanel;
+		private TopView topView;
+		private BotView botView;
 }

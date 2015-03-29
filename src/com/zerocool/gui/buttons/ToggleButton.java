@@ -1,7 +1,6 @@
 package com.zerocool.gui.buttons;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,16 +12,13 @@ import javax.swing.JRadioButton;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
 
 public class ToggleButton extends JRadioButton {
 
 	private static final long serialVersionUID = 1L;
 
 	public enum Type { CONNECT, ENABLE };
-	
-	private final Color red = new Color(178, 34, 34);
-	private final Color green = new Color(34, 178, 34);
-	private final Color black = new Color(13, 13, 13);
 	
 	private SystemController admin;
 	private Console console;
@@ -79,10 +75,10 @@ public class ToggleButton extends JRadioButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(enabled ? green : red);
+		g2.setPaint(enabled ? Main.GREEN : Main.RED);
 		g2.fillOval(ovalX, ovalY, ovalWidth + 1, ovalHeight + 1);
 		
-		g2.setPaint(black);
+		g2.setPaint(Main.BLACK);
 		g2.drawOval(ovalX, ovalY, ovalWidth, ovalHeight);
 		
 		g2.dispose();

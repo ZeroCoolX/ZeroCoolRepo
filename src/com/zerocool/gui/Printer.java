@@ -1,10 +1,9 @@
 package com.zerocool.gui;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.CompoundBorder;
@@ -12,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import com.zerocool.controllers.SystemController;
-import com.zerocool.gui.buttons.PowerIndicator;
+import com.zerocool.gui.buttons.PowerButton;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -20,39 +19,22 @@ import net.miginfocom.swing.MigLayout;
 public class Printer extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private SystemController admin;
-	private final Color gainsboro = new Color(220,220,220);
-	private final Color bleached_almond = new Color(255,235,205);
 		
-	public Printer(SystemController systemController) {
-		admin = systemController;
+	public Printer(Main main, SystemController admin, Console console, Color background) {
+		powerButton = new PowerButton(main, admin, console, this, "Printer Pwr", PowerButton.Type.Printer);
 		setBorder(null);
 		setLayout(new MigLayout("insets 0px", "[center]", "[] 0px:15px []"));
-		setBackground(gainsboro);
+		setBackground(background);
 		createContents();
 	}
 	
 	private void createContents() {
-		powerButton = new JButton("Printer Pwr");
-		powerIndicator = new PowerIndicator();
-		powerButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				admin.setIsPrinterOn(!admin.getIsPrinterOn());
-				powerIndicator.togglePower(admin.getIsPrinterOn());
-			}
-			
-		});
 		add(powerButton, "cell 0 0");
-		add(powerIndicator, "cell 1 0");
 		
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
-	//	textArea.setEditable(false);
 		textArea.setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
-		textArea.setBackground(bleached_almond);
+		textArea.setBackground(Main.BLEACHED_ALMOND);
 		textArea.setForeground(Color.DARK_GRAY);
 		textArea.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		
@@ -75,7 +57,6 @@ public class Printer extends JPanel {
 	}
 	
 	private JButton powerButton;
-	private PowerIndicator powerIndicator;
 	private LightScrollPane scrollPane;
 	private JTextArea textArea;
 }

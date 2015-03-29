@@ -29,6 +29,7 @@ import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
+import com.zerocool.gui.Observer;
 import com.zerocool.gui.Printer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
@@ -36,6 +37,7 @@ import com.zerocool.services.SystemTime;
 public class SystemController {
 
 	private ArrayList<Channel> channels;
+	private ArrayList<Observer> observers;
 
 	private TaskList taskList;
 	private SystemTime systemTime;
@@ -63,6 +65,7 @@ public class SystemController {
 		id = 0;
 
 		systemTime.start();
+		observers = new ArrayList<Observer>();
 	}
 
 	public SystemController(int id) {

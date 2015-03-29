@@ -67,13 +67,13 @@ public class AutoDetect {
 					if (rootList.length > oldFiles.length) {
 						System.out.println("new drive detected");
 						oldFiles = rootList;
-						usb.setNewText("[connected]");
+				//		usb.setNewText("[connected]");
 						System.out.println("drive" + oldFiles[oldFiles.length - 1] + " detected");
 						usbDrives.push(oldFiles[oldFiles.length - 1]);
 					} else if (rootList.length < oldFiles.length) {
 						System.out.println(oldFiles[oldFiles.length - 1] + " drive removed");
 						oldFiles = rootList;
-						usb.setNewText("[         ]");
+				//		usb.setNewText("[         ]");
 						if (!usbDrives.isEmpty()) {
 							usbDrives.pop();
 						}

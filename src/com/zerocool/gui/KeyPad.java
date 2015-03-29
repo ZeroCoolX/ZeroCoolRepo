@@ -6,40 +6,43 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.zerocool.controllers.SystemController;
+import com.zerocool.gui.panels.AbstractPanel;
 
 import net.miginfocom.swing.MigLayout;
 
 
-public class KeyPad extends JPanel {
+public class KeyPad extends AbstractPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private Key[] keys;
-	private Console console;
 
-	public KeyPad(Console console) {
-		this.console = console;
+	public KeyPad(Main main, SystemController admin, Console console, Printer printer, ChannelGroup channels, Color background) {
+		super(main, admin, console, printer, channels, background);
 		setBorder(null);
 		setLayout(new MigLayout("gapy 0px, gapx 0px", "[fill] [fill] [fill]", "[] [] [] [] []"));
-		setBackground(Color.BLACK);
 		createContents();
 	}
 	
-	private void createContents() {
+	@Override
+	protected void createContents() {
 		keys = new Key[13];
 		
 		String[] keyNames = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#", "< Back" };
 		for (int i = 0; i < keys.length; ++i) {
 			keys[i] = new Key(keyNames[i]);
-			keys[i].setActionCommand(keyNames[i]);
 			keys[i].addActionListener(new ActionListener(){
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("pressing number button : " + e.getActionCommand());
+					String print = ((Key) e.getSource()).getPrint();
+					System.out.println("pressing number button : " + print);
 					//Basically need to append the number pressed to the end of the current command in the ConsoleView console. 
-					console.getConsoleView().setCommandArgCombo("" + e.getActionCommand());
+					console.getConsoleView().setCommandArgCombo("" + print);
 					console.setCommandArgComboView();
 				}
 				
@@ -61,9 +64,15 @@ public class KeyPad extends JPanel {
 		add(keys[12], "cell 0 4 2 1");
 	}
 	
-	public void toggleEnabled(boolean powerOn){
-		for(Key k: keys){
-			k.setEnabled(powerOn);
+	@Override
+	public void update() {
+		// do nothing
+	}
+	
+	@Override
+	public void toggleEnabled(boolean enabled) {
+		for (Key k : keys) {
+			k.setEnabled(enabled);
 		}
 	}
 	
@@ -78,10 +87,12 @@ public class KeyPad extends JPanel {
 			super(print);
 			
 			size = new Dimension(40, 40);
-		//	setMinimumSize(size);
-		//	setMaximumSize(size);
 			setPreferredSize(size);
 			this.print = print;
+		}
+		
+		public String getPrint() {
+			return print;
 		}
 		
 	}
