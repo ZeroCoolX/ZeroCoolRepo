@@ -13,9 +13,9 @@ import com.zerocool.gui.ChannelGroup;
 import com.zerocool.gui.Console;
 import com.zerocool.gui.Main;
 import com.zerocool.gui.Printer;
-import com.zerocool.gui.USBPort;
 import com.zerocool.gui.panels.AbstractPanel;
 import com.zerocool.gui.panels.BackChannelPanel;
+import com.zerocool.gui.panels.USBPort;
 
 public class BotView extends AbstractPanel {
 

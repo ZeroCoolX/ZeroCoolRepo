@@ -37,9 +37,8 @@ public class PowerButton extends AbstractButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (type.equals(Type.Main)) {
-					
+					main.toggleEnabled(!on);
 					admin.executeCommand(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON", false);
-					console.toggleScreen(!on);
 					printer.clearScreen();
 				} else if (type.equals(Type.Printer)) {
 					admin.setIsPrinterOn(!admin.getIsPrinterOn());
@@ -65,7 +64,7 @@ public class PowerButton extends AbstractButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(new GradientPaint(0, 0, Color.WHITE, 0, height, on ? Main.GREEN : Main.RED));
+		g2.setPaint(new GradientPaint(0, 0, Color.WHITE, 0, height, isEnabled() ? on ? Main.GREEN : Main.RED : Main.BLACK));
 		g2.fillRect(0, 0, width, height);
 		g2.setPaint(null);
 		

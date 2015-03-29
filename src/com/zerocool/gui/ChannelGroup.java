@@ -10,10 +10,10 @@ public class ChannelGroup {
 
 	private ChannelButton[] channels;
 	
-	public ChannelGroup(SystemController admin, Console console) {
+	public ChannelGroup(Main main, SystemController admin, Console console, Printer printer) {
 		channels = new ChannelButton[8];
 		for (int i = 0; i < 8; ++i) {
-			channels[i] = new ChannelButton(admin, console, i + 1);
+			channels[i] = new ChannelButton(main, admin, console, printer, "", i + 1);
 		}
 	}
 	
@@ -41,7 +41,15 @@ public class ChannelGroup {
 		return channels.length;
 	}
 	
-	public void toggleEanbled(boolean enabled) {
-		
+	public void update() {
+		for (ChannelButton cb : channels) {
+			cb.update();
+		}
+	}
+	
+	public void toggleEnabled(boolean enabled) {
+		for (ChannelButton cb : channels) {
+			cb.toggleEnabled(enabled);
+		}
 	}
 }

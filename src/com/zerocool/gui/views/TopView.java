@@ -53,9 +53,9 @@ public class TopView extends AbstractPanel {
 
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		leftPanel.setEnabled(enabled);
-		centerPanel.setEnabled(enabled);
-		rightPanel.setEnabled(enabled);
+		leftPanel.toggleEnabled(enabled);
+		centerPanel.toggleEnabled(enabled);
+		rightPanel.toggleEnabled(enabled);
 	}
 
 	private LeftPanel leftPanel;

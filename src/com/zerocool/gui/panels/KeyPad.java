@@ -1,4 +1,4 @@
-package com.zerocool.gui;
+package com.zerocool.gui.panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,11 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import com.zerocool.controllers.SystemController;
-import com.zerocool.gui.panels.AbstractPanel;
+import com.zerocool.gui.ChannelGroup;
+import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -42,7 +43,7 @@ public class KeyPad extends AbstractPanel {
 					String print = ((Key) e.getSource()).getPrint();
 					System.out.println("pressing number button : " + print);
 					//Basically need to append the number pressed to the end of the current command in the ConsoleView console. 
-					console.getConsoleView().setCommandArgCombo("" + print);
+					//console.getConsoleView().setCommandArgCombo("" + print);
 					console.setCommandArgComboView();
 				}
 				
@@ -66,7 +67,7 @@ public class KeyPad extends AbstractPanel {
 	
 	@Override
 	public void update() {
-		// do nothing
+		// DO NOTHING
 	}
 	
 	@Override

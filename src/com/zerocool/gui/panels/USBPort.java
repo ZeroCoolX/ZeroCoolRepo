@@ -1,11 +1,14 @@
-package com.zerocool.gui;
+package com.zerocool.gui.panels;
 
 import java.awt.Color;
 
 import javax.swing.JLabel;
 
 import com.zerocool.controllers.SystemController;
-import com.zerocool.gui.panels.AbstractPanel;
+import com.zerocool.gui.ChannelGroup;
+import com.zerocool.gui.Console;
+import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
 
 public class USBPort extends AbstractPanel {

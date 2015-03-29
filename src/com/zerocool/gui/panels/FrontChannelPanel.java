@@ -63,14 +63,12 @@ public class FrontChannelPanel extends AbstractPanel {
 	
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		channels.update();
 	}
 	
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		// TODO Auto-generated method stub
-		
+		channels.toggleEnabled(enabled);
 	}
 	
 	private JLabel start;

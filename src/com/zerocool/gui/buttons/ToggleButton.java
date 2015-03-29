@@ -8,37 +8,34 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JRadioButton;
-
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
 import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
-public class ToggleButton extends JRadioButton {
+public class ToggleButton extends AbstractButton {
 
 	private static final long serialVersionUID = 1L;
 
 	public enum Type { CONNECT, ENABLE };
 	
-	private SystemController admin;
-	private Console console;
 	private Dimension size;
 	
 	private Type type;
 	private int id;
-	private boolean enabled;
+	private boolean on;
 	
-	public ToggleButton(SystemController admin, Console console, Type type, int id) {
-		super();
-		this.admin = admin;
-		this.console = console;
+	public ToggleButton(Main main, SystemController admin, Console console, Printer printer, Type type, int id) {
+		super(main, admin, console, printer, "");
 		this.type = type;
 		this.id = id;
 		size = new Dimension(20, 20);
 		setPrefs();
 	}
 	
-	private void setPrefs() {
+	@Override
+	protected void setPrefs() {
+		setBorder(null);
 		setMinimumSize(size);
 		setMaximumSize(size);
 		setPreferredSize(size);
@@ -48,14 +45,26 @@ public class ToggleButton extends JRadioButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (type.equals(Type.CONNECT)) {
-					admin.executeCommand(admin.getSystemTime() + (enabled ? "\tDISC " : "\tCONN GATE ") + id, false);
+					admin.executeCommand(admin.getSystemTime() + (on ? "\tDISC " : "\tCONN GATE ") + id, false);
 				} else if (type.equals(Type.ENABLE)) {
 					admin.executeCommand(admin.getSystemTime() + "\tTOGGLE " + id, false);
 				}
-				enabled = !enabled;
+				
+				on = !on;
+				main.repaint();
 			}
 			
 		});
+	}
+	
+	@Override
+	public void update() {
+		// DO NOTHING
+	}
+
+	@Override
+	public void toggleEnabled(boolean enabled) {
+		setEnabled(enabled);
 	}
 	
 	@Override
@@ -75,7 +84,7 @@ public class ToggleButton extends JRadioButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(enabled ? Main.GREEN : Main.RED);
+		g2.setPaint(isEnabled() ? on ? Main.GREEN : Main.RED : Main.BLACK);
 		g2.fillOval(ovalX, ovalY, ovalWidth + 1, ovalHeight + 1);
 		
 		g2.setPaint(Main.BLACK);
@@ -84,8 +93,8 @@ public class ToggleButton extends JRadioButton {
 		g2.dispose();
 	}
 	
-	public boolean isEnabled() {
-		return enabled;
+	public boolean isOn() {
+		return on;
 	}
 	
 }

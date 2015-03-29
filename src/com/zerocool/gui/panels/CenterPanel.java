@@ -3,7 +3,6 @@ package com.zerocool.gui.panels;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
@@ -40,11 +39,13 @@ public class CenterPanel extends AbstractPanel {
 	@Override
 	public void update() {
 		frontChannelPanel.update();
+		console.update();
 	}
 	
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		frontChannelPanel.setEnabled(enabled);
+		frontChannelPanel.toggleEnabled(enabled);
+		console.toggleEnabled(enabled);
 	}
 
 	private JLabel title;

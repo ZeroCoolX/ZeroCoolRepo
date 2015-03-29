@@ -9,19 +9,17 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
 import com.zerocool.gui.Main;
+import com.zerocool.gui.Printer;
 
-public class ChannelButton extends JButton {
+public class ChannelButton extends AbstractButton {
 
 	private static final long serialVersionUID = 1L;
 	
-	private SystemController admin;
-	private Console console;
 	private ToggleButton connectButton;
 	private ToggleButton enableButton;
 	private JLabel frontLabel;
@@ -30,20 +28,19 @@ public class ChannelButton extends JButton {
 	
 	private int id;
 	
-	public ChannelButton(SystemController admin, Console console, int id) {
-		super("");
-		this.admin = admin;
-		this.console = console;
+	public ChannelButton(Main main, SystemController admin, Console console, Printer printer, String text, int id) {
+		super(main, admin, console, printer, text);
 		this.id = id;
-		connectButton = new ToggleButton(admin, console, ToggleButton.Type.CONNECT, id);
-		enableButton = new ToggleButton(admin, console, ToggleButton.Type.ENABLE, id);
+		connectButton = new ToggleButton(main, admin, console, printer, ToggleButton.Type.CONNECT, id);
+		enableButton = new ToggleButton(main, admin, console, printer, ToggleButton.Type.ENABLE, id);
 		frontLabel = createLabel();
 		backLabel = createLabel();
 		size = new Dimension(20, 20);
 		setPrefs();
 	}
 	
-	private void setPrefs() {
+	@Override
+	protected void setPrefs() {
 		setMinimumSize(size);
 		setMaximumSize(size);
 		setPreferredSize(size);
@@ -65,6 +62,19 @@ public class ChannelButton extends JButton {
 		
 	}
 	
+	@Override
+	public void update() {
+		connectButton.update();
+		enableButton.update();
+	}
+
+	@Override
+	public void toggleEnabled(boolean enabled) {
+		setEnabled(enabled);
+		connectButton.toggleEnabled(enabled);
+		enableButton.toggleEnabled(enabled);
+	}
+	
 	private JLabel createLabel() {
 		JLabel l = new JLabel("" + id);
 		l.setHorizontalAlignment(JLabel.CENTER);
@@ -84,7 +94,7 @@ public class ChannelButton extends JButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(connectButton.isEnabled() ? Main.DARK_ORANGE : Main.DEEP_SKY_BLUE);
+		g2.setPaint(isEnabled() ? connectButton.isOn() && enableButton.isOn() ? Main.GREEN : connectButton.isOn() ? Main.DARK_ORANGE : Main.DEEP_SKY_BLUE : Main.BLACK);
 		g2.fillRect(0, 0, width, height);
 		
 		g2.dispose();

@@ -868,7 +868,7 @@ public class SystemController {
 	 * @return True if the printer is on else off.
 	 */
 	public boolean getIsPrinterOn() {
-		return this.isPrinterOn;
+		return isPrinterOn;
 	}
 
 	/**

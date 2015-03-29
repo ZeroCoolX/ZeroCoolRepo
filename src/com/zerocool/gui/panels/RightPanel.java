@@ -2,14 +2,11 @@ package com.zerocool.gui.panels;
 
 import java.awt.Color;
 
-import javax.swing.JFrame;
-
 import net.miginfocom.swing.MigLayout;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.ChannelGroup;
 import com.zerocool.gui.Console;
-import com.zerocool.gui.KeyPad;
 import com.zerocool.gui.Main;
 import com.zerocool.gui.Printer;
 
@@ -34,12 +31,14 @@ public class RightPanel extends AbstractPanel {
 
 	@Override
 	public void update() {
+		printer.update();
 		keyPad.update();
 	}
 	
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		keyPad.setEnabled(enabled);
+		printer.toggleEnabled(enabled);
+		keyPad.toggleEnabled(enabled);
 	}
 	
 	private KeyPad keyPad;

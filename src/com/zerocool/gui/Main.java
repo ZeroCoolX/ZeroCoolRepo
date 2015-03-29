@@ -22,6 +22,7 @@ public class Main extends JFrame implements Observer {
 		
 	public static final Color BLACK = new Color(13, 13, 13);
 	public static final Color BLEACHED_ALMOND = new Color(255, 235, 205);
+	public static final Color DARK_SLATE_GREEN = new Color(47, 79, 79);
 	public static final Color DEEP_SKY_BLUE = new Color(0, 191, 255);
 	public static final Color DARK_ORANGE = new Color(255, 140, 0);
 	public static final Color GAINSBORO = new Color(220, 220, 220);
@@ -54,10 +55,9 @@ public class Main extends JFrame implements Observer {
 	
 	private void createContents() {
 		admin = new SystemController();
-		printer = new Printer(this, admin, console, GAINSBORO);
-		admin.setPrinter(printer);
-		console = new Console(admin, printer);
-		channels = new ChannelGroup(admin, console);
+		printer = new Printer(this, admin, console, null, null, GAINSBORO);
+		console = new Console(this, admin, null, printer, null, GAINSBORO);
+		channels = new ChannelGroup(this, admin, console, printer);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

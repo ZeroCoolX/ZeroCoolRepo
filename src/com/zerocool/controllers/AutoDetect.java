@@ -5,7 +5,7 @@ import java.util.Stack;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import com.zerocool.gui.USBPort;
+import com.zerocool.gui.panels.USBPort;
 
 /**
  * AutoDetect FIRST stores a list of the writable open directories within the system
