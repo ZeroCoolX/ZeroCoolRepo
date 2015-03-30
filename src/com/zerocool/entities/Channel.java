@@ -62,14 +62,7 @@ public class Channel {
 	/**
 	 * Disconnects the current sensor by setting it to null.
 	 */
-	public void disconnectSensor(){
-		currentSensor = null;
-	}
-
-	/**
-	 * Removes the channel's current sensor.
-	 */
-	public void removeSensor() {
+	public void disconnectSensor() {
 		currentSensor = null;
 	}
 
@@ -97,7 +90,7 @@ public class Channel {
 	 * Gets the sensor type.  If there is no sensor type
 	 * @return
 	 */
-	public String getSensorType(){
+	public String getSensorType() {
 		return currentSensor != null ? currentSensor.getType() : null;
 	}
 
@@ -105,7 +98,7 @@ public class Channel {
 	 * Gets the id of the Channel
 	 * @return - an integer representing the Channel's id number.
 	 */
-	public int getId(){
+	public int getId() {
 		return id;
 	}
 
@@ -128,15 +121,15 @@ public class Channel {
 		currentSensor.setState(state);
 	}
 
-	public void setSensorType(String sensorType) {
+	public void setSensorType(String sensorType) throws IllegalArgumentException {
 		currentSensor.setSensorType(sensorType);
 	}
 
-	public void setID(int id){
+	public void setID(int id) {
 		this.id = id;
 	}
 
-	public void exit(){
+	public void exit() {
 		id = -1;
 		isActive = false;
 		currentSensor.exit();

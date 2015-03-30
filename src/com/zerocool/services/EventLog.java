@@ -16,6 +16,10 @@ public class EventLog {
 	private File eventFile;
 	private File participantFile;
 
+	private String lastOutput;
+	
+	private boolean newOutput;
+	
 	/**
 	 * Creates a new instance of the {@link #EventLog} class
 	 */
@@ -34,6 +38,8 @@ public class EventLog {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(eventFile));
 			bw.write(systemTime + " " + eventData);
 			bw.close();
+			lastOutput = systemTime + " " + eventData;
+			newOutput = true;
 		} catch (Exception e) { };
 	}
 	
@@ -47,6 +53,8 @@ public class EventLog {
 			bw.write("Run  BIB  Time\n");
 			bw.write(participantData);
 			bw.close();
+			lastOutput = participantData;
+			newOutput = true;
 		} catch (Exception e) { };
 	}
 	
@@ -64,6 +72,15 @@ public class EventLog {
 	 */
 	public File getParticipantFile() {
 		return participantFile;
+	}
+	
+	public String getLastOutput() {
+		newOutput = false;
+		return lastOutput;
+	}
+	
+	public boolean isNewOutput() {
+		return newOutput;
 	}
 	
 	/**

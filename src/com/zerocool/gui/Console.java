@@ -39,7 +39,7 @@ public class Console extends AbstractPanel {
 	
 	@Override
 	public void update() {
-		// TODO update shit.
+		view.update();
 	}
 	
 	@Override
@@ -49,43 +49,26 @@ public class Console extends AbstractPanel {
 
 	public void prevCommand() {
 		view.prevCommand();
-		view.setText(view.getView(false));
 	}
 
 	public void nextCommand() {
 		view.nextCommand();
-		view.setText(view.getView(false));
 	}
 	
 	public String currentCommand() {
 		return view.currentCommand();
 	}
-	
-	public void setCommandArgComboView() {
-		System.out.println("setting text view as: " + view.getView(true));
-		view.setText(view.getView(true));
-	}
 
 	public void moveUp() {
 		view.moveUp();
-		view.setText(view.getView(false));
 	}
 
 	public void moveDown() {
 		view.moveDown();
-		view.setText(view.getView(false));
 	}
 	
 	public void setNewText(String text){
 		view.setText(text);
-	}
-	
-	public boolean isScanPrompting() {
-		return view.isScanPrompting();
-	}
-	
-	public void promptScanner(int num){
-		view.promptScanner(num);
 	}
 	
 	private ConsoleView view;

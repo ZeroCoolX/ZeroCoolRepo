@@ -8,18 +8,24 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import com.zerocool.controllers.SystemController;
+
 public class PrinterView extends JTextArea {
 
 	private static final long serialVersionUID = 1L;
 
-	public PrinterView() {
+	private SystemController admin;
+	
+	public PrinterView(SystemController admin) {
 		super();
 		
+		this.admin = admin;
 		setPrefs();
 	}
 	
 	private void setPrefs() {
 		setLineWrap(true);
+		setEditable(false);
 		setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
 		setBackground(Main.BLEACHED_ALMOND);
 		setForeground(Color.DARK_GRAY);
@@ -31,7 +37,10 @@ public class PrinterView extends JTextArea {
 	}
 	
 	public void update() {
-		// TODO things
+		// DO NOTHING FOR NOW
+//		if (admin.getEventLog().isNewOutput()) {
+//			addText(admin.getEventLog().getLastOutput());
+//		}
 	}
 	
 	public void toggleEnabled(boolean enabled) {

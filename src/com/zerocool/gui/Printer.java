@@ -25,7 +25,7 @@ public class Printer extends AbstractPanel {
 		powerButton = new PowerButton(main, admin, console, this, "Printer Pwr", PowerButton.Type.Printer);
 		add(powerButton, "cell 0 0");
 		
-		view = new PrinterView();
+		view = new PrinterView(admin);
 		scrollPane = new LightScrollPane(view, 150, 150);
 		
 		add(scrollPane, "cell 0 1");

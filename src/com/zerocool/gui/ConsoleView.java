@@ -19,23 +19,19 @@ import com.zerocool.services.SystemTime;
 public class ConsoleView extends JTextArea {
 
 	private static final long serialVersionUID = 1L;
-	
-	private static boolean scanPrompting = false;
-	private int scanNumToConnect = 0;
-	
+
 	private ArrayList<Participant> waiting;
 	private ArrayList<Participant> running;
 	private ArrayList<Participant> finished;
 	private String[] cmds;
 	private SystemController admin;
 	private Printer printer;
-	
+
 	private int index;
 	private int currentLine;
-	
-	private String commandArgCombo = "";
+
 	private String args = "";
-	
+
 	public ConsoleView(SystemController admin, Printer printer) {
 		waiting = new ArrayList<Participant>();
 		running = new ArrayList<Participant>();
@@ -48,7 +44,7 @@ public class ConsoleView extends JTextArea {
 		index = -1;
 		setPrefs();
 	}
-	
+
 	private void setPrefs() {
 		setLineWrap(true);
 		//	setEditable(false);
@@ -58,39 +54,27 @@ public class ConsoleView extends JTextArea {
 		setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
 		// TEMPORARY! =OOOOOOOOOOO
 		addFocusListener(new FocusListener() {
-			
-				@Override
-				public void focusGained(FocusEvent e) {
-					if(!scanPrompting){
-						setText("");
-					}
-				}
 
-				@Override
-				public void focusLost(FocusEvent e) {
-					// do nothing
-				}
-			
+			@Override
+			public void focusGained(FocusEvent e) {
+				setText("");
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// DO NOTHING
+			}
+
 		});
 		addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent key) {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
-					String text = (admin.getSystemTime().toString() + "\t" + getText().trim().toUpperCase());
+					String text = (getTime() + "\t" + getText().trim().toUpperCase());
+					admin.executeCommand(text, false);
+					setText("");
 					
-					if (!scanPrompting) {
-						admin.executeCommand(text, false);
-						setText("");
-					} else {
-						System.out.println("inside console");
-						String []tempText = getText().trim().toUpperCase().split("[>]");
-						text = (admin.getSystemTime().toString() + "\tCONN" + tempText[1] +" "+ scanNumToConnect);
-						System.out.println(text);
-						admin.executeCommand(text, false);
-						scanPrompting = false;
-						setText(">" + currentCommand());
-					}
 					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}
@@ -106,142 +90,122 @@ public class ConsoleView extends JTextArea {
 			public void keyTyped(KeyEvent arg0) {
 				// do nothing
 			}
-			
+
 		});
 	}
-	
+
 	public void update() {
 		// TODO things
+		//setText(getView());
 	}
 	
+	public String getTime() {
+		return admin.getSystemTime().toString().substring(0, 10);
+	}
+
 	public void toggleEnabled(boolean enabled) {
 		setEnabled(enabled);
 		setBackground(enabled ? Main.DARK_SLATE_GREEN : Main.BLACK);
 	}
-	
+
 	public void prevCommand() {
 		args = "";
 		moveIndex(index - 1);
 	}
-	
-	public void setCommandArgCombo(String arg) {
-		System.out.println("setting command arg combo");
-		args += arg;
-		commandArgCombo = getCurrentCommand() + " " + args;
-	}
-	
+
 	public String getArgs() {
 		return args;
 	}
-	
-	public String getCommandArgCombo() {
-		System.out.println("command arg combo = " + commandArgCombo);
-		return commandArgCombo;
-	}
-	
+
 	public String currentCommand() {
 		return getCurrentCommand();
 	}
-	
+
 	public void nextCommand() {
 		args = "";
 		moveIndex(index + 1);
 	}
-	
+
 	public void moveUp() {
 		moveLine(currentLine - 1);
 	}
-	
+
 	public void moveDown() {
 		moveLine(currentLine + 1);
 	}
-	
+
 	public void addParticipant(String num, String addTime) {
 		waiting.add(new Participant(num, addTime));
 	}
-	
+
 	public void startParticipant() {
-		
+
 	}
-	
+
 	private void moveIndex(int next) {
 		index = next < -1 ? cmds.length - 1 : next > cmds.length - 1 ? -1 : next;
 	}
-	
+
 	private void moveLine(int next) {
 		int totalLines = waiting.size() + running.size() + finished.size();
 		currentLine = next < 0 ? totalLines : next > totalLines ? 0 : next;
 		index = -1;
 	}
-	
-	public boolean isScanPrompting() {
-		return scanPrompting;
-	}
-	
-	public void promptScanner(int num){
-		scanNumToConnect = num;
-		scanPrompting = true;
-		setText("Select scanner type:" +
-				"\nGATE" +
-				"\nEYE" +
-				"\nPAD" +
-				"\n> ");
-	}
-	
+
 	private String getCurrentCommand() {
 		return index == - 1 ? "" : cmds[index];
 	}
-	
-	public String getView(boolean useCombo) {
-		String text = "";
-		
+
+	public String getView() {
+		String text = getTime();
+
 		if (waiting.isEmpty() && running.isEmpty() && finished.isEmpty()) {
-			text = ">" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
+			text += ">" + getCurrentCommand();
 		} else {
 			int line = 0;
 			for (Participant par : waiting) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " >" + getCurrentCommand();
 				}
 				text += "\n";
 				line++;
 			}
-			
+
 			text += "\n";
-			
+
 			for (Participant par : running) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " >" + getCurrentCommand();
 				}
 				text += "\n";
 				line++;
 			}
-			
+
 			text += "\n";
-			
+
 			for (Participant par : finished) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " >" + getCurrentCommand();
 				}
 				text += "\n";
 				line++;
 			}
 		}
-		
+
 		return text;
 	}
-	
+
 	private class Participant {
-		
+
 		private String num;
 		private String addedTime;
 		private String startTime;
 		private String endTime;
 		private String action;
-		
+
 		public Participant(String id, String time) {
 			num = id;
 			addedTime = time;
@@ -249,19 +213,19 @@ public class ConsoleView extends JTextArea {
 			endTime = "";
 			action = "";
 		}
-		
+
 		public String print() {
 			return num + "  " + getTime() + " " + action + " ";
 		}
-		
+
 		private String getTime() {
 			return action.equals("") ? addedTime : action.equals("R") ? elapsedTime() : endTime;
 		}
-		
+
 		private String elapsedTime() {
 			return "" + (admin.getSystemTime().getTime() - SystemTime.getTimeInMillis(startTime));
 		}
-		
+
 	}
-	
+
 }

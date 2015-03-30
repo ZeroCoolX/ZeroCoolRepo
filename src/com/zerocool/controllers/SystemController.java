@@ -44,7 +44,6 @@ public class SystemController {
 	private Timer currentTimer;
 	private EventLog eventLog;
 	private AutoDetect detector;
-	private Printer printer;
 
 	private int id;
 
@@ -584,7 +583,6 @@ public class SystemController {
 			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
 		}
 		reader.close();
-		printer.addText(printData);
 	}
 	
 	/**
@@ -704,12 +702,11 @@ public class SystemController {
 	}
 
 	/**
-	 * start the participant within event
-	 * **/
+	 * ShortHand for triggering Channel 1's sensor.
+	 */
 	private void cmdStart() {
 		currentTimer.start();
 	}
-	
 	
 	/**
 	 * stop the current participant from competing but keep them as the next queued to go
@@ -726,8 +723,8 @@ public class SystemController {
 	}
 
 	/**
-	 * End the participant within event
-	 * **/
+	 * ShortHand for triggering Channel 2's sensor.
+	 */
 	private void cmdFinish(int participantId) {
 		currentTimer.finish(participantId, false);
 		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
@@ -911,10 +908,6 @@ public class SystemController {
 	
 	public AutoDetect getAutoDetect() {
 		return detector;
-	}
-	
-	public void setPrinter(Printer printer) {
-		this.printer = printer;
 	}
 
 }
