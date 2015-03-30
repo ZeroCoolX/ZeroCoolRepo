@@ -5,8 +5,6 @@ import java.util.Stack;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import com.zerocool.gui.panels.USBPort;
-
 /**
  * AutoDetect FIRST stores a list of the writable open directories within the system
  * Then, it continuously creates/(overwrites each time) another list of the writable open directories within the system AT THIS MOMENT IN TIME
@@ -27,23 +25,18 @@ import com.zerocool.gui.panels.USBPort;
 
 public class AutoDetect {
 	
-	private Stack<File> usbDrives = new Stack<File>();
+	private Stack<File> usbDrives;
 	
 	private File[] rootList;
 	private File[] oldFiles;
 	private File rootFile;
-	
-	private USBPort usb;
 
 	public AutoDetect() {
+		usbDrives = new Stack<File>();
 		rootFile = SystemUtils.IS_OS_MAC ? new File("/Volumes") : SystemUtils.IS_OS_LINUX ? new File("/media/" + SystemUtils.USER_NAME) : null;
 		rootList = rootList();
 		oldFiles = rootList;
 		waitForNotify();
-	}
-
-	public void setUsbPort(USBPort usbPort){
-		this.usb = usbPort;
 	}
 	
 	public File getDrive() {
@@ -51,7 +44,7 @@ public class AutoDetect {
 	}
 	
 	public boolean driveConnected() {
-		return usbDrives.isEmpty();
+		return !usbDrives.isEmpty();
 	}
 
 	private void waitForNotify() {
@@ -67,13 +60,11 @@ public class AutoDetect {
 					if (rootList.length > oldFiles.length) {
 						System.out.println("new drive detected");
 						oldFiles = rootList;
-				//		usb.setNewText("[connected]");
 						System.out.println("drive" + oldFiles[oldFiles.length - 1] + " detected");
 						usbDrives.push(oldFiles[oldFiles.length - 1]);
 					} else if (rootList.length < oldFiles.length) {
 						System.out.println(oldFiles[oldFiles.length - 1] + " drive removed");
 						oldFiles = rootList;
-				//		usb.setNewText("[         ]");
 						if (!usbDrives.isEmpty()) {
 							usbDrives.pop();
 						}
@@ -88,4 +79,5 @@ public class AutoDetect {
 	private File[] rootList() {
 		return rootFile != null ? rootFile.listFiles() : File.listRoots(); 
 	}
+	
 }

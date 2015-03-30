@@ -66,6 +66,7 @@ public class SystemController {
 
 		systemTime.start();
 		observers = new ArrayList<Observer>();
+		updateLoop();
 	}
 
 	public SystemController(int id) {
@@ -83,12 +84,31 @@ public class SystemController {
 		this.eventLog = eventLog;
 	}
 
-	public SystemController(Timer currentTimer, EventLog eventLog,
-			ArrayList<Channel> channels, int id) {
+	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, int id) {
 		this(currentTimer, eventLog, id);
 		this.channels = channels;
 	}
 
+	private void updateLoop() {
+		Thread t = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100);
+					} catch (Exception e) { 
+						e.printStackTrace();
+					};
+					updateObservers();
+				}
+			}
+			
+		});
+		
+		t.start();
+	}
+	
 	/**
 	 * Takes in a file and sends it to the TaskList to add all the commands from the file
 	 * to the Queue.  Then it goes and executes all of the commands in the queue leaving
@@ -871,6 +891,16 @@ public class SystemController {
 		return isPrinterOn;
 	}
 
+	public void addObserver(Observer observer) {
+		observers.add(observer);
+	}
+	
+	public void updateObservers() {
+		for (Observer o : observers) {
+			o.update();
+		}
+	}
+	
 	/**
 	 * Get's the Systime's time.
 	 * @return - The System's time.

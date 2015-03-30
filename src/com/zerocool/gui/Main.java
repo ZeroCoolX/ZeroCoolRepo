@@ -46,11 +46,11 @@ public class Main extends JFrame implements Observer {
 		setTitle(TITLE + " " + VERSION);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, WIDTH, HEIGHT);
-	//	setResizable(false);
 		createContents();
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		admin.addObserver(this);
 	}
 	
 	private void createContents() {

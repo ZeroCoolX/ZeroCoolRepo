@@ -37,20 +37,18 @@ public class BotView extends AbstractPanel {
 		backChannelPanel = new BackChannelPanel(main, admin, console, printer, channels, getBackground());
 		add(backChannelPanel, "cell 1 0");
 		
-		usbPort = new USBPort(main, admin, console, printer, channels, getBackground());
+		usbPort = new USBPort(main, admin, console, printer, "USB Port");
 		add(usbPort, "cell 2 0");
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		usbPort.update();
 	}
 	
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		// TODO Auto-generated method stub
-		
+		usbPort.toggleEnabled(enabled);
 	}
 
 	private JLabel chan;

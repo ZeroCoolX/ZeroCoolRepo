@@ -41,15 +41,6 @@ public class Timer {
 	// ----- functional methods ----- \\
 	
 	/**
-	 * Starts all the Participants in the starting queue.
-	 * @throws IllegalStateException() if there are no Participants in
-	 * 	the starting queue.
-	 */
-//	public void startAllParticipants() {
-//		currentEvent.startAllParticipants(systemTime.getTime());
-//	}
-	
-	/**
 	 * Starts the Event.  Depending on the Event depends on the type of
 	 * start.
 	 * @throws IllegalStateException - There are no Participants in
@@ -58,31 +49,6 @@ public class Timer {
 	public void start() {
 		currentEvent.start(systemTime.getTime());
 	}
-	
-	/**
-	 * Starts a specified number of participants from the starting queue.
-	 * @param numOfParticipants - The number of participants to start.
-	 * @param startTime - The time the Participants started.
-	 * @throws IllegalArgumentException - THe specified number of Participants to start
-	 * 	is less than zero or is bigger than the number of Participants in the starting queue.
-	 * @throws IllegalStateException - There are no Participants in
-	 * 	the starting queue.
-	 */
-//	public void startNextParticipants(int numOfParticipants) {
-//		currentEvent.startNextParticipants(numOfParticipants, systemTime.getTime());
-//	}
-	
-	/**
-	 * Finish all the Participants currently competing.
-	 * @param finishTime - The time at which the Participants finished.
-	 * @throws IllegalStateException - There are no Participants currently
-	 * 	competing.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
-	 */
-//	public void finishAllParticipants(boolean setDNF) { 
-//		currentEvent.finishAllParticipants(systemTime.getTime(), setDNF);
-//	}
 	
 	/**
 	 * Finish a specific Participant in the Event by given the ID.

@@ -32,12 +32,14 @@ public class BackChannelPanel extends AbstractPanel {
 
 	@Override
 	public void update() {
-		// TODO
+		// DO NOTHING
+		// Channels are done in FrontChannelPanel
 	}
 
 	@Override
 	public void toggleEnabled(boolean enabled) {
-		// TODO
+		// DO NOTHING
+		// Channels are done in FrontChannelPanel
 	}
 	
 }
