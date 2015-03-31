@@ -108,6 +108,7 @@ public class SystemControllerTest {
 	
 	@Test
 	public void executeCommand() {
+		/*
 		sysCont = new SystemController();
 		System.out.println("\t-------Testing executeCommand() with sprint 1 file-------");
 		try {
@@ -225,7 +226,7 @@ public class SystemControllerTest {
 			e.printStackTrace();
 		}
 		System.out.println("\t-------Successfully tested executeCommand()-------\n");
-		
+		*/
 		System.out.println("\t-------testing executeCommand() with sprint 2 file-------\n");
 		try {
 			sysCont = new SystemController();
@@ -334,43 +335,130 @@ public class SystemControllerTest {
 			
 			sysCont.executeCommand("12:01:16.0	TRIG 1");
 			assertTrue(sysCont.getChannels()[0].getSensorState());
-			//assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
-			//assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
 			
 			sysCont.executeCommand("12:01:17.0	TRIG 3");
+			assertTrue(sysCont.getChannels()[2].getSensorState());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:18.0	TRIG 2");
+			assertEquals(2, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:19.0	TRIG 4");
+			assertEquals(2, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:20.0	EXPORT");
 			sysCont.executeCommand("12:01:21.0	PRINT");
 			sysCont.executeCommand("12:01:22.0	ENDRUN");
 			sysCont.executeCommand("12:01:23.0	NEWRUN");
 			sysCont.executeCommand("12:01:24.0	EVENT PARGRP");
+			assertEquals(EventType.PARGRP+ "", sysCont.getTimer().getCurrentEvent().getType().toString());
+			assertEquals(EventType.PARGRP + "", sysCont.getTimer().getCurrentEvent().getEventName());
+			
 			sysCont.executeCommand("12:01:25.0	NUM 167");
+			assertEquals(3, sysCont.getTimer().getTotalParticipants().size());
+			assertEquals(1, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			assertEquals(1, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertEquals(167, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getId());
+			
 			sysCont.executeCommand("12:01:26.0	NUM 166");
+			assertEquals(4, sysCont.getTimer().getTotalParticipants().size());
+			assertEquals(2, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			assertEquals(2, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertEquals(166, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getId());
+			
 			sysCont.executeCommand("12:01:27.0	NUM 200");
+			assertEquals(5, sysCont.getTimer().getTotalParticipants().size());
+			assertEquals(3, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			assertEquals(3, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertEquals(200, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(2).getId());
+			
 			sysCont.executeCommand("12:01:28.0	NUM 201");
+			assertEquals(6, sysCont.getTimer().getTotalParticipants().size());
+			assertEquals(4, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
+			assertEquals(4, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertEquals(201, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(3).getId());
+			
 			sysCont.executeCommand("12:01:29.0	TRIG 1");
+			assertTrue(sysCont.getChannels()[0].getSensorState());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(2).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(3).getIsCompeting());
+
+			
 			sysCont.executeCommand("12:01:30.0	TRIG 1");
+			assertTrue(sysCont.getChannels()[0].getSensorState());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(2).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(3).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:31.0	TRIG 3");
+			assertTrue(sysCont.getChannels()[1].getSensorState());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(2).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(3).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:32.0	TRIG 2");
+			assertEquals(4, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:33.0	TRIG 4");
+			assertEquals(4, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
+			assertFalse(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(1).getIsCompeting());
+			
 			sysCont.executeCommand("12:01:34.0	PRINT");
 			sysCont.executeCommand("12:01:35.0	EXPORT");
 			sysCont.executeCommand("12:01:36.3	OFF");
 			sysCont.executeCommand("12:01:37.3	ON");
 			sysCont.executeCommand("12:01:38.0	NEWRUN");
 			sysCont.executeCommand("12:01:39.1	EVENT GRP");
+			assertEquals(EventType.GRP+ "", sysCont.getTimer().getCurrentEvent().getType().toString());
+			assertEquals(EventType.GRP + "", sysCont.getTimer().getCurrentEvent().getEventName());
+			
 			sysCont.executeCommand("12:01:40.4	TOGGLE 1");
+			assertEquals(0, sysCont.getChannels()[0].getId());
+			assertTrue(sysCont.getChannels()[0].getState());
+			assertFalse(sysCont.getChannels()[0].getSensorState());
+			//assertEquals(SensorType.GATE.toString(), sysCont.getChannels()[0].getSensorType());
+			
 			sysCont.executeCommand("12:01:41.0	TOGGLE 2");
+			assertEquals(1, sysCont.getChannels()[1].getId());
+			assertTrue(sysCont.getChannels()[1].getState());
+			assertFalse(sysCont.getChannels()[1].getSensorState());
+			//assertEquals(SensorType.EYE.toString(), sysCont.getChannels()[1].getSensorType());
+			
 			sysCont.executeCommand("12:01:42.1	TRIG 1");
+			assertFalse(sysCont.getChannels()[0].getSensorState());
+			
 			sysCont.executeCommand("12:01:43.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:44.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:45.8	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:46.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:47.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:48.3	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:49.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:50.0	TRIG 2");
+			assertFalse(sysCont.getChannels()[2].getSensorState());
+
 			sysCont.executeCommand("12:01:51.0	ENDRUN");
 			sysCont.executeCommand("12:01:52.0	PRINT");
 			sysCont.executeCommand("12:01:53.0	EXPORT");

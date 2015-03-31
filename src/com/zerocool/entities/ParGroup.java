@@ -9,12 +9,23 @@ public class ParGroup extends AbstractEvent {
 		type = EventType.PARGRP;
 	}
 
+	/**
+	 * If there are not Participants in the running queue (meaning no one is running),
+	 * then it starts all the Participants from the starting queue otherwise it
+	 * finishes the next Participant from the running queue.
+	 */
 	@Override
 	public void triggered(long time, int channel) {
-		if (channel % 2 == 0) {
-			finish(time, false);
-		} else {
+		//this means its a starting trigger
+		System.out.println(runningQueue.isEmpty());
+		if (runningQueue.isEmpty()) {
+			System.out.println("start");
 			start(time);
+		} else {
+			if(channel % 2 == 0){
+				System.out.println("finish");
+				finish(time);
+			}
 		}
 	}
 
@@ -23,24 +34,27 @@ public class ParGroup extends AbstractEvent {
 	 */
 	@Override
 	public void setDnf(long time) {
-		finish(time, true);
+		finishParticipant(time, true);
 	}
 	
 	/**
-	 * Takes the first Participant from the starting queue and starts them.
-	 * @param startTime - The time the Participant started the race.
+	 * Loops through all the Participants in the starting queue and starts them.
+	 * @param startTime - The time the Participants started.
 	 */
 	private void start(long startTime) {
-		startParticipant(startTime);
+		System.out.println(startingQueue.isEmpty());
+		while(!startingQueue.isEmpty()) {
+			startParticipant(startTime);
+		}
 	}
-
+	
 	/**
 	 * Takes the first Participant from the running queue and finishes them.
 	 * @param finishTime - The time the Participant finished the race.
 	 * @param setDNF - True to set 'Did Not Finish' else false.
 	 */
-	private void finish(long finishTime, boolean setDnf) {
-		finishParticipant(finishTime, setDnf);
+	private void finish(long finishTime) {
+		finishParticipant(finishTime, false);
 	}
 	
 	/**

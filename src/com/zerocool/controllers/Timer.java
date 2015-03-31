@@ -203,8 +203,8 @@ public class Timer {
 		addParticipantToStart(par);
 	}
 	
-	public void createNewRun(EventType type, String eventName){
-		createEvent(type, eventName);
+	public void createNewRun(){
+		//
 	}
 	
 	/**
