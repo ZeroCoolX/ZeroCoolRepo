@@ -26,7 +26,9 @@ public class Channel {
 	 */
 	public Channel(SystemController admin, String sensorType, int id) {
 		this.admin = admin;
-		currentSensor = new Sensor(admin, sensorType, id);
+		if (sensorType != null) {
+			currentSensor = new Sensor(admin, sensorType, id);
+		}
 		this.id = id;
 	}
 
@@ -69,10 +71,13 @@ public class Channel {
 	/**
 	 * Triggers the current sensor if there is one.
 	 */
-	public void triggerSensor() {
+	public boolean triggerSensor() {
 		if (currentSensor != null && isActive) {
 			currentSensor.trigger();
+			return true;
 		}
+		
+		return false;
 	}
 
 
@@ -136,7 +141,12 @@ public class Channel {
 	}
 
 	public void setSensorType(String sensorType) throws IllegalArgumentException {
-		currentSensor.setSensorType(sensorType);
+		if (currentSensor != null) {
+			currentSensor.setSensorType(sensorType);
+		} else {
+			this.addSensor(sensorType);
+		}
+		
 	}
 
 	public void resetSensorTrigger() {
@@ -152,7 +162,9 @@ public class Channel {
 	public void exit() {
 		id = -1;
 		isActive = false;
-		currentSensor.exit();
+		if (currentSensor != null) {
+			currentSensor.exit();
+		}
 		currentSensor = null;
 	}
 

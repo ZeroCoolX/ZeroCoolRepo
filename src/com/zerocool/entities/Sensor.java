@@ -58,9 +58,10 @@ public class Sensor {
 	 * @throws IllegalArgumentException - If the string entered was not a valid SensorType.
 	 */
 	public void setSensorType(String sensorType) throws IllegalArgumentException {
-		if (sensorType != null) {
-			this.sensorType = SensorType.valueOf(sensorType);
-		}
+		if (sensorType == null || !(sensorType.equals("EYE") || sensorType.equals("GATE") || sensorType.equals("PAD"))) {
+			throw new IllegalArgumentException("Invalid Sensor Type");
+		} 
+		this.sensorType = SensorType.valueOf(sensorType);
 	}
 	
 	
