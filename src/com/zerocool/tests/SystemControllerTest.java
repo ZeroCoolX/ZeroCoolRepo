@@ -123,17 +123,17 @@ public class SystemControllerTest {
 			sysCont.executeCommand("12:01:08.0	ON");
 			
 			sysCont.executeCommand("12:01:10.0	CONN GATE 1");
-			assertEquals(1, sysCont.getChannels().size());
-			assertEquals(1, sysCont.getChannels().get(0).getId());
-			assertTrue(sysCont.getChannels().get(0).getState());
-			assertEquals(SensorType.GATE.toString(), sysCont.getChannels().get(0).getSensorType());
-			assertFalse(sysCont.getChannels().get(0).getSensorState());
+			assertEquals(1, sysCont.getChannels().length);
+			assertEquals(1, sysCont.getChannels()[0].getId());
+			assertTrue(sysCont.getChannels()[0].getState());
+			assertEquals(SensorType.GATE.toString(), sysCont.getChannels()[0].getSensorType());
+			assertFalse(sysCont.getChannels()[0].getSensorState());
 			
 			sysCont.executeCommand("12:01:14.0	TOGGLE 1");
-			assertEquals(1, sysCont.getChannels().size());
-			assertTrue(sysCont.getChannels().get(0).getState());
-			assertFalse(sysCont.getChannels().get(0).getSensorState());
-			assertEquals(SensorType.GATE.toString(), sysCont.getChannels().get(0).getSensorType());
+			assertEquals(1, sysCont.getChannels()[0]);
+			assertTrue(sysCont.getChannels()[0].getState());
+			assertFalse(sysCont.getChannels()[0].getSensorState());
+			assertEquals(SensorType.GATE.toString(), sysCont.getChannels()[0].getSensorType());
 			
 			sysCont.executeCommand("12:01:18.0	NUM 234");
 			assertEquals(1, sysCont.getTimer().getTotalParticipants().size());
@@ -152,7 +152,7 @@ public class SystemControllerTest {
 			}
 			
 			sysCont.executeCommand("12:01:22.0	START");
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			
 			sysCont.executeCommand("12:01:24.0	NUM 435");
@@ -161,16 +161,16 @@ public class SystemControllerTest {
 			assertEquals(3, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			
 			sysCont.executeCommand("12:01:26.0	FIN");
-			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			assertEquals(315, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			assertFalse(sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getIsCompeting());
 			
 			sysCont.executeCommand("12:01:28.0	START");
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(435, sysCont.getTimer().getCurrentEvent().getStartingQueue().peek().getId());
 			
 			sysCont.executeCommand("12:01:30.0	START");
-			assertTrue(sysCont.getTimer().getCurrentEvent().getCompetingParticipants().get(0).getIsCompeting());
+			assertTrue(sysCont.getTimer().getCurrentEvent().getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 			sysCont.executeCommand("12:01:32.0	DNF");
@@ -178,7 +178,7 @@ public class SystemControllerTest {
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 			sysCont.executeCommand("12:01:34.0	FIN");
-			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCompetingParticipants().size());
+			assertEquals(0, sysCont.getTimer().getCurrentEvent().getCurrentParticipants().size());
 			assertEquals(0, sysCont.getTimer().getCurrentEvent().getStartingQueue().size());
 			
 			sysCont.executeCommand("12:01:36.0	PRINT");

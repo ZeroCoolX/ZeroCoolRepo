@@ -156,7 +156,7 @@ public class ChannelTests {
 	}
 	
 	@Test
-	public void testGetSensorTriggerWithSensorAndTriggered() {
+	public void testSensorTriggerWithSensorAndTriggered() {
 		channel.addSensor(new Sensor(admin, "GATE", 9));
 		channel.getSensor().trigger();
 		assertTrue(channel.getSensorTrigger());
