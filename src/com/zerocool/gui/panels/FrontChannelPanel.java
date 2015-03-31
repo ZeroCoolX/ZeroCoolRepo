@@ -53,7 +53,7 @@ public class FrontChannelPanel extends AbstractPanel {
 	}
 	
 	private void addChannel(int channel) {
-		int col = channel % 2 == 0 ? (channel / 2) : Math.floorDiv(channel, 2) + 1;
+		int col = channel % 2 == 0 ? (channel / 2) : (channel / 2) + 1;
 		int row = channel % 2 == 0 ? 3 : 0;
 		channels.getChannelEnableButton(channel).setBackground(getBackground());
 		add(channels.getChannelLabel(channel, true), "cell " + col + " " + row++);
