@@ -52,7 +52,9 @@ public class ChannelButton extends AbstractButton {
 				if (connectButton.isEnabled() && enableButton.isEnabled()) {
 					if (admin.getTimer().getCurrentEvent().getRunningQueue().isEmpty() && id % 2 == 0) {
 						console.setNewText("Participant competing queue empty...");
-					} else {
+					}else if(admin.getTimer().getCurrentEvent().getStartingQueue().isEmpty() && id % 2 != 0){
+						console.setNewText("Participant starting queue empty...");
+					}else {
 						admin.executeCommand(admin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + admin.getTimer().getCurrentEvent().getRunningQueue().peek().getId() : "\tSTART"), false);
 					}
 				}
