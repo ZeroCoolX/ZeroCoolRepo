@@ -219,6 +219,7 @@ public class SystemController {
 			Task t = taskList.pollNextTask();
 			command = t.getTaskCommand();
 			try {
+				System.out.println("executing");
 				executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -327,9 +328,11 @@ public class SystemController {
 				break;
 			case "NEWRUN":
 				// stuff
+				cmdNewRun();
 				break;
 			case "ENDRUN":
 				// stuff
+				cmdEndRun();
 				break;
 			case "PRINT":
 				// stuff
@@ -401,7 +404,7 @@ public class SystemController {
 		if (currentTimer == null) {
 			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
 			//NO event should be logging because...there isn't en event to be logged till the user specifies what event to run with the cmd "for example": EVENT IND
-			//eventLog.logEvent(currentTimer.getEventData(), systemTime);
+			cmdEvent("IND");
 		}
 		if (channels == null) {
 			channels = populateChannels();
@@ -425,6 +428,14 @@ public class SystemController {
 		detector = null;
 		// printer set to false for insurance
 		isPrinterOn = false;
+	}
+	
+	private void cmdEndRun(){
+		//idk wtf is supposed to happen here
+	}
+	
+	private void cmdNewRun(){
+		//nothing really needs to happen yet...
 	}
 
 	/**
@@ -501,7 +512,7 @@ public class SystemController {
 		if (channel < 1 || channel > 8) {
 			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
 		}
-		
+		System.out.println("adding channel: " + (channel-1));
 		channels[channel - 1].addSensor(sensorType);
 	}
 
@@ -674,9 +685,9 @@ public class SystemController {
 	private void cmdFinish() {
 		cmdTrig(2);
 		//		currentTimer.finish(participantId, false);
-		//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
-		//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		//		}
+		/*if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+		}*/
 	}
 
 	/**

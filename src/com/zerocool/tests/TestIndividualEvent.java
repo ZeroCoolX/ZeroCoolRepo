@@ -101,7 +101,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Start: " + SystemTime.formatTime(startTime));
 
-			eve.triggered(startTime);
+			//eve.triggered(startTime);
 			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
 
@@ -114,7 +114,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
-			eve.triggered(finishTime);
+			//eve.triggered(finishTime);
 			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
@@ -131,7 +131,7 @@ public class TestIndividualEvent {
 			long startTime = stopWatch.getTime();
 			System.out.println("Start: " + SystemTime.formatTime(startTime));
 			
-			eve.triggered(startTime);
+			//eve.triggered(startTime);
 			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
 
@@ -144,7 +144,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
-			eve.triggered(finishTime);
+			//eve.triggered(finishTime);
 			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
