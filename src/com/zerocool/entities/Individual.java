@@ -55,5 +55,4 @@ public class Individual extends AbstractEvent {
 	public void exit() {
 		super.exit();
 	}
-
 }

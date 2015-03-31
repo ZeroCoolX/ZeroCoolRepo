@@ -11,44 +11,37 @@ public class ParIndividual extends AbstractEvent {
 
 	@Override
 	public void triggered(long time, int channel) {
-		// TODO Auto-generated method stub
-		
+		if (channel % 2 == 0) {
+			finish(time, false);
+		} else {
+			start(time);
+		}
 	}
 
+	/**
+	 * Sets the next Participant in the running queue to 'Did Not Finish'.
+	 */
 	@Override
 	public void setDnf(long time) {
-		// TODO Auto-generated method stub
-		
+		finish(time, true);
 	}
 	
 	/**
-	 *  Overriding for more method functionality.
-	 *  Grabs first participant from the startingQueue, adds them to the
-	 *  competing list and sets their start time.
+	 * Takes the first Participant from the starting queue and starts them.
+	 * @param startTime - The time the Participant started the race.
 	 */
-//	@Override
-//	public void start(long startTime) {
-//		super.start(startTime);
-//		Participant par = startingQueue.poll();
-//		addCompetingParticipant(par);
-//		par.getLastRecord().setStartTime(startTime);
-//		
-//	}
+	private void start(long startTime) {
+		startParticipant(startTime);
+	}
 
 	/**
-	 *  Overriding for more method functionality.
-	 *  Sets a participant to 'Finished' by setting their competing to false,
-	 *  removed them from CompetingParticipants, adds their finish time and
-	 *  sets their DNF.
+	 * Takes the first Participant from the running queue and finishes them.
+	 * @param finishTime - The time the Participant finished the race.
+	 * @param setDNF - True to set 'Did Not Finish' else false.
 	 */
-//	@Override
-//	public void finish(Participant participant, long finishTime, boolean setDNF) {
-//		super.finish(participant, finishTime, setDNF);
-//		participant.setIsCompeting(false);
-//		competingParticipants.remove(participant);
-//		participant.getLastRecord().setFinishTime(finishTime);
-//		participant.getLastRecord().setDnf(setDNF);
-//	}
+	private void finish(long finishTime, boolean setDnf) {
+		finishParticipant(finishTime, setDnf);
+	}
 	
 	/**
 	 * Override for more method functionality.  
@@ -57,5 +50,4 @@ public class ParIndividual extends AbstractEvent {
 	public void exit() {
 		super.exit();
 	}
-
 }
