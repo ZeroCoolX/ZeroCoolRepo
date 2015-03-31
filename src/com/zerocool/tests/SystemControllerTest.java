@@ -108,7 +108,6 @@ public class SystemControllerTest {
 	
 	@Test
 	public void executeCommand() {
-		/*
 		sysCont = new SystemController();
 		System.out.println("\t-------Testing executeCommand() with sprint 1 file-------");
 		try {
@@ -226,7 +225,7 @@ public class SystemControllerTest {
 			e.printStackTrace();
 		}
 		System.out.println("\t-------Successfully tested executeCommand()-------\n");
-		*/
+		
 		System.out.println("\t-------testing executeCommand() with sprint 2 file-------\n");
 		try {
 			sysCont = new SystemController();
