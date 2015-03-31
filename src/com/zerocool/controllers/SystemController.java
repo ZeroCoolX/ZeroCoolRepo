@@ -30,7 +30,6 @@ import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
-import com.zerocool.gui.Printer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
@@ -65,7 +64,8 @@ public class SystemController {
 
 		systemTime.start();
 		observers = new ArrayList<Observer>();
-		updateLoop();
+		
+		run();
 	}
 
 	public SystemController(int id) {
@@ -88,7 +88,7 @@ public class SystemController {
 		this.channels = channels;
 	}
 
-	private void updateLoop() {
+	private void run() {
 		Thread t = new Thread(new Runnable() {
 
 			@Override
@@ -96,9 +96,9 @@ public class SystemController {
 				while (true) {
 					try {
 						Thread.sleep(100);
-					} catch (Exception e) { 
-						e.printStackTrace();
-					};
+					} catch (Exception e) { e.printStackTrace(); };
+					
+					updateChannels();
 					updateObservers();
 				}
 			}
@@ -212,7 +212,7 @@ public class SystemController {
 		String command = null;		
 		taskList.addTask(arguments);
 		if (!taskList.isEmpty()) {
-			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) {}
+			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { };
 
 			Task t = taskList.pollNextTask();
 			command = t.getTaskCommand();
@@ -355,14 +355,15 @@ public class SystemController {
 			break;
 		case "FIN":
 			// stuff
-			cmdFinish(Integer.parseInt(args[0]));
+			cmdFinish();
 			break;
 		case "TRIG":
 			// stuff
+			cmdTrig(Integer.parseInt(args[0]));
 			break;
 		case "DNF":
 			// stuff
-			cmdDnf(Integer.parseInt(args[0]));
+			cmdDnf();
 			break;
 		case "ELAPSED":
 			// stuff
@@ -373,12 +374,6 @@ public class SystemController {
 			cmdCancel();
 			break;
 		}
-	}
-
-	// FOR THIS IMPLEMENTATION the channel supplied as a parameter's sensor's
-	// state = true
-	public void triggerSensor(int id, boolean sensorState, Channel chosenChannel) {
-		chosenChannel.setSensorState(sensorState);
 	}
 
 	/**
@@ -453,21 +448,7 @@ public class SystemController {
 	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
 	 **/
 	private void cmdEvent(String event) {
-		if (event.equals("IND")) {
-			currentTimer.createEvent(EventType.IND,
-					EventType.IND.toString());
-		} else if (event.equals("PARIND")) {
-			currentTimer.createEvent(EventType.PARIND,
-					EventType.PARIND.toString());
-		} else if (event.equals("GRP")) {
-			currentTimer.createEvent(EventType.GRP,
-					EventType.GRP.toString());
-		} else if (event.equals("PARGRP")) {
-			currentTimer.createEvent(EventType.PARGRP,
-					EventType.PARGRP.toString());
-		} else {
-			throw new IllegalArgumentException("Not a valid Event type.");
-		}
+		currentTimer.createEvent(EventType.valueOf(event), event);
 		eventLog.logEvent(currentTimer.getEventData(), systemTime);
 	}
 
@@ -510,7 +491,7 @@ public class SystemController {
 	private void cmdTog(int channel) {
 		Channel toggle = findChannel(channel);
 		if (toggle != null) {
-			toggle.setSensorState(!toggle.getSensorState());
+			toggle.setSensorState(!toggle.getState());
 		} else {
 			channels.add(new Channel(null, channel, true));
 		}
@@ -526,10 +507,8 @@ public class SystemController {
 	 * given ID field) and still a sensor of type sensorType is created and
 	 * added to the channel
 	 * 
-	 * @param sensorType
-	 *            - type of sensor (EYE, GATE, PAD) to add to the given channel
-	 * @param channel
-	 *            - ID field for a channel to connect a sensor too
+	 * @param sensorType - Type of sensor (EYE, GATE, PAD) to add to the given channel
+	 * @param channel - ID field for a channel to connect a sensor too
 	 * **/
 	private void cmdConn(String sensorType, int channel) {
 		Channel connect = findChannel(channel);
@@ -705,7 +684,8 @@ public class SystemController {
 	 * ShortHand for triggering Channel 1's sensor.
 	 */
 	private void cmdStart() {
-		currentTimer.start();
+		cmdTrig(1);
+		//currentTimer.start();
 	}
 	
 	/**
@@ -716,7 +696,7 @@ public class SystemController {
 	}
 	
 	/**
-	 * get the current time
+	 * Get the current time.
 	 * **/
 	private void cmdElapsed() {
 		System.out.println("\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n");
@@ -725,21 +705,23 @@ public class SystemController {
 	/**
 	 * ShortHand for triggering Channel 2's sensor.
 	 */
-	private void cmdFinish(int participantId) {
-		currentTimer.finish(participantId, false);
-		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}
+	private void cmdFinish() {
+		cmdTrig(2);
+//		currentTimer.finish(participantId, false);
+//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
+//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+//		}
 	}
 
 	/**
 	 * End the participant within event..but...not as cool as the REGULAR finish.
 	 * **/
-	private void cmdDnf(int participantId) {
-		currentTimer.finish(participantId, true);
-		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}
+	private void cmdDnf() {
+		currentTimer.setDnf();
+//		currentTimer.finish(participantId, true);
+//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
+//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+//		}
 	}
 
 	/**
@@ -775,13 +757,19 @@ public class SystemController {
 		//System.exit(1);
 	}
 
+	private void cmdTrig(int channel) {
+		Channel chan = findChannel(channel);
+		if (chan != null) {
+			chan.triggerSensor();
+		}
+	}
+	
 	/**
 	 * Helper method that goes through all channels in channels looking for a
 	 * matching ID field as the parameter id
 	 * 
-	 * @param id
-	 *            - the ID field for the saught after Channel
-	 * @return chnl - the Channel with ID field that matches parameter id
+	 * @param id - The ID of the Channel to find.
+	 * @return The Channel with ID field that matches parameter id.
 	 * **/
 	private Channel findChannel(int id) {
 		if (channels != null) {
@@ -895,6 +883,15 @@ public class SystemController {
 	public void updateObservers() {
 		for (Observer o : observers) {
 			o.update();
+		}
+	}
+	
+	private void updateChannels() {
+		for (Channel c : channels) {
+			if (c.getSensorTrigger()) {
+				c.resetSensorTrigger();
+				currentTimer.triggered();
+			}
 		}
 	}
 	

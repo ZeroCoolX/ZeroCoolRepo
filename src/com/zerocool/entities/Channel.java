@@ -65,6 +65,15 @@ public class Channel {
 	public void disconnectSensor() {
 		currentSensor = null;
 	}
+	
+	/**
+	 * Triggers the current sensor if there is one.
+	 */
+	public void triggerSensor() {
+		if (currentSensor != null && isActive) {
+			currentSensor.trigger();
+		}
+	}
 
 
 	// ----- accessors ----- \\
@@ -86,6 +95,10 @@ public class Channel {
 		return currentSensor != null ? currentSensor.getState() : false;
 	}
 
+	public boolean getSensorTrigger() {
+		return currentSensor != null && currentSensor.getTrigger();
+	}
+	
 	/**
 	 * Gets the sensor type.  If there is no sensor type
 	 * @return
@@ -125,6 +138,12 @@ public class Channel {
 		currentSensor.setSensorType(sensorType);
 	}
 
+	public void resetSensorTrigger() {
+		if (currentSensor != null) {
+			currentSensor.resetTrigger();
+		}
+	}
+	
 	public void setID(int id) {
 		this.id = id;
 	}

@@ -50,10 +50,10 @@ public class ChannelButton extends AbstractButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (connectButton.isEnabled() && enableButton.isEnabled()) {
-					if (admin.getTimer().getCurrentEvent().getCompetingParticipants().isEmpty() && id % 2 == 0) {
+					if (admin.getTimer().getCurrentEvent().getRunningQueue().isEmpty() && id % 2 == 0) {
 						console.setNewText("Participant competing queue empty...");
 					} else {
-						admin.executeCommand(admin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + admin.getTimer().getCurrentEvent().getCompetingParticipants().peek().getId() : "\tSTART"), false);
+						admin.executeCommand(admin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + admin.getTimer().getCurrentEvent().getRunningQueue().peek().getId() : "\tSTART"), false);
 					}
 				}
 			}

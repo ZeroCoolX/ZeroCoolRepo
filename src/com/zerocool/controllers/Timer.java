@@ -46,43 +46,47 @@ public class Timer {
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void start() {
-		currentEvent.start(systemTime.getTime());
+	public void triggered() {
+		currentEvent.triggered(systemTime.getTime());
 	}
 	
-	/**
-	 * Finish a specific Participant in the Event by given the ID.
-	 * @param id - The ID of the Participant to finish.
-	 * @param finishTime - The time at which the Participant finished.
-	 * @throws IllegalArgumentException - The Participant is null.
-	 * @throws IllegalStateException - There are no Participants currently
-	 * 	competing.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
-	 */
-	public void finish(int id, boolean setDNF) {
-		finish(findParticipant(id), setDNF);
+	public void setDnf() {
+		currentEvent.setDnf();
 	}
 	
-	/**
-	 * Finish a specific Participant in the Event.
-	 * @param participant - The Participant to finish.
-	 * @param finishTime - The time at which the Participant finished.
-	 * @throws IllegalArgumentException - The Participant is null.
-	 * @throws IllegalStateException - There are no Participants currently
-	 * 	competing.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
-	 */
-	public void finish(Participant participant, boolean setDNF) {
-		currentEvent.finish(participant, systemTime.getTime(), setDNF);
-	}
+//	/**
+//	 * Finish a specific Participant in the Event by given the ID.
+//	 * @param id - The ID of the Participant to finish.
+//	 * @param finishTime - The time at which the Participant finished.
+//	 * @throws IllegalArgumentException - The Participant is null.
+//	 * @throws IllegalStateException - There are no Participants currently
+//	 * 	competing.
+//	 * @throws IllegalStateException - The Participant is not currently
+//	 * 	competing.
+//	 */
+//	public void finish(int id, boolean setDNF) {
+//		finish(findParticipant(id), setDNF);
+//	}
+	
+//	/**
+//	 * Finish a specific Participant in the Event.
+//	 * @param participant - The Participant to finish.
+//	 * @param finishTime - The time at which the Participant finished.
+//	 * @throws IllegalArgumentException - The Participant is null.
+//	 * @throws IllegalStateException - There are no Participants currently
+//	 * 	competing.
+//	 * @throws IllegalStateException - The Participant is not currently
+//	 * 	competing.
+//	 */
+//	public void finish(Participant participant, boolean setDNF) {
+//		currentEvent.finish(participant, systemTime.getTime(), setDNF);
+//	}
 	
 	/**
 	 * Indicates a false start so it resets the data back to before the start was called.
 	 */
 	public void cancelStart() {
-		currentEvent.resetCompeting();
+		currentEvent.resetEvent();
 	}
 	
 	
@@ -196,7 +200,7 @@ public class Timer {
 		}
 		
 		participant.createNewRecord(currentEvent.getEventName(), currentEvent.getEventId());
-		currentEvent.addParticipantToStart(participant);
+		currentEvent.addParticipant(participant);
 	}
 	
 	/**
@@ -206,7 +210,7 @@ public class Timer {
 	 * @param participantId - The id to create a new Participant from.
 	 */
 	public void addParticipantToStart(int participantId) {
-		addParticipantToStart("NoName " + participantId, participantId);
+		addParticipantToStart("Aaron " + participantId, participantId);
 	}
 	
 	/**

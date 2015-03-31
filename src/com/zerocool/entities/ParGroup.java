@@ -9,19 +9,31 @@ public class ParGroup extends AbstractEvent {
 		type = EventType.PARGRP;
 	}
 
+	@Override
+	public void triggered(long time) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDnf() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/**
 	 *  Overriding for more method functionality.
 	 *  Grabs first participant from the startingQueue, adds them to the
 	 *  competing list and sets their start time.
 	 */
-	@Override
-	public void start(long startTime) {
-		super.start(startTime);
-		Participant par = startingQueue.poll();
-		addCompetingParticipant(par);
-		par.getLastRecord().setStartTime(startTime);
-		
-	}
+//	@Override
+//	public void start(long startTime) {
+//		super.start(startTime);
+//		Participant par = startingQueue.poll();
+//		addCompetingParticipant(par);
+//		par.getLastRecord().setStartTime(startTime);
+//		
+//	}
 
 	/**
 	 *  Overriding for more method functionality.
@@ -29,14 +41,14 @@ public class ParGroup extends AbstractEvent {
 	 *  removed them from CompetingParticipants, adds their finish time and
 	 *  sets their DNF.
 	 */
-	@Override
-	public void finish(Participant participant, long finishTime, boolean setDNF) {
-		super.finish(participant, finishTime, setDNF);
-		participant.setIsCompeting(false);
-		competingParticipants.remove(participant);
-		participant.getLastRecord().setFinishTime(finishTime);
-		participant.getLastRecord().setDnf(setDNF);
-	}
+//	@Override
+//	public void finish(Participant participant, long finishTime, boolean setDNF) {
+//		super.finish(participant, finishTime, setDNF);
+//		participant.setIsCompeting(false);
+//		competingParticipants.remove(participant);
+//		participant.getLastRecord().setFinishTime(finishTime);
+//		participant.getLastRecord().setDnf(setDNF);
+//	}
 
 	/**
 	 * Override for more method functionality.  

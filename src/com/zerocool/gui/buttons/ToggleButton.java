@@ -72,10 +72,10 @@ public class ToggleButton extends AbstractButton {
 		int width = getWidth();
 		int height = getHeight();
 		
-		int ovalX =  Math.floorDiv(width, 4);
-		int ovalY = Math.floorDiv(height, 4);
-		int ovalWidth = Math.floorDiv(width, 2);
-		int ovalHeight = Math.floorDiv(height, 2);
+		int ovalX =  (width / 4);
+		int ovalY = (height / 4);
+		int ovalWidth = (width / 2);
+		int ovalHeight = (height / 2);
 		
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

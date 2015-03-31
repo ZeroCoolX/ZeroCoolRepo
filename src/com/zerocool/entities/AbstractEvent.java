@@ -20,9 +20,9 @@ public abstract class AbstractEvent {
 
 	// participants actually competing in this event
 	protected ArrayList<Participant> currentParticipants;
-	protected Queue<Participant> competingParticipants;
-
 	protected Queue<Participant> startingQueue;
+	protected Queue<Participant> runningQueue;
+	protected Queue<Participant> finishedQueue;
 	
 	// eventTime stored the entire date but the specific miliseconds, seconds,
 	// minutes, hours..etc can be accessed from such
@@ -54,9 +54,10 @@ public abstract class AbstractEvent {
 	 * **/
 	protected AbstractEvent() {
 		eventId = ++LASTID;
-		startingQueue = new LinkedList<Participant>();
 		currentParticipants = new ArrayList<Participant>();
-		competingParticipants = new LinkedList<Participant>();
+		startingQueue = new LinkedList<Participant>();
+		runningQueue = new LinkedList<Participant>();
+		finishedQueue = new LinkedList<Participant>();
 	}
 
 	/**
@@ -77,34 +78,46 @@ public abstract class AbstractEvent {
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void start(long startTime) {
-		if (startingQueue.isEmpty()) {
-			throw new IllegalStateException("There are no participants in the starting queue.");
-		}
-	}
+//	public void start(long startTime) {
+//		if (startingQueue.isEmpty()) {
+//			throw new IllegalStateException("There are no participants in the starting queue.");
+//		}
+//	}
+	
+	/**
+	 * Tells us a sensor was triggered so based on the type of Event, it either
+	 * starts or finishes Participants.
+	 * @param time - The time the sensor was triggered.
+	 */
+	public abstract void triggered(long time);
 
 	/**
-	 * Override in subclass for more detailed functionality.
-	 * Finish a specific Participant.
-	 * @param participant - The Participant to finish.
-	 * @param finishTime - The time at which the Participant finished.
-	 * @throws IllegalArgumentException - The Participant is null.
-	 * @throws IllegalStateException - There are no Participants currently
-	 * 	competing.
-	 * @throws IllegalStateException - The Participant is not currently
-	 * 	competing.
+	 * Sets the next Participant in the running queue to 'Did Not Finish'.
 	 */
-	public void finish(Participant participant, long finishTime, boolean setDNF) {
-		if (participant == null) {
-			throw new IllegalArgumentException("Participant can't be null.");
-		}
-		if (competingParticipants.isEmpty()) {
-			throw new IllegalStateException("There are no participants competing.");
-		}
-		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
-			throw new IllegalStateException("Not a valid competing Participant.");
-		}
-	}
+	public abstract void setDnf();
+	
+//	/**
+//	 * Override in subclass for more detailed functionality.
+//	 * Finish a specific Participant.
+//	 * @param participant - The Participant to finish.
+//	 * @param finishTime - The time at which the Participant finished.
+//	 * @throws IllegalArgumentException - The Participant is null.
+//	 * @throws IllegalStateException - There are no Participants currently
+//	 * 	competing.
+//	 * @throws IllegalStateException - The Participant is not currently
+//	 * 	competing.
+//	 */
+//	public void finish(Participant participant, long finishTime, boolean setDNF) {
+//		if (participant == null) {
+//			throw new IllegalArgumentException("Participant can't be null.");
+//		}
+//		if (competingParticipants.isEmpty()) {
+//			throw new IllegalStateException("There are no participants competing.");
+//		}
+//		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
+//			throw new IllegalStateException("Not a valid competing Participant.");
+//		}
+//	}
 
 
 	// ----- functional methods ----- \\
@@ -131,7 +144,7 @@ public abstract class AbstractEvent {
 	 * @param participant - The Participant to add.
 	 * @throws IllegalArgumentException - The Participant is null.
 	 */
-	public void addParticipantToStart(Participant participant) {
+	public void addParticipant(Participant participant) {
 		if (participant == null) {
 			throw new IllegalArgumentException("Participant can't be null.");
 		}
@@ -147,19 +160,23 @@ public abstract class AbstractEvent {
 	 * Indicates that the last start was a false start, so this method resets the
 	 * starting queue and competingParticipants.
 	 */
-	public void resetCompeting() {
+	public void resetEvent() {
 		Queue<Participant> newStartingQueue = new LinkedList<Participant>();
 
-		for (Participant par : competingParticipants) {
+		Participant par;
+		while ((par = finishedQueue.poll()) != null) {
+			newStartingQueue.add(par);
+		}
+		
+		while ((par = runningQueue.poll()) != null) {
 			par.setIsCompeting(false);
 			newStartingQueue.add(par);
 		}
 
-		while (!startingQueue.isEmpty()) {
-			newStartingQueue.add(startingQueue.poll());
+		while ((par = startingQueue.poll()) != null) {
+			newStartingQueue.add(par);
 		}
 
-		competingParticipants.clear();
 		startingQueue = newStartingQueue;
 	}
 
@@ -214,19 +231,27 @@ public abstract class AbstractEvent {
 	}
 
 	/**
-	 * Gets the currently competing Participants of the event.
-	 * @return The competing Participants.
+	 * Gets the starting queue of the event.
+	 * @return - The starting queue.
 	 */
-	public Queue<Participant> getCompetingParticipants() {
-		return competingParticipants;
+	public Queue<Participant> getStartingQueue() {
+		return startingQueue;
+	}
+	
+	/**
+	 * Gets the currently competing Participants of the event.
+	 * @return - The competing Participants.
+	 */
+	public Queue<Participant> getRunningQueue() {
+		return runningQueue;
 	}
 
 	/**
-	 * Gets the starting queue of the event.
-	 * @return The starting queue.
+	 * Gets the finished Participants of the event.
+	 * @return - The finished Participants.
 	 */
-	public Queue<Participant> getStartingQueue() {
-		return this.startingQueue;
+	public Queue<Participant> getFinishedQueue() {
+		 return finishedQueue;
 	}
 	
 	/**
@@ -243,15 +268,40 @@ public abstract class AbstractEvent {
 	// ----- helper methods ----- \\
 
 	/**
-	 * Sets a specified Participant to be competing and adds them to
-	 * the currently competing list.
-	 * @param participant - The participant to set to competing.
+	 * Sets a specified Participant to be competing, adds them to
+	 * the current running list and adds the start time to their record.
+	 * @param participant - The participant to start.
+	 * @throws IllegalStateException - If the starting queue is empty.
 	 */
-	protected void addCompetingParticipant(Participant participant) {
+	protected void startParticipant(long startTime) {
+		if (startingQueue.isEmpty()) {
+			throw new IllegalStateException("There are no Participants to start!");
+		}
+		
+		Participant participant = startingQueue.poll();
 		participant.setIsCompeting(true);
-		competingParticipants.add(participant);
+		runningQueue.add(participant);
+		participant.getLastRecord().setStartTime(startTime);
 	}
 
+	/**
+	 * Finishes the given Participant by setting competing to false, setting their
+	 * finish time and setting 'Did Not Finish'.
+	 * @param participant - The Participant to finish.
+	 * @param setDnf - True to set 'Did Not Finish' else false.
+	 * @throws IllegalStateException - If the running queue is empty.
+	 */
+	protected void finishParticipant(long finishTime, boolean setDnf) {
+		if (runningQueue.isEmpty()) {
+			throw new IllegalStateException("There are no Participants to finish!");
+		}
+		
+		Participant participant = runningQueue.poll();
+		participant.setIsCompeting(false);
+		participant.getLastRecord().setFinishTime(finishTime);
+		participant.getLastRecord().setDnf(setDnf);
+	}
+	
 	/**
 	 * Override for more method functionality.
 	 * Gracefully shuts down.
@@ -261,8 +311,9 @@ public abstract class AbstractEvent {
 		type = null;
 		eventName = null;
 		currentParticipants = null;
-		competingParticipants = null;
 		startingQueue = null;
+		runningQueue = null;
+		finishedQueue = null;
 		eventTime = -1;
 		eventId = -1;
 	}

@@ -18,6 +18,7 @@ public class Sensor {
 	};
 	
 	private boolean isArmed;
+	private boolean triggered;
 	
 	private SensorType sensorType;
 	
@@ -31,7 +32,9 @@ public class Sensor {
 	}
 	
 	public void trigger() {
-		
+		if (isArmed) {
+			triggered = true;
+		}
 	}
 	
 	// ----- accessors ----- \\
@@ -42,6 +45,10 @@ public class Sensor {
 	 */
 	public boolean getState() {
 		return isArmed;
+	}
+	
+	public boolean getTrigger() {
+		return triggered;
 	}
 	
 	/**
@@ -72,6 +79,10 @@ public class Sensor {
 	 */
 	public void setState(boolean arm) {
 		isArmed = arm;
+	}
+	
+	public void resetTrigger() {
+		triggered = false;
 	}
 	
 	/**

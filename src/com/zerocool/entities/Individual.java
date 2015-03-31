@@ -10,32 +10,42 @@ public class Individual extends AbstractEvent {
 	}
 
 	/**
-	 *  Overriding for more method functionality.
-	 *  Grabs first participant from the startingQueue, adds them to the
-	 *  competing list and sets their start time.
+	 * If there are not Participants in the running queue (meaning no one is running),
+	 * then it starts the next Participant from the starting queue otherwise it
+	 * finishes the next Participant from the running queue.
 	 */
 	@Override
-	public void start(long startTime) {
-		super.start(startTime);
-		Participant par = startingQueue.poll();
-		addCompetingParticipant(par);
-		par.getLastRecord().setStartTime(startTime);
-		
+	public void triggered(long time) {
+		if (runningQueue.isEmpty()) {
+			start(time);
+		} else {
+			finish(time, false);
+		}
 	}
 
 	/**
-	 *  Overriding for more method functionality.
-	 *  Sets a participant to 'Finished' by setting their competing to false,
-	 *  removed them from CompetingParticipants, adds their finish time and
-	 *  sets their DNF.
+	 * Sets the next Participant in the running queue to 'Did Not Finish'.
 	 */
 	@Override
-	public void finish(Participant participant, long finishTime, boolean setDNF) {
-		super.finish(participant, finishTime, setDNF);
-		participant.setIsCompeting(false);
-		competingParticipants.remove(participant);
-		participant.getLastRecord().setFinishTime(finishTime);
-		participant.getLastRecord().setDnf(setDNF);
+	public void setDnf() {
+		finish(0, true);
+	}
+	
+	/**
+	 * Takes the first Participant from the starting queue and starts them.
+	 * @param startTime - The time the Participant started the race.
+	 */
+	private void start(long startTime) {
+		startParticipant(startTime);
+	}
+
+	/**
+	 * Takes the first Participant from the running queue and finishes them.
+	 * @param finishTime - The time the Participant finished the race.
+	 * @param setDNF - True to set 'Did Not Finish' else false.
+	 */
+	private void finish(long finishTime, boolean setDnf) {
+		finishParticipant(finishTime, setDnf);
 	}
 	
 	/**
