@@ -10,6 +10,7 @@ import org.junit.rules.ExpectedException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.entities.Channel;
+import com.zerocool.entities.Participant;
 import com.zerocool.entities.Sensor;
 
 public class ChannelTests {
@@ -105,8 +106,9 @@ public class ChannelTests {
 
 	@Test
 	public void testTriggerSensor() {
-		channel.addSensor(new Sensor(admin, "EYE", 5));
+		channel.addSensor(new Sensor(admin, "EYE", 2));
 		channel.setState(true);
+		admin.getTimer().addParticipantToStart(new Participant("Participant", 46));
 		assertTrue(channel.triggerSensor());
 	}
 	
@@ -157,7 +159,8 @@ public class ChannelTests {
 	
 	@Test
 	public void testSensorTriggerWithSensorAndTriggered() {
-		channel.addSensor(new Sensor(admin, "GATE", 9));
+		channel.addSensor(new Sensor(admin, "GATE", 8));
+		admin.getTimer().addParticipantToStart(new Participant("Adam", 5));
 		channel.getSensor().trigger();
 		assertTrue(channel.getSensorTrigger());
 	}
@@ -179,6 +182,7 @@ public class ChannelTests {
 	@Test
 	public void testResetSensorTrigger() {
 		channel.addSensor(new Sensor(admin, "GATE", 4));
+		admin.getTimer().addParticipantToStart(new Participant("Adam", 5));
 		channel.getSensor().trigger();
 		channel.resetSensorTrigger();
 		assertFalse(channel.getSensorTrigger());
