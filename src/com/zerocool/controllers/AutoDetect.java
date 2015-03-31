@@ -40,7 +40,7 @@ public class AutoDetect {
 	}
 	
 	public File getDrive() {
-		return usbDrives.peek();
+		return driveConnected() ? usbDrives.peek() : null;
 	}
 	
 	public boolean driveConnected() {

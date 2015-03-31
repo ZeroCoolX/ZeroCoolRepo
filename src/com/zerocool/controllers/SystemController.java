@@ -1,15 +1,10 @@
 package com.zerocool.controllers;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,8 +30,9 @@ import com.zerocool.services.SystemTime;
 
 public class SystemController {
 
-	private ArrayList<Channel> channels;
 	private ArrayList<Observer> observers;
+	
+	private Channel[] channels;
 
 	private TaskList taskList;
 	private SystemTime systemTime;
@@ -47,9 +43,10 @@ public class SystemController {
 	private int id;
 
 	private boolean isPrinterOn;
+	private boolean running;
 
 	public SystemController() {
-		channels = new ArrayList<Channel>();
+		channels = populateChannels();
 
 		taskList = new TaskList();
 
@@ -57,14 +54,16 @@ public class SystemController {
 
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
 		eventLog = new EventLog();
-		
+		eventLog.logEvent(currentTimer.getEventData(), systemTime);
+
 		detector = new AutoDetect();
 
 		id = 0;
 
 		systemTime.start();
 		observers = new ArrayList<Observer>();
-		
+
+		running = true;
 		run();
 	}
 
@@ -83,8 +82,11 @@ public class SystemController {
 		this.eventLog = eventLog;
 	}
 
-	public SystemController(Timer currentTimer, EventLog eventLog, ArrayList<Channel> channels, int id) {
+	public SystemController(Timer currentTimer, EventLog eventLog, Channel[] channels, int id) {
 		this(currentTimer, eventLog, id);
+		if (channels.length != 8) {
+			throw new IllegalArgumentException("Need to only have 8 channels not " + channels.length + "!");
+		}
 		this.channels = channels;
 	}
 
@@ -93,21 +95,21 @@ public class SystemController {
 
 			@Override
 			public void run() {
-				while (true) {
+				while (running) {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(1);
 					} catch (Exception e) { e.printStackTrace(); };
-					
-					updateChannels();
+
+				//	updateChannels();
 					updateObservers();
 				}
 			}
-			
+
 		});
-		
+
 		t.start();
 	}
-	
+
 	/**
 	 * Takes in a file and sends it to the TaskList to add all the commands from the file
 	 * to the Queue.  Then it goes and executes all of the commands in the queue leaving
@@ -127,7 +129,7 @@ public class SystemController {
 			}
 		}
 	}
-	
+
 	/**
 	 * USE THIS FOR TESTING PURPOSES ONLY!
 	 * 
@@ -161,7 +163,7 @@ public class SystemController {
 
 				command = executeCommand(input, false);
 				exit = command != null ? command.equalsIgnoreCase("exit") : false;
-				
+
 				if (command == null) {
 					System.err.println("\nInvalid Command!\n");
 					System.err.flush();
@@ -189,7 +191,7 @@ public class SystemController {
 	public TaskList getTaskList() {
 		return taskList;
 	}
-	
+
 	/**
 	 * Executes a command.
 	 * @param arguments - The String to parse and execute.
@@ -198,7 +200,7 @@ public class SystemController {
 	public String executeCommand(String arguments) {
 		return executeCommand(arguments, true);
 	}
-	
+
 	/**
 	 * This method is private because of the boolean which decides whether or not to wait for the command
 	 * to execute.  This is only used internally for readInput() otherwise it should always be waiting for
@@ -267,112 +269,117 @@ public class SystemController {
 	 *            case statement body.
 	 * 
 	 */
-	public void executeCommand(String cmd, String ...args) throws Exception {
-		switch (cmd) {
-		case "ON":
-			/*
-			 * --Turn system on-- create new Timer create new EventLog
-			 * create new ArrayList<Channel> set isPrinterOn = false
-			 * (default state) set ID = 0 (default state)
-			 */
-			cmdOn();
-			break;
-		case "OFF":
-			/*
-			 * --Turn system off (stay in simulator)--set currentTimer =
-			 * nullset all channels within ArrayList<Channel> and sensors
-			 * associated with such to inactive statesset isPrinterOn =
-			 * false(I think the ID is kept...not sure)
-			 */
-			cmdOff();
-			break;
-		case "EXIT":
-			/*
-			 * --Turn system off (kill everything)--
-			 */
-			cmdExit();
-			break;
-		case "RESET":
-			// stuff
-			cmdReset();
-			break;
-		case "TIME":
-			/*
-			 * --Set the current time--
-			 */
-			cmdTime(args[0]);
-			break;
-		case "TOGGLE":
-			// stuff
-			cmdTog(Integer.parseInt(args[0]));
-			break;
-		case "CONN":
-			// stuff
-			cmdConn(args[0], Integer.parseInt(args[1]));
-			break;
-		case "DISC":
-			// stuff
-			cmdDisc(Integer.parseInt(args[0]));
-			break;
-		case "EVENT":
-			/*
-			 * IND | PARIND | GRP | PARGRP
-			 * 
-			 * --I guess this just creates a new Event? lets go with that --
-			 */
-			cmdEvent(args[0]);
-			break;
-		case "NEWRUN":
-			// stuff
-			break;
-		case "ENDRUN":
-			// stuff
-			break;
-		case "PRINT":
-			// stuff
-			cmdPrint();
-			break;
-		case "EXPORT":
-			// stuff
-			cmdExport();
-			break;
-		case "NUM":
-			// stuff
-			cmdNum(Integer.parseInt(args[0]));
-			break;
-		case "CLR":
-			// stuff
-			break;
-		case "SWAP":
-			// stuff
-			break;
-		case "RCL":
-			// stuff
-			break;
-		case "START":
-			// stuff
-			cmdStart();
-			break;
-		case "FIN":
-			// stuff
-			cmdFinish();
-			break;
-		case "TRIG":
-			// stuff
-			cmdTrig(Integer.parseInt(args[0]));
-			break;
-		case "DNF":
-			// stuff
-			cmdDnf();
-			break;
-		case "ELAPSED":
-			// stuff
-			cmdElapsed();
-			break;
-		case "CANCEL":
-			// stuff
-			cmdCancel();
-			break;
+	public void executeCommand(String cmd, String ...args) {
+		try {
+			switch (cmd) {
+			case "ON":
+				/*
+				 * --Turn system on-- create new Timer create new EventLog
+				 * create new ArrayList<Channel> set isPrinterOn = false
+				 * (default state) set ID = 0 (default state)
+				 */
+				cmdOn();
+				break;
+			case "OFF":
+				/*
+				 * --Turn system off (stay in simulator)--set currentTimer =
+				 * nullset all channels within ArrayList<Channel> and sensors
+				 * associated with such to inactive statesset isPrinterOn =
+				 * false(I think the ID is kept...not sure)
+				 */
+				cmdOff();
+				break;
+			case "EXIT":
+				/*
+				 * --Turn system off (kill everything)--
+				 */
+				cmdExit();
+				break;
+			case "RESET":
+				// stuff
+				cmdReset();
+				break;
+			case "TIME":
+				/*
+				 * --Set the current time--
+				 */
+				cmdTime(args[0]);
+				break;
+			case "TOGGLE":
+				// stuff
+				cmdTog(Integer.parseInt(args[0]));
+				break;
+			case "CONN":
+				// stuff
+				cmdConn(args[0], Integer.parseInt(args[1]));
+				break;
+			case "DISC":
+				// stuff
+				cmdDisc(Integer.parseInt(args[0]));
+				break;
+			case "EVENT":
+				/*
+				 * IND | PARIND | GRP | PARGRP
+				 * 
+				 * --I guess this just creates a new Event? lets go with that --
+				 */
+				cmdEvent(args[0]);
+				break;
+			case "NEWRUN":
+				// stuff
+				break;
+			case "ENDRUN":
+				// stuff
+				break;
+			case "PRINT":
+				// stuff
+				cmdPrint();
+				break;
+			case "EXPORT":
+				// stuff
+				cmdExport();
+				break;
+			case "NUM":
+				// stuff
+				cmdNum(Integer.parseInt(args[0]));
+				break;
+			case "CLR":
+				// stuff
+				break;
+			case "SWAP":
+				// stuff
+				break;
+			case "RCL":
+				// stuff
+				break;
+			case "START":
+				// stuff
+				cmdStart();
+				break;
+			case "FIN":
+				// stuff
+				cmdFinish();
+				break;
+			case "TRIG":
+				// stuff
+				cmdTrig(Integer.parseInt(args[0]));
+				break;
+			case "DNF":
+				// stuff
+				cmdDnf();
+				break;
+			case "ELAPSED":
+				// stuff
+				cmdElapsed();
+				break;
+			case "CANCEL":
+				// stuff
+				cmdCancel();
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Command " + cmd + " " + Arrays.toString(args) + " not executed because it was not the right format!");
 		}
 	}
 
@@ -389,7 +396,6 @@ public class SystemController {
 		// we need to converse on this
 		// printer set to false for default state
 		if (eventLog == null) {
-			System.out.println("new eventLog created");
 			eventLog = new EventLog();
 		}
 		if (currentTimer == null) {
@@ -398,7 +404,10 @@ public class SystemController {
 			//eventLog.logEvent(currentTimer.getEventData(), systemTime);
 		}
 		if (channels == null) {
-			channels = new ArrayList<Channel>();
+			channels = populateChannels();
+		}
+		if (detector == null) {
+			detector = new AutoDetect();
 		}
 		// printer set to false for insurance
 		isPrinterOn = false;
@@ -408,32 +417,12 @@ public class SystemController {
 	 * KEEP THE systemTime running set everything else to null
 	 * **/
 	private void cmdOff() {
-		Path event = eventLog.getEventFile().toPath();
-		Path partic = eventLog.getParticipantFile().toPath();
-		try {
-		    Files.delete(event);
-		} catch (NoSuchFileException x) {
-		    System.err.format("%s: no such" + " file or directory%n", event);
-		} catch (DirectoryNotEmptyException x) {
-		    System.err.format("%s not empty%n", event);
-		} catch (IOException x) {
-		    // File permission problems are caught here.
-		    System.err.println(x);
-		}
-		try {
-		    Files.delete(partic);
-		} catch (NoSuchFileException x) {
-		    System.err.format("%s: no such" + " file or directory%n", partic);
-		} catch (DirectoryNotEmptyException x) {
-		    System.err.format("%s not empty%n", partic);
-		} catch (IOException x) {
-		    // File permission problems are caught here.
-		    System.err.println(x);
-		}
 		// When the command OFF is entered/read then the time needs to stop.
 		eventLog = null;
+		currentTimer.resetEventId();
 		currentTimer = null;
 		channels = null;
+		detector = null;
 		// printer set to false for insurance
 		isPrinterOn = false;
 	}
@@ -457,11 +446,10 @@ public class SystemController {
 	 * **/
 	private void cmdReset() {
 		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND
-				+ "", new ArrayList<Participant>());
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "");
 		eventLog.logEvent(currentTimer.getEventData(), systemTime);
 
-		channels = new ArrayList<Channel>();
+		channels = populateChannels();
 		// printer set to false for insurance
 		isPrinterOn = false;
 	}
@@ -489,12 +477,11 @@ public class SystemController {
 	 * @param channel - the channel ID to either set state or create new instance of
 	 * **/
 	private void cmdTog(int channel) {
-		Channel toggle = findChannel(channel);
-		if (toggle != null) {
-			toggle.setSensorState(!toggle.getState());
-		} else {
-			channels.add(new Channel(null, channel, true));
+		if (channel < 1 || channel > 8) {
+			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
 		}
+		
+		channels[channel - 1].setState(!channels[channel - 1].getState());
 	}
 
 	/**
@@ -511,12 +498,11 @@ public class SystemController {
 	 * @param channel - ID field for a channel to connect a sensor too
 	 * **/
 	private void cmdConn(String sensorType, int channel) {
-		Channel connect = findChannel(channel);
-		if (connect != null) {
-			connect.addSensor(sensorType);
-		} else {
-			channels.add(new Channel(sensorType, channel, true));
+		if (channel < 1 || channel > 8) {
+			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
 		}
+		
+		channels[channel - 1].addSensor(sensorType);
 	}
 
 	/**
@@ -529,11 +515,11 @@ public class SystemController {
 	 * @param channel - the channel ID with which to set the sensor state
 	 */
 	private void cmdDisc(int channel) {
-		Channel disc = findChannel(channel);
-		if (disc != null) {
-			disc.setSensorState(false);
-			disc.disconnectSensor();
+		if (channel < 1 || channel > 8) {
+			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
 		}
+		
+		channels[channel - 1].disconnectSensor();
 	}
 
 	/**
@@ -542,127 +528,107 @@ public class SystemController {
 	 * @throws IOException 
 	 * **/
 	private void cmdPrint() throws IOException {
-		String printData = "";
-		
-		FileReader fileReader = new FileReader(eventLog.getEventFile());
-		BufferedReader reader = new BufferedReader(fileReader);
-		printData += "EVENTLOG\nDATA__________\n\n";
-
-		while (reader.ready()) {
-			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
-		}
-
-		printData += "\n\n";
-
-		fileReader = new FileReader(eventLog.getParticipantFile());
-		reader = new BufferedReader(fileReader);
-		printData += "PARTICIPANT\nDATA__________\n\n";
-
-		while (reader.ready()) {
-			printData += reader.readLine()+"\n"+reader.readLine()+"\n";
-		}
-		reader.close();
+		System.out.println(eventLog.read());
 	}
-	
+
 	/**
 	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected
 	 * @throws FileNotFoundException 
 	 * **/
-	private void cmdExport() throws FileNotFoundException {
-		if (!detector.driveConnected()) {
-	
-		try {
-			 
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-	 
-			// root elements
-			Document doc = docBuilder.newDocument();
-			Element rootElement = doc.createElement("logged_data");
-			doc.appendChild(rootElement);
-			
+	private void cmdExport() {
+		if (detector.driveConnected()) {
+
+			try {
+
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+				// root elements
+				Document doc = docBuilder.newDocument();
+				Element rootElement = doc.createElement("logged_data");
+				doc.appendChild(rootElement);
+
 				Element eventData = doc.createElement("event_data");
 				rootElement.appendChild(eventData);	
-	 
 
-					Element timestamp = doc.createElement("timestamp");
-					timestamp.appendChild(doc.createTextNode(""+systemTime));
-					eventData.appendChild(timestamp);
-	 
-					Element eventName = doc.createElement("event_name");
-					eventName.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
-					eventData.appendChild(eventName);	
-			
-					Element eventId = doc.createElement("event_ID");
-					eventId.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
-					eventData.appendChild(eventId);
-	 
-					Element eventType = doc.createElement("event_type");
-					eventType.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
-					eventData.appendChild(eventType);
-			
-					Element eventTime = doc.createElement("event_time");
-					eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
-					eventData.appendChild(eventTime);
-					
+
+				Element timestamp = doc.createElement("timestamp");
+				timestamp.appendChild(doc.createTextNode(""+systemTime));
+				eventData.appendChild(timestamp);
+
+				Element eventName = doc.createElement("event_name");
+				eventName.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
+				eventData.appendChild(eventName);	
+
+				Element eventId = doc.createElement("event_ID");
+				eventId.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+				eventData.appendChild(eventId);
+
+				Element eventType = doc.createElement("event_type");
+				eventType.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
+				eventData.appendChild(eventType);
+
+				Element eventTime = doc.createElement("event_time");
+				eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
+				eventData.appendChild(eventTime);
+
 				//END event_data root child element
-					
-			
+
+
 				Element parRun = doc.createElement("participant_data");
 				rootElement.appendChild(parRun);
-				
+
 				int i = 0;
 				ArrayList<Element> elements = new ArrayList<Element>();
 				for (Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()) {
 					int k = i;
-					
+
 					elements.add(doc.createElement("participant_event_ID_"+k));
 					elements.get(i).appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
 					parRun.appendChild(elements.get(i));
-					
+
 					++i;
-					
+
 					elements.add(doc.createElement("participant_BIB_"+k));
 					elements.get(i).appendChild(doc.createTextNode(""+p.getId()));
 					parRun.appendChild(elements.get(i));
-					
+
 					++i;
-					
+
 					elements.add(doc.createElement("participant_time_"+k));
 					elements.get(i).appendChild(doc.createTextNode(""+SystemTime.formatTime(p.getLastRecord().getElapsedTime())));
 					parRun.appendChild(elements.get(i));
-					
+
 					++i;
 				}
-				
+
 				//END participant_run root child element
-				
-			//END participant root element
-	 
-			// write the content into xml file
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("" + detector.getDrive() + "/" + currentTimer.getCurrentEvent().getEventName() + ".xml"));
-	 
-			// Output to console for testing
-			// StreamResult result = new StreamResult(System.out);
-	 
-			transformer.transform(source, result);
-	 
-			System.out.println("File saved!");
-	 
-		  } catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
-		  } catch (TransformerException tfe) {
-			tfe.printStackTrace();
-		  }	
+
+				//END participant root element
+
+				// write the content into xml file
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(new File("" + detector.getDrive() + "/" + currentTimer.getCurrentEvent().getEventName() + ".xml"));
+
+				// Output to console for testing
+				// StreamResult result = new StreamResult(System.out);
+
+				transformer.transform(source, result);
+
+				System.out.println("File saved!");
+
+			} catch (ParserConfigurationException pce) {
+				pce.printStackTrace();
+			} catch (TransformerException tfe) {
+				tfe.printStackTrace();
+			}	
 		} else {
 			//there isn't a usb drive to export to...throw error and gtfo.
-			System.out.println("NO USB DRIVE DETECTED");
-			throw new FileNotFoundException();
+			System.err.println("NO USB DRIVE DETECTED");
 		}
 	}
 
@@ -687,14 +653,14 @@ public class SystemController {
 		cmdTrig(1);
 		//currentTimer.start();
 	}
-	
+
 	/**
 	 * stop the current participant from competing but keep them as the next queued to go
 	 * **/
 	private void cmdCancel() {
 		currentTimer.cancelStart();
 	}
-	
+
 	/**
 	 * Get the current time.
 	 * **/
@@ -707,10 +673,10 @@ public class SystemController {
 	 */
 	private void cmdFinish() {
 		cmdTrig(2);
-//		currentTimer.finish(participantId, false);
-//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
-//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-//		}
+		//		currentTimer.finish(participantId, false);
+		//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
+		//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+		//		}
 	}
 
 	/**
@@ -718,10 +684,10 @@ public class SystemController {
 	 * **/
 	private void cmdDnf() {
 		currentTimer.setDnf();
-//		currentTimer.finish(participantId, true);
-//		if (currentTimer.getCurrentEvent().getCompetingParticipants().isEmpty()) {
-//			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-//		}
+		//		currentTimer.finish(participantId, true);
+		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+		}
 	}
 
 	/**
@@ -731,6 +697,7 @@ public class SystemController {
 	private void cmdExit() {
 		// when the command EXIT is entered/read then the time needs to
 		// completely die
+		running = false;
 		systemTime.exit();
 		systemTime = null;
 		isPrinterOn = false;
@@ -744,8 +711,8 @@ public class SystemController {
 		taskList = null;
 
 		if (channels != null) {
-			for (Channel chnl : channels) {
-				chnl.exit();
+			for (Channel chan : channels) {
+				chan.exit();
 			}
 		}
 
@@ -753,17 +720,23 @@ public class SystemController {
 		if (eventLog != null) {
 			eventLog.exit();
 		}
+
+		detector = null;
 		//cannot totally system exit for testing purposes...
 		//System.exit(1);
 	}
 
 	private void cmdTrig(int channel) {
-		Channel chan = findChannel(channel);
-		if (chan != null) {
-			chan.triggerSensor();
+		if (channel < 1 || channel > 8) {
+			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+		}
+		
+		channels[channel - 1].triggerSensor();
+		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
-	
+
 	/**
 	 * Helper method that goes through all channels in channels looking for a
 	 * matching ID field as the parameter id
@@ -771,15 +744,14 @@ public class SystemController {
 	 * @param id - The ID of the Channel to find.
 	 * @return The Channel with ID field that matches parameter id.
 	 * **/
-	private Channel findChannel(int id) {
-		if (channels != null) {
-			for (Channel chnl : channels) {
-				if (chnl.getId() == id) {
-					return chnl;
-				}
-			}
+	private Channel[] populateChannels() {
+		Channel[] chans = new Channel[8];
+		
+		for (int i = 0; i < chans.length; ++i) {
+			chans[i] = new Channel(this, null, i);
 		}
-		return null;
+		
+		return chans;
 	}
 
 	/**
@@ -808,7 +780,7 @@ public class SystemController {
 	 * @param channels
 	 *            - The ArrayList of Channels to set to the system.
 	 */
-	public void setChannels(ArrayList<Channel> channels) {
+	public void setChannels(Channel[] channels) {
 		this.channels = channels;
 	}
 
@@ -835,10 +807,10 @@ public class SystemController {
 	 * 
 	 * @return The current ArrayList of Channels.
 	 */
-	public ArrayList<Channel> getChannels() {
+	public Channel[] getChannels() {
 		return this.channels;
 	}
-	
+
 	/**
 	 * Get's the list of all the valid commands.
 	 * 
@@ -879,22 +851,24 @@ public class SystemController {
 	public void addObserver(Observer observer) {
 		observers.add(observer);
 	}
-	
+
 	public void updateObservers() {
 		for (Observer o : observers) {
 			o.update();
 		}
 	}
-	
+
 	private void updateChannels() {
-		for (Channel c : channels) {
-			if (c.getSensorTrigger()) {
-				c.resetSensorTrigger();
-				currentTimer.triggered();
+		if (channels != null) {
+			for (Channel c : channels) {
+				if (c.getSensorTrigger()) {
+					c.resetSensorTrigger();
+					currentTimer.triggered(c.getId() + 1);
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Get's the Systime's time.
 	 * @return - The System's time.
@@ -902,7 +876,7 @@ public class SystemController {
 	public SystemTime getSystemTime() {
 		return systemTime;
 	}
-	
+
 	public AutoDetect getAutoDetect() {
 		return detector;
 	}

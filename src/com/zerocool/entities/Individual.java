@@ -15,11 +15,11 @@ public class Individual extends AbstractEvent {
 	 * finishes the next Participant from the running queue.
 	 */
 	@Override
-	public void triggered(long time) {
-		if (runningQueue.isEmpty()) {
-			start(time);
-		} else {
+	public void triggered(long time, int channel) {
+		if (channel % 2 == 0) {
 			finish(time, false);
+		} else {
+			start(time);
 		}
 	}
 
@@ -27,8 +27,8 @@ public class Individual extends AbstractEvent {
 	 * Sets the next Participant in the running queue to 'Did Not Finish'.
 	 */
 	@Override
-	public void setDnf() {
-		finish(0, true);
+	public void setDnf(long time) {
+		finish(time, true);
 	}
 	
 	/**

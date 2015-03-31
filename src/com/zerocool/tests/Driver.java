@@ -1,15 +1,13 @@
 package com.zerocool.tests;
 
 import java.io.File;
-import java.text.ParseException;
 
-import com.zerocool.controllers.AutoDetect;
 import com.zerocool.controllers.SystemController;
 
 
 public class Driver {
 	
-	public static void main (String [] args) throws ParseException{
+	public static void main (String [] args) {
 				
 		System.out.println("\t\tChronoTimer 1009 Sprint 1.0 release run\n\n\n" +
 				"Running file load system execution\n\n");

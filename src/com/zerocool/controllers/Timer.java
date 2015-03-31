@@ -1,6 +1,7 @@
 package com.zerocool.controllers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.AbstractEvent.EventType;
@@ -46,41 +47,13 @@ public class Timer {
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void triggered() {
-		currentEvent.triggered(systemTime.getTime());
+	public void triggered(int channel) {
+		currentEvent.triggered(systemTime.getTime(), channel);
 	}
 	
 	public void setDnf() {
-		currentEvent.setDnf();
+		currentEvent.setDnf(systemTime.getTime());
 	}
-	
-//	/**
-//	 * Finish a specific Participant in the Event by given the ID.
-//	 * @param id - The ID of the Participant to finish.
-//	 * @param finishTime - The time at which the Participant finished.
-//	 * @throws IllegalArgumentException - The Participant is null.
-//	 * @throws IllegalStateException - There are no Participants currently
-//	 * 	competing.
-//	 * @throws IllegalStateException - The Participant is not currently
-//	 * 	competing.
-//	 */
-//	public void finish(int id, boolean setDNF) {
-//		finish(findParticipant(id), setDNF);
-//	}
-	
-//	/**
-//	 * Finish a specific Participant in the Event.
-//	 * @param participant - The Participant to finish.
-//	 * @param finishTime - The time at which the Participant finished.
-//	 * @throws IllegalArgumentException - The Participant is null.
-//	 * @throws IllegalStateException - There are no Participants currently
-//	 * 	competing.
-//	 * @throws IllegalStateException - The Participant is not currently
-//	 * 	competing.
-//	 */
-//	public void finish(Participant participant, boolean setDNF) {
-//		currentEvent.finish(participant, systemTime.getTime(), setDNF);
-//	}
 	
 	/**
 	 * Indicates a false start so it resets the data back to before the start was called.
@@ -121,8 +94,8 @@ public class Timer {
 	public String getEventParticipantData() {
 		String data = "";
 		
-		for (Participant par : currentEvent.getCurrentParticipants()) {
-			data += par.getFormattedData() + "\n";
+		for (Iterator<Participant> it = currentEvent.getFinishedQueue().iterator(); it.hasNext();) {
+			data += it.next().getFormattedData() + "\n";
 		}
 		
 		return data;
@@ -131,8 +104,8 @@ public class Timer {
 	public String getEventParticipantElapsedData() {
 		String data = "";
 		
-		for (Participant par : currentEvent.getCurrentParticipants()) {
-			data += par.getElapsedFormattedData() + "\n";
+		for (Iterator<Participant> it = currentEvent.getFinishedQueue().iterator(); it.hasNext();) {
+			data += it.next().getElapsedFormattedData() + "\n";
 		}
 		
 		return data;

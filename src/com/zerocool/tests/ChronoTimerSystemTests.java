@@ -42,6 +42,7 @@ public class ChronoTimerSystemTests {
 
 	@After
 	public void tearDown() {
+		commandList = null;
 		systemController = null;
 		systemTime = null;
 		timer = null;
@@ -49,10 +50,23 @@ public class ChronoTimerSystemTests {
 		john = null;
 	}
 	
+	private void executeCommands() {
+		while (!commandList.isEmpty()) {
+			try {			
+				systemController.executeCommand(commandList.poll());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			Thread.sleep(1000);
+		} catch (Exception e) { };
+	}
+	
 	@Test
 	public void testOneStartAndFinished() {
 		// Arrange
-		String arguments;
 		Participant competitor;
 		
 		long startTime = 0;
@@ -61,6 +75,10 @@ public class ChronoTimerSystemTests {
 		
 		commandList.add("10:00:00.0	TIME 10:01:00.0");
 		commandList.add("10:01:02.0	ON");
+		commandList.add("10:01:04.0 CONN GATE 1");
+		commandList.add("10:01:06.0 TOGGLE 1");
+		commandList.add("10:01:08.0 CONN GATE 2");
+		commandList.add("10:01:10.0 TOGGLE 2");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
 		commandList.add("10:02:26.0	FIN");
@@ -68,14 +86,7 @@ public class ChronoTimerSystemTests {
 		timer.resetEventId();
 		
 		// Act
-		while (!commandList.isEmpty()) {
-			arguments = commandList.poll();
-			try {			
-				systemController.executeCommand(arguments);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		executeCommands();
 		
 		startTime = SystemTime.getTimeInMillis("10:01:22.0");
 		finishTime = SystemTime.getTimeInMillis("10:02:26.0");
@@ -97,7 +108,6 @@ public class ChronoTimerSystemTests {
 	@Test
 	public void testOneStartAndDNF() {
 		// Arrange
-		String arguments;
 		Participant competitor;
 		
 		long startTime = 0;
@@ -105,22 +115,14 @@ public class ChronoTimerSystemTests {
 		
 		commandList.add("10:00:00.0	TIME 10:01:00");
 		commandList.add("10:01:02.0	ON");
+		commandList.add("10:01:04.0 CONN GATE 1");
+		commandList.add("10:01:06.0 TOGGLE 1");
 		commandList.add("10:01:20.0	NUM 555");
 		commandList.add("10:01:22.0	START");
 		commandList.add("10:02:00.0	DNF");
 		
 		// Act
-		while (!commandList.isEmpty()) {
-			arguments = commandList.poll();
-			try {
-				if (arguments.contains("START")) {
-					startTime = systemTime.getTime();
-				}
-				systemController.executeCommand(arguments);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		executeCommands();
 		
 		startTime = SystemTime.getTimeInMillis("10:01:22.0");
 		
@@ -147,8 +149,8 @@ public class ChronoTimerSystemTests {
 		for (int i = 0; i < 10; ++i) {
 			timer.createEvent(EventType.IND, "Practice " + i);
 			timer.addParticipantToStart(john);
-			timer.startNextParticipant();
-			timer.finishAllParticipants(false);
+			timer.triggered(1);
+			timer.triggered(2);
 		}
 
 		// Assert
@@ -173,7 +175,7 @@ public class ChronoTimerSystemTests {
 
 			// Stop the time so the times are equal.
 			systemTime.suspend();;
-			timer.startNextParticipant();
+			timer.triggered(1);
 			startTime[i] = systemTime.getTime();
 			// Start the time again so we get fun numbers.
 			systemTime.resume();
@@ -184,7 +186,7 @@ public class ChronoTimerSystemTests {
 
 			// Stop the time so the times are equal.
 			systemTime.suspend();
-			timer.finishParticipant(john, false);
+			timer.triggered(2);
 			finishTime[i] = systemTime.getTime();
 			// Start the time again for fun times.
 			systemTime.resume();
@@ -248,13 +250,13 @@ public class ChronoTimerSystemTests {
 		// Act
 		timer.createEvent(EventType.IND, "Indie 500");
 		timer.addParticipantToStart(john);
-		timer.startNextParticipant();
+		timer.triggered(1);
 		
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) { };
 		
-		timer.finishParticipant(john, false);
+		timer.triggered(2);
 		
 		systemTime.suspend();
 		participantData = "Run\tBIB\tTime\n" + timer.getEventParticipantData();

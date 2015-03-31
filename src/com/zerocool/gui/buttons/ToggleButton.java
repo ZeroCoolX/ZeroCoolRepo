@@ -50,7 +50,7 @@ public class ToggleButton extends AbstractButton {
 					admin.executeCommand(admin.getSystemTime() + "\tTOGGLE " + id, false);
 				}
 				
-				on = !on;
+				//on = !on;
 				main.repaint();
 			}
 			
@@ -59,7 +59,12 @@ public class ToggleButton extends AbstractButton {
 	
 	@Override
 	public void update() {
-		// DO NOTHING
+		if (admin.getChannels() == null) {
+			on = false;
+		} else if (id <= admin.getChannels().length) {
+			on = type.equals(Type.CONNECT) ? admin.getChannels()[id - 1].getSensorState() : admin.getChannels()[id - 1].getState();
+			main.repaint();
+		}
 	}
 
 	@Override

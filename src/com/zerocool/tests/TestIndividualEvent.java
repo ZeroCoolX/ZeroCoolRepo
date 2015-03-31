@@ -38,10 +38,7 @@ public class TestIndividualEvent {
 	}
 	
 	public void addEvents() {
-		/*events.add(new Individual("100M Sprint"));
-		events.add(new Group("CrossCountry Skiiing"));
-		events.add(new ParIndividual("Marathon"));
-		events.add(new ParGroup("Swimming"));*/
+		//events.add(new Individual("100M Sprint"));
 	}
 
 	public void addParticipants(int numParticipants) {
@@ -49,12 +46,6 @@ public class TestIndividualEvent {
 			participants.add(new Participant("Joe [" + i + "]", i));
 		}
 	}
-
-//	public void link(int num) {
-//		for(int i = 0; i < num; ++i){
-//			events.get(i).setParticipants(participants);
-//		}
-//	}
 
 	@Test
 	public void testConstructor() {
@@ -110,7 +101,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Start: " + SystemTime.formatTime(startTime));
 
-			eve.startAllParticipants(startTime);
+			eve.triggered(startTime);
 			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
 
@@ -123,7 +114,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
-			eve.finishAllParticipants(finishTime, false);
+			eve.triggered(finishTime);
 			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);
@@ -140,7 +131,7 @@ public class TestIndividualEvent {
 			long startTime = stopWatch.getTime();
 			System.out.println("Start: " + SystemTime.formatTime(startTime));
 			
-			eve.startNextParticipant(startTime);
+			eve.triggered(startTime);
 			assertTrue(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getStartTime(), startTime);
 
@@ -153,7 +144,7 @@ public class TestIndividualEvent {
 			
 			System.out.println("Finish: " + SystemTime.formatTime(finishTime));
 			
-			eve.finishParticipant(eve.getCompetingParticipants().get(0), finishTime, false);
+			eve.triggered(finishTime);
 			assertFalse(eve.getCurrentParticipants().get(0).getIsCompeting());
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getFinishTime(), finishTime);
 			assertEquals(eve.getCurrentParticipants().get(0).getLastRecord().getElapsedTime(), finishTime - startTime);

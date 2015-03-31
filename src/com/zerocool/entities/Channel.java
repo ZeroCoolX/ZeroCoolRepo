@@ -1,5 +1,7 @@
 package com.zerocool.entities;
 
+import com.zerocool.controllers.SystemController;
+
 /**
  * 
  * @author ZeroCool
@@ -11,22 +13,20 @@ package com.zerocool.entities;
  */
 public class Channel {
 
+	private SystemController admin;
 	private Sensor currentSensor;
 
 	private int id;
 
 	private boolean isActive;
-
-	public Channel(String sensorType) {
-		currentSensor = new Sensor(sensorType);
-	}
 	
 	/**
 	 * Constructor to add a sensor.
 	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 */
-	public Channel(String sensorType, int id) {
-		this(sensorType);
+	public Channel(SystemController admin, String sensorType, int id) {
+		this.admin = admin;
+		currentSensor = new Sensor(admin, sensorType, id);
 		this.id = id;
 	}
 
@@ -35,8 +35,8 @@ public class Channel {
 	 * @param type - sensor to add to the channel.  Should be of type EYE, GATE, or PAD.
 	 * @param active - set the channel to be active er naw.
 	 */
-	public Channel(String sensorType, int id, boolean active) {
-		this(sensorType, id);
+	public Channel(SystemController admin, String sensorType, int id, boolean active) {
+		this(admin, sensorType, id);
 		isActive = active;
 	}
 
@@ -56,7 +56,7 @@ public class Channel {
 	 * @param type - should either be EYE, GATE, or PAD
 	 */
 	public void addSensor(String sensorType) throws IllegalArgumentException {
-		currentSensor = new Sensor(sensorType, false);
+		currentSensor = new Sensor(admin, sensorType, id);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Channel {
 	 * @return - true if the sensor is armed else false.
 	 */
 	public boolean getSensorState() {
-		return currentSensor != null ? currentSensor.getState() : false;
+		return getSensorType() != null;
 	}
 
 	public boolean getSensorTrigger() {
@@ -107,6 +107,15 @@ public class Channel {
 		return currentSensor != null ? currentSensor.getType() : null;
 	}
 
+	/**
+	 * USE FOR TEST PURPOSES ONLY!
+	 * Get's the current sensor.
+	 * @return - The current sensor or null if there isn't one.
+	 */
+	public Sensor getSensor() {
+		return currentSensor;
+	}
+	
 	/**
 	 * Gets the id of the Channel
 	 * @return - an integer representing the Channel's id number.
@@ -124,14 +133,6 @@ public class Channel {
 	 */
 	public void setState(boolean active) {
 		this.isActive = active;
-	}
-
-	/**
-	 * Sets the state of the current sensor.
-	 * @param state - The state to set the sensor to.
-	 */
-	public void setSensorState(boolean state) {
-		currentSensor.setState(state);
 	}
 
 	public void setSensorType(String sensorType) throws IllegalArgumentException {

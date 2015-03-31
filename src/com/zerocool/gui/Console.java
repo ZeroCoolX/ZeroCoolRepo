@@ -27,7 +27,7 @@ public class Console extends AbstractPanel {
 		view = new ConsoleView(admin, printer);
 		
 		view = new ConsoleView(admin, printer);
-		scrollPane = new LightScrollPane(view, 200, 200);
+		scrollPane = new LightScrollPane(view, 225, 225);
 
 		add(scrollPane, "cell 0 0");
 

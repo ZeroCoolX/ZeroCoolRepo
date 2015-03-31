@@ -9,8 +9,13 @@ public class Group extends AbstractEvent {
 		type = EventType.GRP;
 	}
 	
+	/**
+	 * If there are not Participants in the running queue (meaning no one is running),
+	 * then it starts all the Participants from the starting queue otherwise it
+	 * finishes the next Participant from the running queue.
+	 */
 	@Override
-	public void triggered(long time) {
+	public void triggered(long time, int channel) {
 		if (runningQueue.isEmpty()) {
 			start(time);
 		} else {
@@ -18,49 +23,29 @@ public class Group extends AbstractEvent {
 		}
 	}
 
+	/**
+	 * Sets the next Participant in the running queue to 'Did Not Finish'.
+	 */
 	@Override
-	public void setDnf() {
-		finishParticipant(0, true);
+	public void setDnf(long time) {
+		finishParticipant(time, true);
 	}
 	
 	/**
-	 * Overriding for more method functionality.
-	 * This should start all the Participants in the starting queue by
-	 * adding them to the competing list and setting their start time.
+	 * Loops through all the Participants in the starting queue and starts them.
+	 * @param startTime - The time the Participants started.
 	 */
-//	@Override
-//	public void start(long startTime) {
-//		super.start(startTime);
-//		
-//		Participant par;
-//		while (!startingQueue.isEmpty()) {
-//			par = startingQueue.poll();
-//			addCompetingParticipant(par);
-//			par.getLastRecord().setStartTime(startTime);
-//		}
-//	}
-
-	/**
-	 *  Overriding for more method functionality.
-	 *  Sets a participant to 'Finished' by setting their competing to false,
-	 *  removed them from CompetingParticipants, adds their finish time and
-	 *  sets their DNF.
-	 */
-//	@Override
-//	public void finish(Participant participant, long finishTime, boolean setDNF) {
-//		super.finish(participant, finishTime, setDNF);
-//		participant.setIsCompeting(false);
-//		competingParticipants.remove(participant);
-//		participant.getLastRecord().setFinishTime(finishTime);
-//		participant.getLastRecord().setDnf(setDNF);
-//	}
-	
 	private void start(long startTime) {
 		while(!startingQueue.isEmpty()) {
 			startParticipant(startTime);
 		}
 	}
 	
+	/**
+	 * Takes the first Participant from the running queue and finishes them.
+	 * @param finishTime - The time the Participant finished the race.
+	 * @param setDNF - True to set 'Did Not Finish' else false.
+	 */
 	private void finish(long finishTime) {
 		finishParticipant(finishTime, false);
 	}

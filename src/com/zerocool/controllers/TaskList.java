@@ -141,7 +141,7 @@ public class TaskList {
 		
 		if (parse(input, arguments)) {
 			tasks.add(new Task(arguments));
-			System.out.println("Parsed: " + arguments);
+			System.out.println("Parsed: " + arguments + "\n");
 			System.out.flush();
 			return true;
 		}
@@ -227,7 +227,6 @@ public class TaskList {
 		
 		String[] split = input.split("[:. \\t]");
 		for (String s : split) {
-			System.out.println("addding = " + s);
 			arguments.add(s);
 		}
 		

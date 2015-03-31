@@ -87,7 +87,7 @@ public class Participant {
 	 */
 	public String getFormattedData() {
 		Record rec = this.getLastRecord();
-		return rec.getEventId() + "   " + id + "   " + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
+		return rec.getEventId() + "\t" + id + getElapsedFormattedData();
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class Participant {
 	 */
 	public String getElapsedFormattedData() {
 		Record rec = this.getLastRecord();
-		return "   " + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
+		return "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}
 
 	/**

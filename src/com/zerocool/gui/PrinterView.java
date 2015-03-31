@@ -26,7 +26,7 @@ public class PrinterView extends JTextArea {
 	private void setPrefs() {
 		setLineWrap(true);
 		setEditable(false);
-		setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
+		setFont(new Font("Tahoma", Font.CENTER_BASELINE, 10));
 		setBackground(Main.BLEACHED_ALMOND);
 		setForeground(Color.DARK_GRAY);
 		setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));

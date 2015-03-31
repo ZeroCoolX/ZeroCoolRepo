@@ -70,54 +70,18 @@ public abstract class AbstractEvent {
 	
 	
 	// ----- override methods ----- \\
-
-	/**
-	 * Override in subclass for more functionality.
-	 * Starts the Event.
-	 * @param startTime - The time the Participant started.
-	 * @throws IllegalStateException - There are no Participants in
-	 * 	the starting queue.
-	 */
-//	public void start(long startTime) {
-//		if (startingQueue.isEmpty()) {
-//			throw new IllegalStateException("There are no participants in the starting queue.");
-//		}
-//	}
 	
 	/**
 	 * Tells us a sensor was triggered so based on the type of Event, it either
 	 * starts or finishes Participants.
 	 * @param time - The time the sensor was triggered.
 	 */
-	public abstract void triggered(long time);
+	public abstract void triggered(long time, int channel);
 
 	/**
 	 * Sets the next Participant in the running queue to 'Did Not Finish'.
 	 */
-	public abstract void setDnf();
-	
-//	/**
-//	 * Override in subclass for more detailed functionality.
-//	 * Finish a specific Participant.
-//	 * @param participant - The Participant to finish.
-//	 * @param finishTime - The time at which the Participant finished.
-//	 * @throws IllegalArgumentException - The Participant is null.
-//	 * @throws IllegalStateException - There are no Participants currently
-//	 * 	competing.
-//	 * @throws IllegalStateException - The Participant is not currently
-//	 * 	competing.
-//	 */
-//	public void finish(Participant participant, long finishTime, boolean setDNF) {
-//		if (participant == null) {
-//			throw new IllegalArgumentException("Participant can't be null.");
-//		}
-//		if (competingParticipants.isEmpty()) {
-//			throw new IllegalStateException("There are no participants competing.");
-//		}
-//		if (!competingParticipants.contains(participant) || !participant.getIsCompeting()) {
-//			throw new IllegalStateException("Not a valid competing Participant.");
-//		}
-//	}
+	public abstract void setDnf(long time);
 
 
 	// ----- functional methods ----- \\
@@ -258,7 +222,7 @@ public abstract class AbstractEvent {
 	 * Returns all the data needed from an event to print to the log file in the format:
 	 * <EventName> '\n'
 	 * <EventId> <EventType> <SystemTime> '\n'
-	 * @return The formatted data.
+	 * @return - The formatted data.
 	 */
 	public String getFormattedData() {
 		return eventName + "\n" + eventId + " " + type + " " + SystemTime.formatTime(eventTime) + "\n";
@@ -280,13 +244,13 @@ public abstract class AbstractEvent {
 		
 		Participant participant = startingQueue.poll();
 		participant.setIsCompeting(true);
-		runningQueue.add(participant);
 		participant.getLastRecord().setStartTime(startTime);
+		runningQueue.add(participant);
 	}
 
 	/**
 	 * Finishes the given Participant by setting competing to false, setting their
-	 * finish time and setting 'Did Not Finish'.
+	 * finish time, setting 'Did Not Finish' and adds them to the finished queue.
 	 * @param participant - The Participant to finish.
 	 * @param setDnf - True to set 'Did Not Finish' else false.
 	 * @throws IllegalStateException - If the running queue is empty.
@@ -300,6 +264,7 @@ public abstract class AbstractEvent {
 		participant.setIsCompeting(false);
 		participant.getLastRecord().setFinishTime(finishTime);
 		participant.getLastRecord().setDnf(setDnf);
+		finishedQueue.add(participant);
 	}
 	
 	/**

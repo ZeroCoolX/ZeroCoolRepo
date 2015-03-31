@@ -1,5 +1,7 @@
 package com.zerocool.entities;
 
+import com.zerocool.controllers.SystemController;
+
 /**
  * 
  * @author ZeroCool
@@ -17,35 +19,26 @@ public class Sensor {
 		EYE, GATE, PAD
 	};
 	
-	private boolean isArmed;
+	private SystemController admin;
+	
 	private boolean triggered;
 	
 	private SensorType sensorType;
 	
-	public Sensor(String sensorType) {
+	private int id;
+	
+	public Sensor(SystemController admin, String sensorType, int id) {
+		this.admin = admin;
+		this.id = id;
 		setSensorType(sensorType);
 	}
 	
-	public Sensor(String sensorType, boolean arm) {
-		this(sensorType);
-		isArmed = arm;
-	}
-	
 	public void trigger() {
-		if (isArmed) {
-			triggered = true;
-		}
+		admin.getTimer().triggered(id + 1);
+		triggered = true;
 	}
 	
 	// ----- accessors ----- \\
-	
-	/**
-	 * Checks if the sensor is armed er naw.
-	 * @return - true if the sensor is armed else false.
-	 */
-	public boolean getState() {
-		return isArmed;
-	}
 	
 	public boolean getTrigger() {
 		return triggered;
@@ -56,7 +49,7 @@ public class Sensor {
 	 * @return - The type of Sensor.
 	 */
 	public String getType() {
-		return sensorType.toString();
+		return sensorType != null ? sensorType.toString() : null;
 	}
 	
 	/**
@@ -73,14 +66,6 @@ public class Sensor {
 	
 	// ----- mutators ----- \\
 	
-	/**
-	 * Arms or disarms the sensor.
-	 * @param arm - sets isArmed to true or false.
-	 */
-	public void setState(boolean arm) {
-		isArmed = arm;
-	}
-	
 	public void resetTrigger() {
 		triggered = false;
 	}
@@ -89,7 +74,8 @@ public class Sensor {
 	 * Exits the sensor when the system is exited
 	 */
 	public void exit() {
-		isArmed = false;
+		triggered = false;
+		sensorType = null;
 	}
 	
 }

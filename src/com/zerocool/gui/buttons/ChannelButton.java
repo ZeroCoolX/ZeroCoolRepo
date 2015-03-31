@@ -49,13 +49,14 @@ public class ChannelButton extends AbstractButton {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (connectButton.isEnabled() && enableButton.isEnabled()) {
+				if (connectButton.isOn() && enableButton.isOn()) {
+					System.out.println(id);
 					if (admin.getTimer().getCurrentEvent().getRunningQueue().isEmpty() && id % 2 == 0) {
 						console.setNewText("Participant competing queue empty...");
-					}else if(admin.getTimer().getCurrentEvent().getStartingQueue().isEmpty() && id % 2 != 0){
+					} else if(admin.getTimer().getCurrentEvent().getStartingQueue().isEmpty() && id % 2 != 0) {
 						console.setNewText("Participant starting queue empty...");
-					}else {
-						admin.executeCommand(admin.getSystemTime() + (id % 2 == 0 ? "\tFIN " + admin.getTimer().getCurrentEvent().getRunningQueue().peek().getId() : "\tSTART"), false);
+					} else {
+						admin.executeCommand(admin.getSystemTime() + "\tTRIG " + id, false);
 					}
 				}
 			}
@@ -96,7 +97,8 @@ public class ChannelButton extends AbstractButton {
 		g2.clearRect(0, 0, width, height);
 		
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g2.setPaint(isEnabled() ? connectButton.isOn() && enableButton.isOn() ? Main.GREEN : connectButton.isOn() ? Main.DARK_ORANGE : Main.DEEP_SKY_BLUE : Main.BLACK);
+		g2.setPaint(isEnabled() ? connectButton.isOn() && enableButton.isOn() ? Main.GREEN : connectButton.isOn() || 
+				enableButton.isOn() ? Main.DARK_ORANGE : Main.DEEP_SKY_BLUE : Main.BLACK);
 		g2.fillRect(0, 0, width, height);
 		
 		g2.dispose();

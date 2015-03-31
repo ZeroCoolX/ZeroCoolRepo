@@ -10,13 +10,13 @@ public class ParGroup extends AbstractEvent {
 	}
 
 	@Override
-	public void triggered(long time) {
+	public void triggered(long time, int channel) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setDnf() {
+	public void setDnf(long time) {
 		// TODO Auto-generated method stub
 		
 	}

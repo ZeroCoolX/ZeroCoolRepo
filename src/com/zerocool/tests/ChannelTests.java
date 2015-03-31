@@ -20,7 +20,7 @@ public class ChannelTests {
 	
 	@Before
 	public void setUp() throws Exception {
-		channel = new Channel();
+		channel = new Channel(null, 0);
 	}
 
 	@After

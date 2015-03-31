@@ -26,7 +26,7 @@ public class Printer extends AbstractPanel {
 		add(powerButton, "cell 0 0");
 		
 		view = new PrinterView(admin);
-		scrollPane = new LightScrollPane(view, 150, 150);
+		scrollPane = new LightScrollPane(view, 200, 200);
 		
 		add(scrollPane, "cell 0 1");
 	}
