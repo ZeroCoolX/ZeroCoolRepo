@@ -139,6 +139,13 @@ public abstract class AbstractEvent {
 
 		startingQueue = newStartingQueue;
 	}
+	
+	public void newRun(){
+		currentParticipants = new ArrayList<Participant>();
+		startingQueue = new LinkedList<Participant>();
+		runningQueue = new LinkedList<Participant>();
+		finishedQueue = new LinkedList<Participant>();
+	}
 
 	// ----- accessors ----- \\
 

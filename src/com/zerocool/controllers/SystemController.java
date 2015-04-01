@@ -431,12 +431,21 @@ public class SystemController {
 		isPrinterOn = false;
 	}
 	
+	/***
+	 * Goes through the rest of participants running (AKA those who've not finished) and finishes them with DNF
+	 * */
 	private void cmdEndRun(){
-		//idk wtf is supposed to happen here
+		while(!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()){
+			currentTimer.setDnf();
+		}
 	}
 	
+	/**
+	 * Resets all the collections in an event to be re filled
+	 * EventID stays the same
+	 * **/
 	private void cmdNewRun(){
-		//nothing really needs to happen yet...
+		currentTimer.getCurrentEvent().newRun();
 	}
 
 	/**
