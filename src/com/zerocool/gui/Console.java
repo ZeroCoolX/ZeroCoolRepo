@@ -39,6 +39,7 @@ public class Console extends AbstractPanel {
 	
 	@Override
 	public void update() {
+		view.getView(true);
 		view.update();
 	}
 	
@@ -69,6 +70,26 @@ public class Console extends AbstractPanel {
 	
 	public void setNewText(String text){
 		view.setText(text);
+	}
+	
+	public ConsoleView getView(){
+		return view;
+	}
+	
+	public void setCommandArgComboView(){		
+ 		//System.out.println("setting text view as: " + view.getView(true) + " "+ view.getCommandArgCombo());		 
+		//view.setText(view.getView(true) + " "+ view.getCommandArgCombo());
+		
+ 		System.out.println("setting text view as: " + view.getView(true));		 
+		view.setText(view.getView(true));
+ 	}
+	
+	public boolean isScanPrompting() {		
+		return view.isScanPrompting();		
+	}		
+					
+	public void promptScanner(int num){		
+		view.promptScanner(num);		
 	}
 	
 	private ConsoleView view;

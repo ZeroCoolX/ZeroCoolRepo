@@ -29,6 +29,11 @@ public class ConsoleView extends JTextArea {
 
 	private int index;
 	private int currentLine;
+	
+	private String commandArgCombo = "";	
+	
+	private static boolean scanPrompting = false;		
+	private int scanNumToConnect = 0;
 
 	private String args = "";
 
@@ -55,14 +60,17 @@ public class ConsoleView extends JTextArea {
 		// TEMPORARY! =OOOOOOOOOOO
 		addFocusListener(new FocusListener() {
 
+			@Override		
+			public void focusGained(FocusEvent e) {		
+				if(!scanPrompting){		
+					System.out.println("hey");
+				setText("");		
+				}		
+			}		
+			 		 
 			@Override
-			public void focusGained(FocusEvent e) {
-				setText("");
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				// DO NOTHING
+			public void focusLost(FocusEvent e) {	
+			// do nothing
 			}
 
 		});
@@ -73,8 +81,7 @@ public class ConsoleView extends JTextArea {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = (getTime() + "\t" + getText().trim().toUpperCase());
 					admin.executeCommand(text, false);
-					setText("");
-					
+					setText(">"+text);		
 					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}
@@ -96,7 +103,7 @@ public class ConsoleView extends JTextArea {
 
 	public void update() {
 		// TODO things
-		//setText(getView());
+		setText(getView(true));
 	}
 	
 	public String getTime() {
@@ -156,17 +163,17 @@ public class ConsoleView extends JTextArea {
 		return index == - 1 ? "" : cmds[index];
 	}
 
-	public String getView() {
+	public String getView(boolean useCombo) {
 		String text = getTime();
 
 		if (waiting.isEmpty() && running.isEmpty() && finished.isEmpty()) {
-			text += ">" + getCurrentCommand();
+			text += ">" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 		} else {
 			int line = 0;
 			for (Participant par : waiting) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -177,7 +184,7 @@ public class ConsoleView extends JTextArea {
 			for (Participant par : running) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -188,7 +195,7 @@ public class ConsoleView extends JTextArea {
 			for (Participant par : finished) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" + getCurrentCommand();
+					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -225,7 +232,33 @@ public class ConsoleView extends JTextArea {
 		private String elapsedTime() {
 			return "" + (admin.getSystemTime().getTime() - SystemTime.getTimeInMillis(startTime));
 		}
+		
 
+
+	}
+
+	public void setCommandArgCombo(String arg) {		
+		System.out.println("setting command arg combo");		
+		args += arg;		
+		commandArgCombo = args;		
+	}
+	
+	public String getCommandArgCombo() {		
+		return commandArgCombo;		
+	}
+	
+	public boolean isScanPrompting() {		
+		return scanPrompting;		
+	}		
+			
+	public void promptScanner(int num){		
+		scanNumToConnect = num;		
+		scanPrompting = true;		
+		setText("Select scanner type:" +		
+				"\nGATE" +		
+				"\nEYE" +		
+				"\nPAD" +		
+				"\n> ");		
 	}
 
 }
