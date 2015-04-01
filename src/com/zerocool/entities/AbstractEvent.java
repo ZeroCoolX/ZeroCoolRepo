@@ -3,7 +3,6 @@ package com.zerocool.entities;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import com.zerocool.services.SystemTime;
 
 public abstract class AbstractEvent {
@@ -108,15 +107,12 @@ public abstract class AbstractEvent {
 	 * @param participant - The Participant to add.
 	 * @throws IllegalArgumentException - The Participant is null.
 	 */
-	public void addParticipant(Participant participant) {
-		if (participant == null) {
-			throw new IllegalArgumentException("Participant can't be null.");
+	public void addParticipant(Participant participant) throws IllegalArgumentException {
+		if (participant == null || currentParticipants.contains(participant)) {
+			throw new IllegalArgumentException("Participant can't be null or in the queue already.");
 		}
 		
-		if (!currentParticipants.contains(participant)) {
-			currentParticipants.add(participant);
-		}
-		
+		currentParticipants.add(participant);
 		startingQueue.add(participant);
 	}
 
@@ -237,7 +233,7 @@ public abstract class AbstractEvent {
 	 * @param participant - The participant to start.
 	 * @throws IllegalStateException - If the starting queue is empty.
 	 */
-	protected void startParticipant(long startTime) {
+	protected void startParticipant(long startTime) throws IllegalStateException {
 		if (startingQueue.isEmpty()) {
 			throw new IllegalStateException("There are no Participants to start!");
 		}
@@ -255,7 +251,7 @@ public abstract class AbstractEvent {
 	 * @param setDnf - True to set 'Did Not Finish' else false.
 	 * @throws IllegalStateException - If the running queue is empty.
 	 */
-	protected void finishParticipant(long finishTime, boolean setDnf) {
+	protected void finishParticipant(long finishTime, boolean setDnf) throws IllegalStateException {
 		if (runningQueue.isEmpty()) {
 			throw new IllegalStateException("There are no Participants to finish!");
 		}
