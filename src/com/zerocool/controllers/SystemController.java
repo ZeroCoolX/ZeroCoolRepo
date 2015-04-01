@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.zerocool.controllers.TaskList.Task;
+import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
@@ -547,7 +548,17 @@ public class SystemController {
 	 * @throws FileNotFoundException 
 	 * **/
 	private void cmdExport(int exportId) {
-
+		AbstractEvent exportEvent = null;
+		for (AbstractEvent eve: currentTimer.getTotalEvents()) {
+			if(eve.getEventId() == exportId){
+				exportEvent = eve;
+			}
+		}
+		if(exportEvent == null){
+			System.err.println("ERROR: No event Id matching the given ID field");
+			return;
+		}
+			
 			try {
 
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -567,19 +578,19 @@ public class SystemController {
 				eventData.appendChild(timestamp);
 
 				Element eventName = doc.createElement("event_name");
-				eventName.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventName()));
+				eventName.appendChild(doc.createTextNode(""+exportEvent.getEventName()));
 				eventData.appendChild(eventName);	
 
 				Element eventId = doc.createElement("event_ID");
-				eventId.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+				eventId.appendChild(doc.createTextNode(""+exportEvent.getEventId()));
 				eventData.appendChild(eventId);
 
 				Element eventType = doc.createElement("event_type");
-				eventType.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getType()));
+				eventType.appendChild(doc.createTextNode(""+exportEvent.getType()));
 				eventData.appendChild(eventType);
 
 				Element eventTime = doc.createElement("event_time");
-				eventTime.appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getFormattedEventTime()));
+				eventTime.appendChild(doc.createTextNode(""+exportEvent.getFormattedEventTime()));
 				eventData.appendChild(eventTime);
 
 				//END event_data root child element
@@ -591,7 +602,6 @@ public class SystemController {
 				int i = 0;
 				ArrayList<Element> elements = new ArrayList<Element>();
 				for (Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()) {
-					if(p.getId() == exportId){
 						int k = i;
 
 						elements.add(doc.createElement("participant_event_ID_"+k));
@@ -611,7 +621,6 @@ public class SystemController {
 						parRun.appendChild(elements.get(i));
 					
 						++i;
-					}
 
 				}
 
@@ -646,6 +655,7 @@ public class SystemController {
 			} catch (TransformerException tfe) {
 				tfe.printStackTrace();
 			}	
+			
 	}
 
 	/**

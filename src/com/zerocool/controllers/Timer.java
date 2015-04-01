@@ -17,10 +17,12 @@ public class Timer {
 	private ArrayList<Participant> totalParticipants;
 	private SystemTime systemTime;
 	private AbstractEvent currentEvent;
+	private ArrayList<AbstractEvent> totalEvents;
 	
 	public Timer(SystemTime systemTime) {
 		this.systemTime = systemTime;
 		totalParticipants = new ArrayList<Participant>();
+		totalEvents = new ArrayList<AbstractEvent>();
 	}
 	
 	public Timer(SystemTime systemTime, EventType type, String eventName) {
@@ -143,6 +145,8 @@ public class Timer {
 		default:
 			throw new IllegalArgumentException("Invalid Event Type");
 		}
+		totalEvents.add(currentEvent);
+		System.out.println("added currentEvent to totalEvents: " + totalEvents.size());
 	}
 	
 	/**
@@ -185,6 +189,10 @@ public class Timer {
 	 */
 	public void addParticipantToStart(int participantId) {
 		addParticipantToStart("Aaron " + participantId, participantId);
+	}
+	
+	public ArrayList<AbstractEvent> getTotalEvents(){
+		return totalEvents;
 	}
 	
 	/**
