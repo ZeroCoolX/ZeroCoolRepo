@@ -547,7 +547,6 @@ public class SystemController {
 	 * @throws FileNotFoundException 
 	 * **/
 	private void cmdExport(int exportId) {
-		if (detector.driveConnected()) {
 
 			try {
 
@@ -626,7 +625,14 @@ public class SystemController {
 				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File("" + detector.getDrive() + "/" + currentTimer.getCurrentEvent().getEventName() + ".xml"));
+				String saveFilePath = "" + (detector.driveConnected() ? detector.getDrive() + "/" : "") + currentTimer.getCurrentEvent().getEventName() + ".xml";
+				if (detector.driveConnected()) {
+					System.out.println("Saving file to external device: " + saveFilePath);
+				} else {
+					//there isn't a usb drive to export to...throw error and gtfo.
+					System.err.println("NO USB DRIVE DETECTED\nSaving file locally to: " + saveFilePath);
+				}
+				StreamResult result = new StreamResult(new File(saveFilePath));
 
 				// Output to console for testing
 				// StreamResult result = new StreamResult(System.out);
@@ -640,10 +646,6 @@ public class SystemController {
 			} catch (TransformerException tfe) {
 				tfe.printStackTrace();
 			}	
-		} else {
-			//there isn't a usb drive to export to...throw error and gtfo.
-			System.err.println("NO USB DRIVE DETECTED");
-		}
 	}
 
 	/**
