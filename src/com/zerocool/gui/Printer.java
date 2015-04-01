@@ -51,6 +51,10 @@ public class Printer extends AbstractPanel {
 		view.setText("");
 	}
 	
+	public void printData(){
+		view.printData();
+	}
+	
 	private PowerButton powerButton;
 	private PrinterView view;
 	private LightScrollPane scrollPane;

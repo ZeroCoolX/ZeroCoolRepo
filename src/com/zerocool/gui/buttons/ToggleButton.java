@@ -44,12 +44,15 @@ public class ToggleButton extends AbstractButton {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String totalCommand = "";
 				if (type.equals(Type.CONNECT)) {
-					admin.executeCommand(admin.getSystemTime() + (on ? "\tDISC " : "\tCONN GATE ") + id, false);
+					totalCommand = admin.getSystemTime() + (on ? "\tDISC " : "\tCONN GATE ") + id;
+					admin.executeCommand(totalCommand, false);
 				} else if (type.equals(Type.ENABLE)) {
-					admin.executeCommand(admin.getSystemTime() + "\tTOGGLE " + id, false);
+					totalCommand = admin.getSystemTime() + "\tTOGGLE " + id;
+					admin.executeCommand(totalCommand, false);
 				}
-				
+				printer.addText(totalCommand);
 				//on = !on;
 				main.repaint();
 			}

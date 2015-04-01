@@ -100,7 +100,7 @@ public class Participant {
 	 */
 	public String getElapsedFormattedData() {
 		Record rec = this.getLastRecord();
-		return "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
+		return "   " + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}
 
 	/**

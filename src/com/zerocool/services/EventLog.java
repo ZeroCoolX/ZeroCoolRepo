@@ -64,7 +64,7 @@ public class EventLog {
 		try {
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(participantFile));
-			bw.write("Run\tBIB\tTime\n");
+			bw.write("Run   BIB   Time\n");
 			bw.write(participantData);
 			bw.close();
 			lastOutput = participantData;

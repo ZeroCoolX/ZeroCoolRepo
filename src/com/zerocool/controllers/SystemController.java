@@ -26,6 +26,7 @@ import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
+import com.zerocool.gui.Printer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
@@ -40,6 +41,7 @@ public class SystemController {
 	private Timer currentTimer;
 	private EventLog eventLog;
 	private AutoDetect detector;
+	private Printer printer;
 
 	private int id;
 
@@ -550,6 +552,7 @@ public class SystemController {
 	 * **/
 	private void cmdPrint() throws IOException {
 		System.out.println(eventLog.read());
+		printer.printData();
 	}
 
 	/**
@@ -700,7 +703,9 @@ public class SystemController {
 	 * Get the current time.
 	 * **/
 	private void cmdElapsed() {
-		System.out.println("\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n");
+		String elapsedText = "\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n";
+		System.out.println(elapsedText);
+		printer.addText(elapsedText);
 	}
 
 	/**
@@ -767,6 +772,7 @@ public class SystemController {
 		}
 		
 		channels[channel - 1].triggerSensor();
+		printer.addText(""+ (channel%2==0 ? "Finishing participant" : "Starting Participants..."));
 		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
@@ -902,6 +908,10 @@ public class SystemController {
 				}
 			}
 		}
+	}
+	
+	public void setPrinter(Printer printer){
+		this.printer = printer;
 	}
 
 	/**

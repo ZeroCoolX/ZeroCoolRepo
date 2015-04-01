@@ -43,6 +43,10 @@ public class PrinterView extends JTextArea {
 //		}
 	}
 	
+	public void printData(){
+		addText(admin.getEventLog().read());
+	}
+	
 	public void toggleEnabled(boolean enabled) {
 		setEnabled(enabled);
 		setBackground(enabled ? Main.BLEACHED_ALMOND : Main.BLACK);

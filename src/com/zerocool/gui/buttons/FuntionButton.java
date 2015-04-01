@@ -27,13 +27,12 @@ public class FuntionButton extends AbstractButton {
 				System.out.println(console.currentCommand());
 				String totalLine = (admin.getSystemTime() + "\t" + console.getView().getArgs());
 				//console.getView().setCommandArgCombo(" "+console.currentCommand());		
-				System.out.println("hello");
 				console.setCommandArgComboView();
 
 				if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 					printer.addText(totalLine);
 				}
-				admin.executeCommand(totalLine, false);//STILL NEED TO GET THE NUMBER CONCATENATED ONTO THE COMMMAND!!!!!
+				admin.executeCommand(totalLine, false);
 			}
 
 		});
