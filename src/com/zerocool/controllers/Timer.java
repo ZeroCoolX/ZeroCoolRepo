@@ -48,6 +48,7 @@ public class Timer {
 	 * 	the starting queue.
 	 */
 	public void triggered(int channel) {
+		System.out.println("triggered(channel): " + channel);
 		currentEvent.triggered(systemTime.getTime(), channel);
 	}
 	

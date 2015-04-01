@@ -34,6 +34,7 @@ public class Sensor {
 	}
 	
 	public void trigger() {
+		System.out.println("trigger()");
 		admin.getTimer().triggered(id + 1);
 		triggered = true;
 	}

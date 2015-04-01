@@ -16,9 +16,12 @@ public class Group extends AbstractEvent {
 	 */
 	@Override
 	public void triggered(long time, int channel) {
+		System.out.println("GRP triggered");
 		if (runningQueue.isEmpty()) {
+			System.out.println("start");
 			start(time);
 		} else {
+			System.out.println("finish");
 			finish(time);
 		}
 	}

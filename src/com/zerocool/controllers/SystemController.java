@@ -340,7 +340,7 @@ public class SystemController {
 				break;
 			case "EXPORT":
 				// stuff
-				cmdExport();
+				cmdExport(Integer.parseInt(args[0]));
 				break;
 			case "NUM":
 				// stuff
@@ -546,7 +546,7 @@ public class SystemController {
 	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected
 	 * @throws FileNotFoundException 
 	 * **/
-	private void cmdExport() {
+	private void cmdExport(int exportId) {
 		if (detector.driveConnected()) {
 
 			try {
@@ -592,25 +592,28 @@ public class SystemController {
 				int i = 0;
 				ArrayList<Element> elements = new ArrayList<Element>();
 				for (Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()) {
-					int k = i;
+					if(p.getId() == exportId){
+						int k = i;
 
-					elements.add(doc.createElement("participant_event_ID_"+k));
-					elements.get(i).appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
-					parRun.appendChild(elements.get(i));
+						elements.add(doc.createElement("participant_event_ID_"+k));
+						elements.get(i).appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
+						parRun.appendChild(elements.get(i));
 
-					++i;
+						++i;
 
-					elements.add(doc.createElement("participant_BIB_"+k));
-					elements.get(i).appendChild(doc.createTextNode(""+p.getId()));
-					parRun.appendChild(elements.get(i));
+						elements.add(doc.createElement("participant_BIB_"+k));
+						elements.get(i).appendChild(doc.createTextNode(""+p.getId()));
+						parRun.appendChild(elements.get(i));
 
-					++i;
+						++i;
 
-					elements.add(doc.createElement("participant_time_"+k));
-					elements.get(i).appendChild(doc.createTextNode(""+SystemTime.formatTime(p.getLastRecord().getElapsedTime())));
-					parRun.appendChild(elements.get(i));
+						elements.add(doc.createElement("participant_time_"+k));
+						elements.get(i).appendChild(doc.createTextNode(""+SystemTime.formatTime(p.getLastRecord().getElapsedTime())));
+						parRun.appendChild(elements.get(i));
+					
+						++i;
+					}
 
-					++i;
 				}
 
 				//END participant_run root child element

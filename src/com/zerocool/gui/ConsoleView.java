@@ -63,7 +63,6 @@ public class ConsoleView extends JTextArea {
 			@Override		
 			public void focusGained(FocusEvent e) {		
 				if(!scanPrompting){		
-					System.out.println("hey");
 				setText("");		
 				}		
 			}		
@@ -81,7 +80,7 @@ public class ConsoleView extends JTextArea {
 				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
 					String text = (getTime() + "\t" + getText().trim().toUpperCase());
 					admin.executeCommand(text, false);
-					setText(">"+text);		
+					setText(">"+text+" ");		
 					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
 						printer.addText(text);
 					}

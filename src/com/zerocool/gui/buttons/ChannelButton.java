@@ -56,6 +56,7 @@ public class ChannelButton extends AbstractButton {
 					} else if(admin.getTimer().getCurrentEvent().getStartingQueue().isEmpty() && id % 2 != 0) {
 						console.setNewText("Participant starting queue empty...");
 					} else {
+						System.out.println("trigging");
 						admin.executeCommand(admin.getSystemTime() + "\tTRIG " + id, false);
 					}
 				}

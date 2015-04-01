@@ -45,7 +45,7 @@ public class ArrowPanel extends AbstractPanel {
 			public void actionPerformed(ActionEvent arg0) {
 			  console.prevCommand();
 				System.out.println(">"+console.getView());
-				console.getView().setCommandArgCombo(""+console.currentCommand());		
+				console.getView().setCommandArgCombo(""+console.currentCommand()+" ");		
 				console.setCommandArgComboView();
 			}
 			
@@ -59,7 +59,7 @@ public class ArrowPanel extends AbstractPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				console.nextCommand();
 				System.out.println(">"+console.getView());
-				console.getView().setCommandArgCombo(""+console.currentCommand());		
+				console.getView().setCommandArgCombo(""+console.currentCommand()+" ");		
 				console.setCommandArgComboView();
 			}
 			

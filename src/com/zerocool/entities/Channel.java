@@ -72,6 +72,7 @@ public class Channel {
 	 * Triggers the current sensor if there is one.
 	 */
 	public boolean triggerSensor() {
+		System.out.println("triggering sensor");
 		if (currentSensor != null && isActive) {
 			currentSensor.trigger();
 			return true;
