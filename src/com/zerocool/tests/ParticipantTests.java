@@ -103,9 +103,33 @@ public class ParticipantTests {
 	
 	@Test
 	public void testGetFormattedData_NoRecord() {
-		exception.expect(IllegalArgumentException.class);
+		participant1.getFormattedData()
 	}
 
+	@Test
+	public void testGetRecordIntNoRecord() {
+		exception.expect(IllegalArgumentException.class);
+		participant1.getRecord(-1);
+	}
+	
+	@Test
+	public void testGetLastRecordNoRecord() {
+		exception.expect(IllegalArgumentException.class);
+		participant2.getLastRecord();
+		participant1.getLastRecord();
+	}
+	
+	@Test
+	public void testGetRecordByEventIdNoEvent() {
+		assertNull(participant1.getRecordByEventId(10));
+		assertNull(participant2.getRecordByEventId(-1000));
+	}
+	
+	@Test
+	public void testGetRecordByEventId() {
+		
+	}
+	
 	@Test
 	public void testGetId() {
 		assertEquals(1, participant1.getId());

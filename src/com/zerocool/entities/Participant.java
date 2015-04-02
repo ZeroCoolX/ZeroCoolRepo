@@ -10,14 +10,6 @@ import com.zerocool.services.SystemTime;
  * This class is the representation of a 
  * {@link #Participant} in any timed Event
  */
-/**
- * @author adampermann
- *
- */
-/**
- * @author adampermann
- *
- */
 public class Participant {
 	
 	private String name;
