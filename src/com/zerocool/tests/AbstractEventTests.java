@@ -35,6 +35,7 @@ public class AbstractEventTests {
 	@After
 	public void tearDown() throws Exception {
 		time = null;
+		event.resetEventId();
 		event = null;
 	}
 
@@ -114,6 +115,7 @@ public class AbstractEventTests {
 
 	@Test
 	public void testGetType() {
+		event.setName("f");
 		assertEquals(EventType.IND, event.getType());
 	}
 
