@@ -437,9 +437,12 @@ public class SystemController {
 	 * Goes through the rest of participants running (AKA those who've not finished) and finishes them with DNF
 	 * */
 	private void cmdEndRun(){
+		System.out.println("ending run");
 		while(!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()){
+			System.out.println("setting dnf");
 			currentTimer.setDnf();
 		}
+		System.out.println("ending things");
 	}
 	
 	/**
@@ -773,7 +776,10 @@ public class SystemController {
 		
 		channels[channel - 1].triggerSensor();
 		printer.addText(""+ (channel%2==0 ? "Finishing participant" : "Starting Participants..."));
-		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
+		/*if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
+			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
+		}*/
+		if (channel%2==0) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
