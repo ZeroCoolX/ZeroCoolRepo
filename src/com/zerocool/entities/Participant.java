@@ -10,6 +10,14 @@ import com.zerocool.services.SystemTime;
  * This class is the representation of a 
  * {@link #Participant} in any timed Event
  */
+/**
+ * @author adampermann
+ *
+ */
+/**
+ * @author adampermann
+ *
+ */
 public class Participant {
 	
 	private String name;
@@ -69,12 +77,29 @@ public class Participant {
 	 * @throws IllegalArgumentException - If recordNum is below 0 or greater than
 	 * 	the number of records.
 	 */
-	public Record getRecord(int recordNum) {
+	public Record getRecord(int recordNum) throws IllegalArgumentException {
 		if (recordNum < 0 || recordNum >= records.size()) {
 			throw new IllegalArgumentException("There is no record at " + recordNum + ".");
 		}
 		
 		return records.isEmpty() ? null : records.get(recordNum);
+	}
+	
+	
+	/**
+	 * Returns the {@link #Record} with the event id passed in if it exists.
+	 * Otherwise returns null
+	 * @param eventId
+	 * @return Record or null
+	 */
+	public Record getRecordByEventId(int eventId) {
+		for (Record r : records) {
+			if (r.getEventId() == eventId) {
+				return r;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**

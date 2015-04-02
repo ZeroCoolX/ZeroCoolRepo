@@ -36,10 +36,28 @@ public class IndividualTests {
 		startChannel = new Channel(admin, null, 1);
 		finishChannel = new Channel(admin, null, 2);
 		participants = new LinkedList<Participant>();
+		for (int i = 1; i < 5; ++i) {
+			Participant p = new Participant("Name" + i, i);
+			p.createNewRecord(event.getEventName(), event.getEventId());
+			participants.add(p);
+			event.addParticipant(p);
+		}
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		participants.clear();
+		event.newRun();
+	}
+	
+	@Test
+	public void testNewRunEmptyEvent() {
+		
+	}
+	
+	@Test
+	public void testNewRun() {
+		
 	}
 
 	@Test
@@ -52,40 +70,63 @@ public class IndividualTests {
 	
 	@Test
 	public void testTriggeredStart() {
+		long curTime = time.getTime();
 		
+		for (int i = 0; i < participants.size(); ++i) {
+			event.triggered(curTime, startChannel.getId());
+		}
+		
+		for (Participant p : participants) {
+			assertTrue(p.getIsCompeting());
+			assertEquals(curTime, p.getRecordByEventId(event.getEventId()).getStartTime());
+		}
+		
+		assertEquals(4, event.getRunningQueue().size());
 	}
 	
 	@Test
 	public void testTriggeredFinsih() {
+		long curTime = time.getTime();
+		long timeToFin = 100000;
+		long total = curTime + timeToFin;
+		long elapsed = total - curTime;
 		
+		for (int i = 0; i < participants.size(); ++i) {
+			event.triggered(curTime, startChannel.getId());
+			event.triggered(total, finishChannel.getId());
+		}
+		
+		for (Participant p : participants) {
+			assertFalse(p.getIsCompeting());
+			assertEquals(total, p.getRecordByEventId(event.getEventId()).getFinishTime());
+			assertEquals(elapsed, p.getRecordByEventId(event.getEventId()).getElapsedTime());
+		}
+		
+		assertEquals(4, event.getFinishedQueue().size());
 	}
 	
 	@Test
 	public void testTriggeredEmptyStartingQueue() {
-		assertEquals(0, event.getStartingQueue());
+		// reset to new run
+		event.newRun();
+		
+		assertEquals(0, event.getStartingQueue().size());
 		exception.expect(IllegalStateException.class);
 		event.triggered(time.getTime(), startChannel.getId());
 	}
 	
 	@Test
 	public void testTriggeredEmptyRunningQueue() {
-		assertEquals(0, event.getRunningQueue());
+		assertEquals(0, event.getRunningQueue().size());
 		exception.expect(IllegalStateException.class);
 		event.triggered(time.getTime(), finishChannel.getId());
 	}
 
 	@Test
-	public void testSetDnf() {
-		for (int i = 1; i < 5; ++i) {
-			Participant p = new Participant("Name" + i, i);
-			p.createNewRecord(event.getEventName(), event.getEventId());
-			participants.add(p);
-			event.addParticipant(p);
-		}
-		
-		for (Participant p : participants) {
+	public void testSetDnf() {	
+		for (int i = 0; i < participants.size(); ++i) {
 			long curTime = time.getTime();
-			event.triggered(time.getTime(), startChannel.getId());
+			event.triggered(curTime, startChannel.getId());
 			event.setDnf(curTime);
 		}
 		
@@ -102,11 +143,26 @@ public class IndividualTests {
 	
 	@Test
 	public void testGetRunningQueue() {
-		fail("Not yet implemented");
+		long curTime = time.getTime();
+		Participant p = new Participant("Extra one", 11);
+		p.createNewRecord();
+		participants.add(p);
+		event.addParticipant(p);
+		
+		for (int i = 0; i < participants.size(); ++i) {
+			event.triggered(curTime, startChannel.getId());
+		}
+		
+		assertEquals(5, event.getRunningQueue().size());
 	}
 
 	@Test
 	public void testGetFinishedQueue() {
-		fail("Not yet implemented");
+		for (int i = 0; i < participants.size(); ++i) {
+			event.triggered(time.getTime(), startChannel.getId());
+			event.triggered(time.getTime(), finishChannel.getId());
+		}
+		
+		assertEquals(4, event.getFinishedQueue().size());
 	}
 }
