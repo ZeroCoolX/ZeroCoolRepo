@@ -140,6 +140,11 @@ public abstract class AbstractEvent {
 		startingQueue = newStartingQueue;
 	}
 	
+	/**
+	 * Creates a new run for this event
+	 * by emptying the event queues and current participants
+	 * to make room for the next batch of participants.
+	 */
 	public void newRun(){
 		currentParticipants = new ArrayList<Participant>();
 		startingQueue = new LinkedList<Participant>();
