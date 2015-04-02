@@ -11,17 +11,18 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.zerocool.entities.AbstractEvent;
+import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Individual;
 import com.zerocool.entities.Participant;
 import com.zerocool.services.SystemTime;
 
 public class AbstractEventTests {
 
-	AbstractEvent event;
-	SystemTime time;
+	private AbstractEvent event;
+	private SystemTime time;
 	
 	@Rule
-	ExpectedException exception = ExpectedException.none();
+	public ExpectedException exception = ExpectedException.none();
 	
 	@Before
 	public void setUp() throws Exception {
@@ -34,13 +35,8 @@ public class AbstractEventTests {
 	@After
 	public void tearDown() throws Exception {
 		time = null;
-		event = null;
-	}
-
-	@Test
-	public void testResetEventId() {
 		event.resetEventId();
-		assertEquals(0, event.getEventId());
+		event = null;
 	}
 
 	@Test
@@ -119,17 +115,23 @@ public class AbstractEventTests {
 
 	@Test
 	public void testGetType() {
-		fail("Not yet implemented");
+		event.setName("f");
+		assertEquals(EventType.IND, event.getType());
 	}
 
 	@Test
 	public void testGetEventTime() {
-		fail("Not yet implemented");
+		long currentTime = time.getTime();
+		event.setEventTime(currentTime);
+		assertEquals(currentTime, event.getEventTime());
 	}
 
 	@Test
 	public void testGetFormattedEventTime() {
-		fail("Not yet implemented");
+		long currentTime = time.getTime();
+		event.setEventTime(currentTime);
+		String formatTime = SystemTime.formatTime(currentTime);
+		assertEquals(formatTime, event.getFormattedEventTime());
 	}
 
 	@Test
@@ -138,8 +140,32 @@ public class AbstractEventTests {
 	}
 
 	@Test
+	public void testNewRun() {
+		event.newRun();
+		assertEquals(0, event.getCurrentParticipants().size());
+		assertEquals(0, event.getStartingQueue().size());
+		assertEquals(0, event.getRunningQueue().size());
+		assertEquals(0, event.getFinishedQueue().size());
+	}
+	
+	@Test
 	public void testGetCurrentParticipants() {
-		fail("Not yet implemented");
+		Participant number1 = new Participant("One",1);
+		Participant number2 = new Participant("two",2);
+		Participant number3 = new Participant("three",3);
+		Participant number4 = new Participant("Four", 4);
+		
+		ArrayList<Participant> participants = new ArrayList<Participant>();
+		participants.add(number1);
+		participants.add(number2);
+		participants.add(number3);
+		participants.add(number4);
+		
+		for (Participant p: participants) {
+			event.addParticipant(p);
+		}
+		
+		assertEquals(4, event.getCurrentParticipants().size());
 	}
 
 	@Test
@@ -163,34 +189,24 @@ public class AbstractEventTests {
 	}
 
 	@Test
-	public void testGetRunningQueue() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetFinishedQueue() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testGetFormattedData() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testStartParticipant() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testFinishParticipant() {
-		fail("Not yet implemented");
+		String expected = event.getEventName() + "\n" + event.getEventId() + " " 
+						+ event.getType() + " " + SystemTime.formatTime(event.getEventTime()) + "\n";
+		
+		assertEquals(expected, event.getFormattedData());
 	}
 
 	@Test
 	public void testExit() {
 		event.exit();
-		
+		assertEquals(-1, event.getEventTime());
+		assertEquals(-1, event.getEventId());
+		assertNull(event.getCurrentParticipants());
+		assertNull(event.getStartingQueue());
+		assertNull(event.getFinishedQueue());
+		assertNull(event.getFinishedQueue());
+		assertNull(event.getType());
+		assertNull(event.getEventName());
 	}
 
 }
