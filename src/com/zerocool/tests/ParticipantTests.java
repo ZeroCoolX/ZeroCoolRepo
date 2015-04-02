@@ -103,7 +103,8 @@ public class ParticipantTests {
 	
 	@Test
 	public void testGetFormattedData_NoRecord() {
-		participant1.getFormattedData()
+		exception.expect(IllegalArgumentException.class);
+		participant1.getFormattedData();
 	}
 
 	@Test
