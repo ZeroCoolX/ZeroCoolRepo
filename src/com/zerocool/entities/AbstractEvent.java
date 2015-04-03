@@ -8,7 +8,7 @@ import com.zerocool.services.SystemTime;
 public abstract class AbstractEvent {
 
 	// First event will be 1, 2... so on.
-	protected static int LASTID;
+	protected static int LASTID = 0;
 
 	// just doing this for a test
 	// type of this event
