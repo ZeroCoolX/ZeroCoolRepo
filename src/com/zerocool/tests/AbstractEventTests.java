@@ -103,7 +103,6 @@ public class AbstractEventTests {
 		
 		// All participants should be in the new start queue
 		assertEquals(3, event.getStartingQueue().size());
-		
 	}
 
 	@Test

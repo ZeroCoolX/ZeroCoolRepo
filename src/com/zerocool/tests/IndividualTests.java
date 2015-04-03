@@ -53,12 +53,18 @@ public class IndividualTests {
 	
 	@Test
 	public void testNewRunEmptyEvent() {
-		
+		event.newRun();
 	}
 	
 	@Test
 	public void testNewRun() {
+		assertEquals(4, event.getCurrentParticipants().size());
+		assertEquals(4, event.getStartingQueue().size());
 		
+		event.newRun();
+		
+		assertEquals(0, event.getCurrentParticipants().size());
+		assertEquals(0, event.getStartingQueue().size());
 	}
 
 	@Test
