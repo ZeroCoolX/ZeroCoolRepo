@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Individual;
 import com.zerocool.entities.Participant;
@@ -66,6 +67,7 @@ public class IndividualTests {
 		event = new Individual("Some Event", eventTime);
 		assertEquals(eventTime, event.getEventTime());
 		assertEquals("Some Event", event.getEventName());
+		assertEquals(EventType.IND, event.getType());
 	}
 	
 	@Test
