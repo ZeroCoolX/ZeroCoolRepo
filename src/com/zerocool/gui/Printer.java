@@ -43,10 +43,6 @@ public class Printer extends AbstractPanel {
 		view.toggleEnabled(enabled);
 	}
 	
-	public void addText(String text) {
-		view.addText(text);
-	}
-	
 	public void clearScreen() {
 		view.setText("");
 	}

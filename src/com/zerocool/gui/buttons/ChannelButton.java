@@ -58,7 +58,6 @@ public class ChannelButton extends AbstractButton {
 					} else {
 						System.out.println("trigging");
 						String totalCommand = admin.getSystemTime() + "\tTRIG " + id;
-						printer.addText(totalCommand);
 						admin.executeCommand(totalCommand, false);
 					}
 				}

@@ -56,7 +56,6 @@ public class Main extends JFrame implements Observer {
 	private void createContents() {
 		admin = new SystemController();
 		printer = new Printer(this, admin, console, null, null, GAINSBORO);
-		admin.setPrinter(printer);
 		console = new Console(this, admin, null, printer, null, GAINSBORO);
 		channels = new ChannelGroup(this, admin, console, printer);
 		

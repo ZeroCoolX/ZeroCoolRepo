@@ -26,7 +26,6 @@ import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
-import com.zerocool.gui.Printer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 
@@ -41,7 +40,7 @@ public class SystemController {
 	private Timer currentTimer;
 	private EventLog eventLog;
 	private AutoDetect detector;
-	private Printer printer;
+	private TaskList.Task lastTask;
 
 	private int id;
 
@@ -216,6 +215,7 @@ public class SystemController {
 	public String executeCommand(String arguments, boolean doWait) {
 		String command = null;		
 		taskList.addTask(arguments);
+		lastTask = taskList.peekNextTask();
 		if (!taskList.isEmpty()) {
 			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { };
 
@@ -555,7 +555,7 @@ public class SystemController {
 	 * **/
 	private void cmdPrint() throws IOException {
 		System.out.println(eventLog.read());
-		printer.printData();
+		//printer.printData();
 	}
 
 	/**
@@ -708,7 +708,7 @@ public class SystemController {
 	private void cmdElapsed() {
 		String elapsedText = "\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n";
 		System.out.println(elapsedText);
-		printer.addText(elapsedText);
+		//printer.addText(elapsedText);
 	}
 
 	/**
@@ -775,7 +775,7 @@ public class SystemController {
 		}
 		
 		channels[channel - 1].triggerSensor();
-		printer.addText(""+ (channel%2==0 ? "Finishing participant" : "Starting Participants..."));
+		//printer.addText(""+ (channel%2==0 ? "Finishing participant" : "Starting Participants..."));
 		/*if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}*/
@@ -866,6 +866,10 @@ public class SystemController {
 	public String[] getCommandList(boolean useExtendedList) {
 		return taskList.getCommandList(useExtendedList);
 	}
+	
+	public TaskList.Task getLastTask() {
+		return lastTask;
+	}
 
 	/**
 	 * Get's the system's current ID.
@@ -903,21 +907,6 @@ public class SystemController {
 		for (Observer o : observers) {
 			o.update();
 		}
-	}
-
-	private void updateChannels() {
-		if (channels != null) {
-			for (Channel c : channels) {
-				if (c.getSensorTrigger()) {
-					c.resetSensorTrigger();
-					currentTimer.triggered(c.getId() + 1);
-				}
-			}
-		}
-	}
-	
-	public void setPrinter(Printer printer){
-		this.printer = printer;
 	}
 
 	/**

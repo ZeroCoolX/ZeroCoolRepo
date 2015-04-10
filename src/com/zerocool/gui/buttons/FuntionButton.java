@@ -29,9 +29,6 @@ public class FuntionButton extends AbstractButton {
 				//console.getView().setCommandArgCombo(" "+console.currentCommand());		
 				console.setCommandArgComboView();
 
-				if (admin.getIsPrinterOn()) {//meaning the printer is turned on
-					printer.addText(totalLine);
-				}
 				admin.executeCommand(totalLine, false);
 			}
 

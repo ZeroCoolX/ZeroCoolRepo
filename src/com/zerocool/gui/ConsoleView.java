@@ -2,10 +2,6 @@ package com.zerocool.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JTextArea;
@@ -52,57 +48,18 @@ public class ConsoleView extends JTextArea {
 
 	private void setPrefs() {
 		setLineWrap(true);
-		//	setEditable(false);
+		setEditable(false);
 		setFont(new Font("Tahoma", Font.CENTER_BASELINE, 11));
 		setBackground(Main.DARK_SLATE_GREEN);
 		setForeground(Color.WHITE);
 		setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY, 2), new EmptyBorder(15, 15, 15, 15)));
-		// TEMPORARY! =OOOOOOOOOOO
-		addFocusListener(new FocusListener() {
-
-			@Override		
-			public void focusGained(FocusEvent e) {		
-				if(!scanPrompting){		
-				setText("");		
-				}		
-			}		
-			 		 
-			@Override
-			public void focusLost(FocusEvent e) {	
-			// do nothing
-			}
-
-		});
-		addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyPressed(KeyEvent key) {
-				if (key.getKeyCode() == KeyEvent.VK_ENTER) {
-					String text = (getTime() + "\t" + getText().trim().toUpperCase());
-					admin.executeCommand(text, false);
-					setText(">"+text+" ");		
-					if (admin.getIsPrinterOn()) {//meaning the printer is turned on
-						printer.addText(text);
-					}
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// do nothing
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				// do nothing
-			}
-
-		});
 	}
 
 	public void update() {
 		// TODO things
-		setText(getView(true));
+		if (isEnabled()) {
+			setText(getView(true));
+		}
 	}
 	
 	public String getTime() {
@@ -166,13 +123,13 @@ public class ConsoleView extends JTextArea {
 		String text = getTime();
 
 		if (waiting.isEmpty() && running.isEmpty() && finished.isEmpty()) {
-			text += ">" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
+			text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 		} else {
 			int line = 0;
 			for (Participant par : waiting) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -183,7 +140,7 @@ public class ConsoleView extends JTextArea {
 			for (Participant par : running) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;
@@ -194,7 +151,7 @@ public class ConsoleView extends JTextArea {
 			for (Participant par : finished) {
 				text += par.print();
 				if (line == currentLine) {
-					text += " >" +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
+					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
 				}
 				text += "\n";
 				line++;

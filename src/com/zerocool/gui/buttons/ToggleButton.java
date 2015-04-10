@@ -52,7 +52,6 @@ public class ToggleButton extends AbstractButton {
 					totalCommand = admin.getSystemTime() + "\tTOGGLE " + id;
 					admin.executeCommand(totalCommand, false);
 				}
-				printer.addText(totalCommand);
 				//on = !on;
 				main.repaint();
 			}

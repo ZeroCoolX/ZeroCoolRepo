@@ -33,16 +33,16 @@ public class TaskList {
 		 * @param arguments - The string of arguments entered.
 		 */
 		public Task(ArrayList<String> arguments) {
-			time = "" + arguments.get(0) + ":" + arguments.get(1) + ":" + arguments.get(2) + "." + arguments.get(3) + "00";
+			time = "" + arguments.get(0) + ":" + arguments.get(1) + ":" + arguments.get(2) + "." + arguments.get(3);
 			command = arguments.get(4);
 			
 			if (command.equals("TIME")) {
 				argumentOne = arguments.get(5) + ":" + arguments.get(6) + ":" + arguments.get(7) + "." + (arguments.size() >= 9 ? arguments.get(8) + "00" : "000");
 			} else {
-				argumentOne = arguments.size() >= 6 ? arguments.get(5) : null;
+				argumentOne = arguments.size() >= 6 ? arguments.get(5) : "";
 			}
 			
-			argumentTwo = arguments.size() >= 7 ? arguments.get(6) : null;
+			argumentTwo = arguments.size() >= 7 ? arguments.get(6) : "";
 		}
 		
 		/**

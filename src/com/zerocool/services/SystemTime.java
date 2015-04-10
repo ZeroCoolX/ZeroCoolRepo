@@ -49,7 +49,7 @@ public class SystemTime extends StopWatch {
 	 */
 	public static long getTimeInMillis(String formattedTime) {
 		String[] split = formattedTime.split("[:.]");
-		return SystemTime.getTimeInMillis(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])) + Integer.parseInt(split[3]);
+		return getTimeInMillis(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])) + Integer.parseInt(split[3]);
 	}
 	
 	/**
