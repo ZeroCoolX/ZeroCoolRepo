@@ -2,6 +2,7 @@ package com.zerocool.gui.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
@@ -29,7 +30,11 @@ public class FuntionButton extends AbstractButton {
 				//console.getView().setCommandArgCombo(" "+console.currentCommand());		
 				console.setCommandArgComboView();
 
-				admin.executeCommand(totalLine, false);
+				try {
+					admin.executeCommand(totalLine, false);
+				} catch (IllegalArgumentException|IOException exception) {
+					console.printErrorMessage(exception.getMessage());
+				}
 			}
 
 		});

@@ -198,8 +198,10 @@ public class SystemController {
 	 * Executes a command.
 	 * @param arguments - The String to parse and execute.
 	 * @return - True if executed else false.
+	 * @throws IOException 
+	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments) {
+	public String executeCommand(String arguments) throws IllegalArgumentException, IOException {
 		return executeCommand(arguments, true);
 	}
 
@@ -211,8 +213,10 @@ public class SystemController {
 	 * @param arguments - The command to execute.
 	 * @param doWait - True for timed executing else false.
 	 * @return - The command executed.  Null if command was invalid.
+	 * @throws IOException 
+	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments, boolean doWait) {
+	public String executeCommand(String arguments, boolean doWait) throws IllegalArgumentException, IOException {
 		String command = null;		
 		taskList.addTask(arguments);
 		lastTask = taskList.peekNextTask();
@@ -221,12 +225,8 @@ public class SystemController {
 
 			Task t = taskList.pollNextTask();
 			command = t.getTaskCommand();
-			try {
-				System.out.println("executing");
-				executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			System.out.println("executing");
+			executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
 		}
 		return command;
 	}
@@ -271,9 +271,10 @@ public class SystemController {
 	 *            Using these known assumptions about the format of the file is
 	 *            the reason for specific indecies being used in each individual
 	 *            case statement body.
+	 * @throws IllegalArgumentException, IOException 
 	 * 
 	 */
-	public void executeCommand(String cmd, String ...args) {
+	public void executeCommand(String cmd, String ...args) throws IllegalArgumentException, IOException {
 		try {
 			switch (cmd) {
 			case "ON":
@@ -383,9 +384,10 @@ public class SystemController {
 				cmdCancel();
 				break;
 			}
-		} catch (Exception e) {
+		} catch (IllegalArgumentException|IOException e) {
 			e.printStackTrace();
 			System.err.println("Command " + cmd + " " + Arrays.toString(args) + " not executed because it was not the right format!");
+			throw e;
 		}
 	}
 
@@ -504,7 +506,7 @@ public class SystemController {
 	 * **/
 	private void cmdTog(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8");
 		}
 		
 		channels[channel - 1].setState(!channels[channel - 1].getState());
@@ -525,7 +527,7 @@ public class SystemController {
 	 * **/
 	private void cmdConn(String sensorType, int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Sensor cannot connect. Invalid channel number, channels are 1-8.");
 		}
 		System.out.println("adding channel: " + (channel-1));
 		channels[channel - 1].addSensor(sensorType);
@@ -542,7 +544,7 @@ public class SystemController {
 	 */
 	private void cmdDisc(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8");
 		}
 		
 		channels[channel - 1].disconnectSensor();
@@ -771,7 +773,7 @@ public class SystemController {
 
 	private void cmdTrig(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8");
 		}
 		
 		channels[channel - 1].triggerSensor();

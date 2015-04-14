@@ -51,6 +51,10 @@ public class Printer extends AbstractPanel {
 		view.printData();
 	}
 	
+	public void printInvalidCommandErrorMessage(String error) {
+		view.printError(error);
+	}
+	
 	private PowerButton powerButton;
 	private PrinterView view;
 	private LightScrollPane scrollPane;

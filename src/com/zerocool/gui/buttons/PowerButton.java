@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
@@ -38,7 +39,13 @@ public class PowerButton extends AbstractButton {
 			public void actionPerformed(ActionEvent e) {
 				if (type.equals(Type.Main)) {
 					main.toggleEnabled(!on);
-					admin.executeCommand(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON", false);
+					
+					try {
+						admin.executeCommand(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON", false);
+					} catch (IllegalArgumentException|IOException exception) {
+						console.printErrorMessage(exception.getMessage());
+					}
+					
 					printer.clearScreen();
 					
 					on = !on;

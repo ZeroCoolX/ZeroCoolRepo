@@ -92,6 +92,10 @@ public class Console extends AbstractPanel {
 		view.promptScanner(num);		
 	}
 	
+	public void printErrorMessage(String error) {
+		printer.printInvalidCommandErrorMessage(error);
+	}
+	
 	private ConsoleView view;
 	private LightScrollPane scrollPane;
 	private JLabel description;

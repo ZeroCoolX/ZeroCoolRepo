@@ -49,7 +49,11 @@ public class PrinterView extends JTextArea {
 			}
 		}
 	}
-
+	
+	public void printError(String error) {
+		addText(error);
+	}
+	
 	public void printData() {
 		addText(admin.getEventLog().read());
 	}
