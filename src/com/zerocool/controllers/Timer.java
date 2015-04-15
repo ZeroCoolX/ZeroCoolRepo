@@ -212,8 +212,8 @@ public class Timer {
 		addParticipantToStart(par);
 	}
 	
-	public void createNewRun(){
-		//
+	public void createNewRun() {
+		currentEvent.newRun();
 	}
 	
 	/**
