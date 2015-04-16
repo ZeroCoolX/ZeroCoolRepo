@@ -21,24 +21,21 @@ public class ConsoleView extends JTextArea {
 	private ArrayList<Participant> finished;
 	private String[] cmds;
 	private SystemController admin;
-	private Printer printer;
 
 	private int index;
 	private int currentLine;
 	
 	private String commandArgCombo = "";	
 	
-	private static boolean scanPrompting = false;		
-	private int scanNumToConnect = 0;
+	private static boolean scanPrompting = false;
 
 	private String args = "";
 
-	public ConsoleView(SystemController admin, Printer printer) {
+	public ConsoleView(SystemController admin) {
 		waiting = new ArrayList<Participant>();
 		running = new ArrayList<Participant>();
 		finished = new ArrayList<Participant>();
 		this.admin = admin;
-		this.printer = printer;
 		//boolean parameter indicates if the extended command list should be used or not. 
 		//The NON extended list has cammands like: EVENT, CONN...etc  The extended list has commands like EVENT IND, EVENT PARIND, EVENT GRP, EVENT PARGRP, CONN GATE, CONN EYE...etc
 		cmds = admin.getCommandList(true);
@@ -207,8 +204,7 @@ public class ConsoleView extends JTextArea {
 		return scanPrompting;		
 	}		
 			
-	public void promptScanner(int num){		
-		scanNumToConnect = num;		
+	public void promptScanner(int num) {	
 		scanPrompting = true;		
 		setText("Select scanner type:" +		
 				"\nGATE" +		

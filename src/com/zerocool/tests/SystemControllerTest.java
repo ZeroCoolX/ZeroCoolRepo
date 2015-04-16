@@ -14,8 +14,6 @@ import org.junit.Test;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.controllers.TaskList.Task;
-import com.zerocool.entities.AbstractEvent;
-import com.zerocool.entities.Channel;
 import com.zerocool.entities.Participant;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Sensor.SensorType;
@@ -45,7 +43,6 @@ public class SystemControllerTest {
 		assertNotNull(sysCont.getEventLog());
 		assertNotNull(sysCont.getTimer());
 		assertNotNull(sysCont.getSystemTime());
-		assertEquals(0, sysCont.getId());
 		System.out.println("\t-------Successfully tested SystemController()-------\n");
 	}
 	

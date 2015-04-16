@@ -24,9 +24,8 @@ public class Console extends AbstractPanel {
 
 	@Override
 	protected void createContents() {
-		view = new ConsoleView(admin, printer);
+		view = new ConsoleView(admin);
 		
-		view = new ConsoleView(admin, printer);
 		scrollPane = new LightScrollPane(view, 225, 225);
 
 		add(scrollPane, "cell 0 0");
@@ -90,6 +89,10 @@ public class Console extends AbstractPanel {
 					
 	public void promptScanner(int num){		
 		view.promptScanner(num);		
+	}
+	
+	public void printErrorMessage(String error) {
+		printer.printInvalidCommandErrorMessage(error);
 	}
 	
 	private ConsoleView view;

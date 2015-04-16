@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 
@@ -58,7 +59,12 @@ public class ChannelButton extends AbstractButton {
 					} else {
 						System.out.println("trigging");
 						String totalCommand = admin.getSystemTime() + "\tTRIG " + id;
-						admin.executeCommand(totalCommand, false);
+					
+						try {
+							admin.executeCommand(totalCommand, false);
+						} catch (IllegalArgumentException|IOException exception) {
+							console.printErrorMessage(exception.getMessage());
+						}
 					}
 				}
 			}

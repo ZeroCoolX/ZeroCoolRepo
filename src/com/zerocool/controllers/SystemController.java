@@ -42,8 +42,6 @@ public class SystemController {
 	private AutoDetect detector;
 	private TaskList.Task lastTask;
 
-	private int id;
-
 	private boolean isPrinterOn;
 	private boolean running;
 
@@ -60,8 +58,6 @@ public class SystemController {
 
 		detector = new AutoDetect();
 
-		id = 0;
-
 		systemTime.start();
 		observers = new ArrayList<Observer>();
 
@@ -69,29 +65,10 @@ public class SystemController {
 		run();
 	}
 
-	public SystemController(int id) {
-		this();
-		this.id = id;
-	}
-
-	public SystemController(Timer currentTimer, int id) {
-		this(id);
-		this.currentTimer = currentTimer;
-	}
-
-	public SystemController(Timer currentTimer, EventLog eventLog, int id) {
-		this(currentTimer, id);
-		this.eventLog = eventLog;
-	}
-
-	public SystemController(Timer currentTimer, EventLog eventLog, Channel[] channels, int id) {
-		this(currentTimer, eventLog, id);
-		if (channels.length != 8) {
-			throw new IllegalArgumentException("Need to only have 8 channels not " + channels.length + "!");
-		}
-		this.channels = channels;
-	}
-
+	/**
+	 * Internal Thread that runs the System.  It checks the TaskList for any new commands to execute,
+	 * executes the next command if there is one, then updates all the observers.  Sleeps for 1 millisecond.
+	 */
 	private void run() {
 		Thread t = new Thread(new Runnable() {
 
@@ -101,8 +78,7 @@ public class SystemController {
 					try {
 						Thread.sleep(1);
 					} catch (Exception e) { e.printStackTrace(); };
-
-				//	updateChannels();
+					// TODO Add the correct functionality to this.
 					updateObservers();
 				}
 			}
@@ -143,7 +119,66 @@ public class SystemController {
 		taskList.addTask(file);
 	}
 
-
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
+	 * This method returns the TaskList of the SystemController.  This is very dangerous and
+	 * should only be used for testing the SystemController.
+	 * @return The TaskList.
+	 */
+	public TaskList getTaskList() {
+		return taskList;
+	}
+	
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
+	 * This method returns the current Timer.  This should only be used for testing.
+	 * All of the other classes should be able to get all the needed info from this class.
+	 * 
+	 * @return The current Timer.
+	 */
+	public Timer getTimer() {
+		// TODO Some classes use this method, change that.  (Sensor & ChannelButton)
+		return currentTimer;
+	}
+	
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
+	 * This method returns the current EventLog.
+	 * 
+	 * @return The current EventLog.
+	 */
+	public EventLog getEventLog() {
+		// TODO Some classes use this method, change that.  (PrinterView)
+		return eventLog;
+	}
+	
+	/**
+	 * USE THIS FOR TESTING PURPOSES ONLY!
+	 * 
+	 * This method returns the current array of Channels.
+	 * 
+	 * @return The current ArrayList of Channels.
+	 */
+	public Channel[] getChannels() {
+		// TODO Some classes use this method, change that.  (ToggleButton)
+		return channels;
+	}
+	
+	/**
+	 * USE THIS FOR TESTING PUROSES ONLY!
+	 * 
+	 * Gets the current USB detector.
+	 * 
+	 * @return The current USB detector.
+	 */
+	public AutoDetect getAutoDetect() {
+		// TODO Some classes use this method, change that.  (USBPort)
+		return detector;
+	}
+	
 	/**
 	 * When this method is called, you can enter commands from the console for the
 	 * SystemController to execute.  It scans from the console and executes the command
@@ -180,26 +215,16 @@ public class SystemController {
 			e.getStackTrace();
 			System.exit(1);
 		}
-
-	}
-
-	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
-	 * 
-	 * This method returns the TaskList of the SystemController.  This is very dangerous and
-	 * should only be used for testing the SystemController.
-	 * @return - The TaskList.
-	 */
-	public TaskList getTaskList() {
-		return taskList;
 	}
 
 	/**
 	 * Executes a command.
 	 * @param arguments - The String to parse and execute.
-	 * @return - True if executed else false.
+	 * @return True if executed else false.
+	 * @throws IOException 
+	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments) {
+	public String executeCommand(String arguments) throws IllegalArgumentException, IOException {
 		return executeCommand(arguments, true);
 	}
 
@@ -210,9 +235,11 @@ public class SystemController {
 	 * valid) and then executes it.
 	 * @param arguments - The command to execute.
 	 * @param doWait - True for timed executing else false.
-	 * @return - The command executed.  Null if command was invalid.
+	 * @return The command executed.  Null if command was invalid.
+	 * @throws IOException 
+	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments, boolean doWait) {
+	public String executeCommand(String arguments, boolean doWait) throws IllegalArgumentException, IOException {
 		String command = null;		
 		taskList.addTask(arguments);
 		lastTask = taskList.peekNextTask();
@@ -221,12 +248,8 @@ public class SystemController {
 
 			Task t = taskList.pollNextTask();
 			command = t.getTaskCommand();
-			try {
-				System.out.println("executing");
-				executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			System.out.println("executing");
+			executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
 		}
 		return command;
 	}
@@ -234,12 +257,9 @@ public class SystemController {
 	/**
 	 * Execute a command.
 	 * 
-	 * @param time
-	 *            - The current time
-	 * @param cmd
-	 *            - The command to execute.
-	 * @param args
-	 *            - Types of events to run.
+	 * @param time - The current time
+	 * @param cmd - The command to execute.
+	 * @param args - Types of events to run.
 	 * 
 	 *            Note for the different indexes used!
 	 * 
@@ -271,9 +291,10 @@ public class SystemController {
 	 *            Using these known assumptions about the format of the file is
 	 *            the reason for specific indecies being used in each individual
 	 *            case statement body.
+	 * @throws IllegalArgumentException, IOException 
 	 * 
 	 */
-	public void executeCommand(String cmd, String ...args) {
+	public void executeCommand(String cmd, String ...args) throws IllegalArgumentException, IOException {
 		try {
 			switch (cmd) {
 			case "ON":
@@ -383,15 +404,16 @@ public class SystemController {
 				cmdCancel();
 				break;
 			}
-		} catch (Exception e) {
+		} catch (IllegalArgumentException|IOException e) {
 			e.printStackTrace();
 			System.err.println("Command " + cmd + " " + Arrays.toString(args) + " not executed because it was not the right format!");
+			throw e;
 		}
 	}
 
 	/**
-	 * Instantiates all the variables to initial states
-	 * **/
+	 * Instantiates all the variables to initial states.
+	 */
 	private void cmdOn() {
 		// When the command ON is entered/read then the time needs to start.
 		// As
@@ -420,8 +442,8 @@ public class SystemController {
 	}
 
 	/**
-	 * KEEP THE systemTime running set everything else to null
-	 * **/
+	 * Keep the SystemTime running but set everything else to null.
+	 **/
 	private void cmdOff() {
 		// When the command OFF is entered/read then the time needs to stop.
 		eventLog = null;
@@ -429,39 +451,31 @@ public class SystemController {
 		currentTimer = null;
 		channels = null;
 		detector = null;
-		// printer set to false for insurance
 		isPrinterOn = false;
 	}
 	
-	/***
-	 * Goes through the rest of participants running (AKA those who've not finished) and finishes them with DNF
-	 * */
-	private void cmdEndRun(){
-		System.out.println("ending run");
-		while(!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()){
-			System.out.println("setting dnf");
+	/**
+	 * Ends the current running event if there is one.
+	 **/
+	private void cmdEndRun() {
+		while (!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
 			currentTimer.setDnf();
 		}
-		System.out.println("ending things");
 	}
 	
 	/**
-	 * Resets all the collections in an event to be re filled
-	 * EventID stays the same
-	 * **/
-	private void cmdNewRun(){
-		currentTimer.getCurrentEvent().newRun();
+	 * Creates a new Run.
+	 **/
+	private void cmdNewRun() {
+		currentTimer.createNewRun();
 	}
 
 	/**
-	 * Sets the currentTimer event to a new instance of the type of method given
-	 * from index(5)
+	 * Creates a new Event based upon the given String.  If the String is not a valid
+	 * event, shit hits the fan.
 	 * 
-	 * @param args
-	 *            - ArrayList containing the line from the file looking like:
-	 *            HR:MIN:SEC.MIL EVENT ARG **which will either be (IND, PARIND,
-	 *            GRP, PARGRP)** args: 0 1 2 3 4 5 *
-	 **/
+	 * @param event - The type of event to create.
+	 */
 	private void cmdEvent(String event) {
 		currentTimer.createEvent(EventType.valueOf(event), event);
 		eventLog.logEvent(currentTimer.getEventData(), systemTime);
@@ -469,7 +483,7 @@ public class SystemController {
 
 	/**
 	 * Instantiates all the variables to initial states
-	 * **/
+	 **/
 	private void cmdReset() {
 		eventLog = new EventLog();
 		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "");
@@ -482,12 +496,10 @@ public class SystemController {
 
 	/**
 	 * Sets the systemTime variable to the given hour, minute, and second
-	 * denoted by the indicies (5,6,7) from the ArrayList
+	 * from the given String.
 	 * 
-	 * @param args
-	 *            - ArrayList containing the line from the file looking like:
-	 *            HR:MIN:SEC.MIL TIME HR:MIN:SEC args: 0 1 2 3 4 5 6 7
-	 * **/
+	 * @param time - String in this format: HR:MIN:SEC
+	 **/
 	private void cmdTime(String time) {
 		// set the current time
 		systemTime.setTime(time);
@@ -495,54 +507,44 @@ public class SystemController {
 	}
 
 	/**
-	 * Finds the channel within the ArrayList with id of the paramenter. If
-	 * there is a channel found this channels sensor state is set to the
-	 * opposite of whatever it is If there isn't a channel found then a new
-	 * channel is created and added to the ArrayList
+	 * Turns the given channel on if it was off or off if it was on.
 	 * 
-	 * @param channel - the channel ID to either set state or create new instance of
-	 * **/
+	 * @param channel - The channel to toggle.  [1, 8]
+	 * @throws IllegalArgumentException If the channel was not [1, 8].
+	 */
 	private void cmdTog(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
 		}
 		
 		channels[channel - 1].setState(!channels[channel - 1].getState());
 	}
 
 	/**
-	 * Finds the given channel within the global ArrayList channels that matches
-	 * the ID field given as the int parameter "channel" If the channel is
-	 * matched and returned from the helper findChannel(Channel) method, then a
-	 * new sensor of whatever type the sensorType parameter is is created and
-	 * assigned to the channel. If the channel does not exist, then a new
-	 * channel is created and added to the global ArrayList channels (with the
-	 * given ID field) and still a sensor of type sensorType is created and
-	 * added to the channel
+	 * Connects a sensor to the given channel.
 	 * 
-	 * @param sensorType - Type of sensor (EYE, GATE, PAD) to add to the given channel
-	 * @param channel - ID field for a channel to connect a sensor too
-	 * **/
+	 * @param sensorType - The type of sensor to add to the channel.  [GATE, EYE, PAD]
+	 * @param channel - The channel to add the sensor to.
+	 * @throws IllegalArgumentException If the channel was not [1, 8].
+	 * @throws IllegalArgumentException If the string entered was not a valid SensorType.
+	 */
 	private void cmdConn(String sensorType, int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Sensor cannot connect. Invalid channel number, channels are 1-8.");
 		}
-		System.out.println("adding channel: " + (channel-1));
+		
 		channels[channel - 1].addSensor(sensorType);
 	}
 
 	/**
-	 * Finds the given channel within the global ArrayList channels that matches
-	 * the ID field given as the int parameter "channel" If the channel is
-	 * found, then the sensor associated with that channel is set to a false
-	 * state (off or disconnected) If the channel is not AN ERROR WILL BE THROWN
-	 * IN THE FUTURE. NOT IMPLEMENTED YET
+	 * Disconnects the given channel.
 	 * 
-	 * @param channel - the channel ID with which to set the sensor state
+	 * @param channel - The channel to disconnect. [1, 8]
+	 * @throws IllegalArgumentException If the channel was not [1, 8].
 	 */
 	private void cmdDisc(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
 		}
 		
 		channels[channel - 1].disconnectSensor();
@@ -556,12 +558,14 @@ public class SystemController {
 	private void cmdPrint() throws IOException {
 		System.out.println(eventLog.read());
 		//printer.printData();
+		// TODO Does this even work?
 	}
 
 	/**
-	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected
+	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected.
+	 * 
 	 * @throws FileNotFoundException 
-	 * **/
+	 **/
 	private void cmdExport(int exportId) {
 		AbstractEvent exportEvent = null;
 		for (AbstractEvent eve: currentTimer.getTotalEvents()) {
@@ -674,15 +678,10 @@ public class SystemController {
 	}
 
 	/**
-	 * Finds the given Participant within the global Timer time's ArrayList of
-	 * participants that matches the ID field given as the int parameter
-	 * "participant If the participant is found then that participant's isNext
-	 * field is set to true If the participant is NOT found then a new
-	 * participant is created, added to the ArrayList or Participants wihtin
-	 * currentTimer, and isNext state is set to true
+	 * Adds a Participant to the current event.
 	 * 
-	 * @param participant - ID field of the participant
-	 * **/
+	 * @param participantId - The id of the Participant.
+	 */
 	private void cmdNum(int participantId) {
 		currentTimer.addParticipantToStart(participantId);
 	}
@@ -692,23 +691,22 @@ public class SystemController {
 	 */
 	private void cmdStart() {
 		cmdTrig(1);
-		//currentTimer.start();
 	}
 
 	/**
-	 * stop the current participant from competing but keep them as the next queued to go
-	 * **/
+	 * Cancels the current run and resets it.
+	 */
 	private void cmdCancel() {
 		currentTimer.cancelStart();
 	}
 
 	/**
 	 * Get the current time.
-	 * **/
+	 */
 	private void cmdElapsed() {
 		String elapsedText = "\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n";
 		System.out.println(elapsedText);
-		//printer.addText(elapsedText);
+		// TODO Does this even work?
 	}
 
 	/**
@@ -716,18 +714,14 @@ public class SystemController {
 	 */
 	private void cmdFinish() {
 		cmdTrig(2);
-		//		currentTimer.finish(participantId, false);
-		/*if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}*/
 	}
 
 	/**
 	 * End the participant within event..but...not as cool as the REGULAR finish.
-	 * **/
+	 */
 	private void cmdDnf() {
 		currentTimer.setDnf();
-		//		currentTimer.finish(participantId, true);
+		
 		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
@@ -736,7 +730,7 @@ public class SystemController {
 	/**
 	 * Exit the entire system. Go through all global variables calling their
 	 * .exit() function and/or set them to null
-	 * **/
+	 */
 	private void cmdExit() {
 		// when the command EXIT is entered/read then the time needs to
 		// completely die
@@ -759,7 +753,6 @@ public class SystemController {
 			}
 		}
 
-		id = -1;
 		if (eventLog != null) {
 			eventLog.exit();
 		}
@@ -769,28 +762,31 @@ public class SystemController {
 		//System.exit(1);
 	}
 
+	/**
+	 * Manually triggers a sensor on a specified channel.
+	 * 
+	 * @param channel - The channel of the sensor to trigger.
+	 * @throws IllegalArgumentException If the channel was not [1, 8].
+	 */
 	private void cmdTrig(int channel) {
 		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Integer must be 1 <= " + channel + " <= 8!");
+			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
 		}
 		
 		channels[channel - 1].triggerSensor();
-		//printer.addText(""+ (channel%2==0 ? "Finishing participant" : "Starting Participants..."));
-		/*if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}*/
-		if (channel%2==0) {
+		
+		// TODO This is not always true.  In PAR events it is possible that a top channel
+		//	could finish participants.
+		if (channel % 2 == 0) {
 			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
 		}
 	}
 
 	/**
-	 * Helper method that goes through all channels in channels looking for a
-	 * matching ID field as the parameter id
+	 * Creates an array of 8 Channels.
 	 * 
-	 * @param id - The ID of the Channel to find.
-	 * @return The Channel with ID field that matches parameter id.
-	 * **/
+	 * @return - The array of 8 Channels created.
+	 */
 	private Channel[] populateChannels() {
 		Channel[] chans = new Channel[8];
 		
@@ -802,89 +798,28 @@ public class SystemController {
 	}
 
 	/**
-	 * Set the Timer of the system.
-	 * 
-	 * @param timer
-	 *            - The Timer to set the system.
-	 */
-	public void setTimer(Timer timer) {
-		this.currentTimer = timer;
-	}
-
-	/**
-	 * Set the EventLog of the system.
-	 * 
-	 * @param eventLog
-	 *            - The EventLog to set to the system.
-	 */
-	public void setEventLog(EventLog eventLog) {
-		this.eventLog = eventLog;
-	}
-
-	/**
-	 * Set the Channels of the system.
-	 * 
-	 * @param channels
-	 *            - The ArrayList of Channels to set to the system.
-	 */
-	public void setChannels(Channel[] channels) {
-		this.channels = channels;
-	}
-
-	/**
-	 * Get's the system's current Timer.
-	 * 
-	 * @return The current Timer.
-	 */
-	public Timer getTimer() {
-		return this.currentTimer;
-	}
-
-	/**
-	 * Get's the system's current EventLog.
-	 * 
-	 * @return The current EventLog.
-	 */
-	public EventLog getEventLog() {
-		return this.eventLog;
-	}
-
-	/**
-	 * Get's the system's current ArrayList of Channels.
-	 * 
-	 * @return The current ArrayList of Channels.
-	 */
-	public Channel[] getChannels() {
-		return this.channels;
-	}
-
-	/**
 	 * Get's the list of all the valid commands.
 	 * 
 	 * @return The list of valid commands.
 	 */
 	public String[] getCommandList(boolean useExtendedList) {
+		// TODO CHANGE THIS
 		return taskList.getCommandList(useExtendedList);
 	}
 	
+	/**
+	 * Gets the last task executed by the system.
+	 * 
+	 * @return The last TaskList.Task executed.
+	 */
 	public TaskList.Task getLastTask() {
 		return lastTask;
 	}
 
 	/**
-	 * Get's the system's current ID.
-	 * 
-	 * @return The current ID.
-	 */
-	public int getId() {
-		return this.id;
-	}
-
-	/**
 	 * Set's the Printer on or off.
 	 * 
-	 * @param isPrinterOn
-	 *            - True to turn on the printer else false.
+	 * @param isPrinterOn - True to turn on the printer else false.
 	 */
 	public void setIsPrinterOn(boolean isPrinterOn) {
 		this.isPrinterOn = isPrinterOn;
@@ -893,32 +828,37 @@ public class SystemController {
 	/**
 	 * Checks whether the Printer is on or off.
 	 * 
-	 * @return True if the printer is on else off.
+	 * @return True if the printer is on else false.
 	 */
 	public boolean getIsPrinterOn() {
 		return isPrinterOn;
 	}
 
+	/**
+	 * Add an Observer to the list of Observers to be updated by the System.
+	 * 
+	 * @param observer - The observer to be added.
+	 */
 	public void addObserver(Observer observer) {
 		observers.add(observer);
 	}
 
-	public void updateObservers() {
+	/**
+	 * Runs through the list of Observers and updates them.
+	 */
+	private void updateObservers() {
 		for (Observer o : observers) {
 			o.update();
 		}
 	}
 
 	/**
-	 * Get's the Systime's time.
-	 * @return - The System's time.
+	 * Gets the Systime's time.
+	 * 
+	 * @return The System's time.
 	 */
 	public SystemTime getSystemTime() {
 		return systemTime;
-	}
-
-	public AutoDetect getAutoDetect() {
-		return detector;
 	}
 
 }

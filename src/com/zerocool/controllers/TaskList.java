@@ -213,7 +213,7 @@ public class TaskList {
 	
 	/**
 	 * Private helper method to parse the String wanting to become a Task.  First it checks
-	 * to make sure there is a valid command within the String, there it splits the String
+	 * to make sure there is a valid command within the String, then it splits the String
 	 * up into parts and adds them to arguments and double checks before it returns.
 	 * @param input - The string to parse.
 	 * @param arguments - The ArrayList to add the parsed arguments into.

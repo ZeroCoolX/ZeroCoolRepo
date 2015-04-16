@@ -3,7 +3,6 @@ package com.zerocool.tests;
 import static org.junit.Assert.*;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +14,6 @@ import com.zerocool.controllers.SystemController;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
 import com.zerocool.entities.Group;
-import com.zerocool.entities.Individual;
 import com.zerocool.entities.Participant;
 import com.zerocool.services.SystemTime;
 
