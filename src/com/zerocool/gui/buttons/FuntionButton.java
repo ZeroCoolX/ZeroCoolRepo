@@ -32,7 +32,7 @@ public class FuntionButton extends AbstractButton {
 
 				try {
 					admin.executeCommand(totalLine, false);
-				} catch (IllegalArgumentException|IOException exception) {
+				} catch (IllegalArgumentException exception) {
 					console.printErrorMessage(exception.getMessage());
 				}
 			}

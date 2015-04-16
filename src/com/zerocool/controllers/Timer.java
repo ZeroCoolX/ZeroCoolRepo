@@ -46,10 +46,11 @@ public class Timer {
 	/**
 	 * Starts the Event.  Depending on the Event depends on the type of
 	 * start.
+	 * 
 	 * @throws IllegalStateException - There are no Participants in
 	 * 	the starting queue.
 	 */
-	public void triggered(int channel) {
+	public void triggered(int channel) throws IllegalStateException {
 		System.out.println("triggered(channel): " + channel);
 		currentEvent.triggered(systemTime.getTime(), channel);
 	}

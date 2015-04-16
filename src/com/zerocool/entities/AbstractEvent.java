@@ -60,13 +60,24 @@ public abstract class AbstractEvent {
 	}
 
 	/**
-	 * Use for testing only!
+	 * USE FOR TESTING PURPOSES ONLY!
+	 * 
 	 * Resets the value of LASTID to 0.
 	 */
 	public void resetEventId() {
 		LASTID = 0;
 	}
 	
+	
+	public static boolean isValidEventType(String type) {
+		for (EventType et : EventType.values()) {
+			if (et.name().equals(type)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	// ----- override methods ----- \\
 	

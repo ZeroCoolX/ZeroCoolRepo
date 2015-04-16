@@ -33,7 +33,7 @@ public class KeyPad extends AbstractPanel {
 	protected void createContents() {
 		keys = new Key[13];
 		
-		String[] keyNames = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#", "< Back" };
+		String[] keyNames = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", "0", ".", "< Back" };
 		for (int i = 0; i < keys.length; ++i) {
 			keys[i] = new Key(keyNames[i]);
 			keys[i].addActionListener(new ActionListener(){

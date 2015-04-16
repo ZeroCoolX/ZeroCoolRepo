@@ -38,7 +38,7 @@ public class ConsoleView extends JTextArea {
 		this.admin = admin;
 		//boolean parameter indicates if the extended command list should be used or not. 
 		//The NON extended list has cammands like: EVENT, CONN...etc  The extended list has commands like EVENT IND, EVENT PARIND, EVENT GRP, EVENT PARGRP, CONN GATE, CONN EYE...etc
-		cmds = admin.getCommandList(true);
+		cmds = admin.getCommandList();
 		index = -1;
 		setPrefs();
 	}
@@ -102,6 +102,9 @@ public class ConsoleView extends JTextArea {
 
 	}
 
+	//ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN GATE|CONN EYE|CONN PAD|DISC|EVENT IND|EVENT GRP|EVENT PARIND|EVENT PARGRP|NEWRUN|ENDRUN|PRINT|EXPORT|
+	//NUM|CLR|SWAP|RCL|START|FIN|TRIG|ELAPSED|CANCEL|DNF
+	
 	private void moveIndex(int next) {
 		index = next < -1 ? cmds.length - 1 : next > cmds.length - 1 ? -1 : next;
 	}
@@ -190,8 +193,7 @@ public class ConsoleView extends JTextArea {
 
 	}
 
-	public void setCommandArgCombo(String arg) {		
-		System.out.println("setting command arg combo");		
+	public void setCommandArgCombo(String arg) {
 		args += arg;		
 		commandArgCombo = args;		
 	}

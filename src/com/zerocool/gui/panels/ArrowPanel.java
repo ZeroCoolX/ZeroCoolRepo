@@ -17,7 +17,7 @@ import net.miginfocom.swing.MigLayout;
 public class ArrowPanel extends AbstractPanel {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public ArrowPanel(Main main, SystemController admin, Console console, Printer printer, ChannelGroup channels, Color background) {
 		super(main, admin, console, printer, channels, background);
 		setBorder(null);
@@ -34,38 +34,36 @@ public class ArrowPanel extends AbstractPanel {
 			public void actionPerformed(ActionEvent e) {
 				console.moveUp();
 			}
-			
+
 		});
 		add(up, "cell 0 0, span 2");
-		
+
 		left = new JButton("L");
 		left.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-			  console.prevCommand();
-				System.out.println(">"+console.getView());
-				console.getView().setCommandArgCombo(""+console.currentCommand()+" ");		
+				console.prevCommand();
+				console.getView().setCommandArgCombo("" + console.currentCommand() + " ");		
 				console.setCommandArgComboView();
 			}
-			
+
 		});
 		add(left, "cell 0 1");
-		
+
 		right = new JButton("R");
 		right.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				console.nextCommand();
-				System.out.println(">"+console.getView());
-				console.getView().setCommandArgCombo(""+console.currentCommand()+" ");		
+				console.getView().setCommandArgCombo("" + console.currentCommand() + " ");		
 				console.setCommandArgComboView();
 			}
-			
+
 		});
 		add(right, "cell 1 1");
-		
+
 		down = new JButton("D");
 		down.addActionListener(new ActionListener() {
 
@@ -73,11 +71,11 @@ public class ArrowPanel extends AbstractPanel {
 			public void actionPerformed(ActionEvent e) {
 				console.moveDown();
 			}
-			
+
 		});
 		add(down, "cell 0 2, span 2");
 	}
-	
+
 	@Override
 	public void update() {
 		// do nothing
@@ -90,7 +88,7 @@ public class ArrowPanel extends AbstractPanel {
 		down.setEnabled(enabled);
 		up.setEnabled(enabled);
 	}
-	
+
 	private JButton	left;
 	private JButton right;
 	private JButton down;

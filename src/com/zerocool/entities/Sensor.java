@@ -33,7 +33,17 @@ public class Sensor {
 		setSensorType(sensorType);
 	}
 	
-	public void trigger() {
+	public static boolean isValidSensorType(String type) {
+		for (SensorType st : SensorType.values()) {
+			if (st.name().equals(type)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void trigger() throws IllegalStateException {
 		System.out.println("trigger()");
 		admin.getTimer().triggered(id + 1);
 		triggered = true;
@@ -59,9 +69,9 @@ public class Sensor {
 	 * @throws IllegalArgumentException - If the string entered was not a valid SensorType.
 	 */
 	public void setSensorType(String sensorType) throws IllegalArgumentException {
-		if (sensorType == null || !(sensorType.equals("EYE") || sensorType.equals("GATE") || sensorType.equals("PAD"))) {
-			throw new IllegalArgumentException("Invalid Sensor Type");
-		} 
+		if (!isValidSensorType(sensorType)) {
+			throw new IllegalArgumentException(sensorType + " is not a valid Sensor Type.");
+		}
 		this.sensorType = SensorType.valueOf(sensorType);
 	}
 	

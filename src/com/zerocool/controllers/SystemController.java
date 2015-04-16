@@ -219,12 +219,11 @@ public class SystemController {
 
 	/**
 	 * Executes a command.
+	 * 
 	 * @param arguments - The String to parse and execute.
 	 * @return True if executed else false.
-	 * @throws IOException 
-	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments) throws IllegalArgumentException, IOException {
+	public String executeCommand(String arguments) {
 		return executeCommand(arguments, true);
 	}
 
@@ -233,13 +232,12 @@ public class SystemController {
 	 * to execute.  This is only used internally for readInput() otherwise it should always be waiting for
 	 * the time of the Task to execute.  This method adds a new Task to the TaskList (only if the string was
 	 * valid) and then executes it.
+	 * 
 	 * @param arguments - The command to execute.
 	 * @param doWait - True for timed executing else false.
 	 * @return The command executed.  Null if command was invalid.
-	 * @throws IOException 
-	 * @throws IllegalArgumentException 
 	 */
-	public String executeCommand(String arguments, boolean doWait) throws IllegalArgumentException, IOException {
+	public String executeCommand(String arguments, boolean doWait) {
 		String command = null;		
 		taskList.addTask(arguments);
 		lastTask = taskList.peekNextTask();
@@ -294,7 +292,7 @@ public class SystemController {
 	 * @throws IllegalArgumentException, IOException 
 	 * 
 	 */
-	public void executeCommand(String cmd, String ...args) throws IllegalArgumentException, IOException {
+	public void executeCommand(String cmd, String ...args) {
 		try {
 			switch (cmd) {
 			case "ON":
@@ -371,13 +369,13 @@ public class SystemController {
 				cmdNum(Integer.parseInt(args[0]));
 				break;
 			case "CLR":
-				// stuff
+				// TODO implement
 				break;
 			case "SWAP":
-				// stuff
+				// TODO implement
 				break;
 			case "RCL":
-				// stuff
+				// TODO implement
 				break;
 			case "START":
 				// stuff
@@ -404,10 +402,11 @@ public class SystemController {
 				cmdCancel();
 				break;
 			}
-		} catch (IllegalArgumentException|IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			System.err.println(taskList.getErrorMessage());
 			System.err.println("Command " + cmd + " " + Arrays.toString(args) + " not executed because it was not the right format!");
-			throw e;
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -551,14 +550,14 @@ public class SystemController {
 	}
 
 	/**
-	 * Calls the EventLog's print(may not be named this after Adam changes
-	 * stuff) method to output stats to the console
-	 * @throws IOException 
-	 * **/
+	 * Prints a specified run.
+	 * 
+	 * @throws IOException
+	 */
 	private void cmdPrint() throws IOException {
 		System.out.println(eventLog.read());
 		//printer.printData();
-		// TODO Does this even work?
+		// TODO Print a specified run. =O
 	}
 
 	/**
@@ -701,7 +700,7 @@ public class SystemController {
 	}
 
 	/**
-	 * Get the current time.
+	 * Print the elapsed time of all the finished participants.
 	 */
 	private void cmdElapsed() {
 		String elapsedText = "\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n";
@@ -768,7 +767,7 @@ public class SystemController {
 	 * @param channel - The channel of the sensor to trigger.
 	 * @throws IllegalArgumentException If the channel was not [1, 8].
 	 */
-	private void cmdTrig(int channel) {
+	private void cmdTrig(int channel) throws IllegalStateException {
 		if (channel < 1 || channel > 8) {
 			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
 		}
@@ -798,13 +797,12 @@ public class SystemController {
 	}
 
 	/**
-	 * Get's the list of all the valid commands.
+	 * Gets the list of all the valid commands.
 	 * 
 	 * @return The list of valid commands.
 	 */
-	public String[] getCommandList(boolean useExtendedList) {
-		// TODO CHANGE THIS
-		return taskList.getCommandList(useExtendedList);
+	public String[] getCommandList() {
+		return taskList.getCommandList();
 	}
 	
 	/**
@@ -842,7 +840,7 @@ public class SystemController {
 	public void addObserver(Observer observer) {
 		observers.add(observer);
 	}
-
+	
 	/**
 	 * Runs through the list of Observers and updates them.
 	 */

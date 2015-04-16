@@ -42,7 +42,7 @@ public class PowerButton extends AbstractButton {
 					
 					try {
 						admin.executeCommand(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON", false);
-					} catch (IllegalArgumentException|IOException exception) {
+					} catch (IllegalArgumentException exception) {
 						console.printErrorMessage(exception.getMessage());
 					}
 					

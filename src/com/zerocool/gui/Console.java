@@ -67,7 +67,7 @@ public class Console extends AbstractPanel {
 		view.moveDown();
 	}
 	
-	public void setNewText(String text){
+	public void setNewText(String text) {
 		view.setText(text);
 	}
 	
@@ -75,11 +75,7 @@ public class Console extends AbstractPanel {
 		return view;
 	}
 	
-	public void setCommandArgComboView(){		
- 		//System.out.println("setting text view as: " + view.getView(true) + " "+ view.getCommandArgCombo());		 
-		//view.setText(view.getView(true) + " "+ view.getCommandArgCombo());
-		
- 		System.out.println("setting text view as: " + view.getView(true));		 
+	public void setCommandArgComboView() {		
 		view.setText(view.getView(true));
  	}
 	
@@ -87,7 +83,7 @@ public class Console extends AbstractPanel {
 		return view.isScanPrompting();		
 	}		
 					
-	public void promptScanner(int num){		
+	public void promptScanner(int num) {		
 		view.promptScanner(num);		
 	}
 	

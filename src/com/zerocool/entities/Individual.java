@@ -15,7 +15,7 @@ public class Individual extends AbstractEvent {
 	 * finishes the next Participant from the running queue.
 	 */
 	@Override
-	public void triggered(long time, int channel) {
+	public void triggered(long time, int channel) throws IllegalStateException {
 		if (channel % 2 == 0) {
 			finish(time, false);
 		} else {
@@ -35,7 +35,7 @@ public class Individual extends AbstractEvent {
 	 * Takes the first Participant from the starting queue and starts them.
 	 * @param startTime - The time the Participant started the race.
 	 */
-	private void start(long startTime) {
+	private void start(long startTime) throws IllegalStateException {
 		startParticipant(startTime);
 	}
 
