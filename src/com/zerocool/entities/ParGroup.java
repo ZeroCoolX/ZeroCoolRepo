@@ -17,13 +17,10 @@ public class ParGroup extends AbstractEvent {
 	@Override
 	public void triggered(long time, int channel) {
 		//this means its a starting trigger
-		System.out.println(runningQueue.isEmpty());
 		if (runningQueue.isEmpty()) {
-			System.out.println("start");
 			start(time);
 		} else {
 			if(channel % 2 == 0){
-				System.out.println("finish");
 				finish(time);
 			}
 		}
@@ -42,7 +39,6 @@ public class ParGroup extends AbstractEvent {
 	 * @param startTime - The time the Participants started.
 	 */
 	private void start(long startTime) {
-		System.out.println(startingQueue.isEmpty());
 		while(!startingQueue.isEmpty()) {
 			startParticipant(startTime);
 		}

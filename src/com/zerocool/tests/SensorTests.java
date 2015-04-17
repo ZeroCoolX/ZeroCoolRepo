@@ -40,10 +40,16 @@ public class SensorTests {
 	private void executeCommands() {
 		while (!commandList.isEmpty()) {
 			try {			
-				systemController.executeCommand(commandList.poll());
+				systemController.addTask(commandList.poll());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		
+		while (!systemController.getTaskList().isEmpty()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) { };
 		}
 	}
 

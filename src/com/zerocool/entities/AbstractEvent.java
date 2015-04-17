@@ -156,7 +156,7 @@ public abstract class AbstractEvent {
 	 * by emptying the event queues and current participants
 	 * to make room for the next batch of participants.
 	 */
-	public void newRun(){
+	public void newRun() {
 		currentParticipants = new ArrayList<Participant>();
 		startingQueue = new LinkedList<Participant>();
 		runningQueue = new LinkedList<Participant>();
@@ -244,7 +244,7 @@ public abstract class AbstractEvent {
 	 * @return - The formatted data.
 	 */
 	public String getFormattedData() {
-		return eventName + "\n" + eventId + " " + type + " " + SystemTime.formatTime(eventTime) + "\n";
+		return eventName + "\n" + eventId + " " + type + " " + getFormattedEventTime() + "\n";
 	}
 
 

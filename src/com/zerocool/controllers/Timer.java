@@ -51,7 +51,6 @@ public class Timer {
 	 * 	the starting queue.
 	 */
 	public void triggered(int channel) throws IllegalStateException {
-		System.out.println("triggered(channel): " + channel);
 		currentEvent.triggered(systemTime.getTime(), channel);
 	}
 	
@@ -147,7 +146,6 @@ public class Timer {
 			throw new IllegalArgumentException("Invalid Event Type");
 		}
 		totalEvents.add(currentEvent);
-		System.out.println("added currentEvent to totalEvents: " + totalEvents.size());
 	}
 	
 	/**
@@ -192,7 +190,11 @@ public class Timer {
 		addParticipantToStart("Aaron " + participantId, participantId);
 	}
 	
-	public ArrayList<AbstractEvent> getTotalEvents(){
+	public AbstractEvent getLastEvent() {
+		return totalEvents.get(totalEvents.size() - 1);
+	}
+	
+	public ArrayList<AbstractEvent> getTotalEvents() {
 		return totalEvents;
 	}
 	

@@ -31,7 +31,7 @@ public class FuntionButton extends AbstractButton {
 				console.setCommandArgComboView();
 
 				try {
-					admin.executeCommand(totalLine, false);
+					admin.addTask(totalLine);
 				} catch (IllegalArgumentException exception) {
 					console.printErrorMessage(exception.getMessage());
 				}

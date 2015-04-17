@@ -35,12 +35,14 @@ public class SystemController {
 	
 	private Channel[] channels;
 
+	private Thread loop;
+	
 	private TaskList taskList;
 	private SystemTime systemTime;
 	private Timer currentTimer;
 	private EventLog eventLog;
 	private AutoDetect detector;
-	private TaskList.Task lastTask;
+	private Task lastTask;
 
 	private boolean isPrinterOn;
 	private boolean running;
@@ -70,7 +72,7 @@ public class SystemController {
 	 * executes the next command if there is one, then updates all the observers.  Sleeps for 1 millisecond.
 	 */
 	private void run() {
-		Thread t = new Thread(new Runnable() {
+		loop = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
@@ -79,13 +81,24 @@ public class SystemController {
 						Thread.sleep(1);
 					} catch (Exception e) { e.printStackTrace(); };
 					// TODO Add the correct functionality to this.
+					
+					if (taskList != null && !taskList.isEmpty()) {
+			//			System.out.println(SystemTime.formatTime(systemTime.getTime()) + " Checking " + taskList.peekNextTask().getTaskCommand() + "...");
+						if (taskList.nextTaskReady(systemTime.getTime())) {
+							Task task = taskList.pollNextTask();
+							lastTask = task;
+							System.err.println(SystemTime.formatTime(systemTime.getTime()) + " Executing " + task + "...");
+							executeCommand(task.getTaskCommand(), task.getTaskArgumentOne(), task.getTaskArgumentTwo());
+						}
+					}
+					
 					updateObservers();
 				}
 			}
 
 		});
 
-		t.start();
+		loop.start();
 	}
 
 	/**
@@ -95,27 +108,6 @@ public class SystemController {
 	 * @param file - The file to read the commands from.
 	 */
 	public void readFile(File file) {
-		taskList.addTask(file);
-		while (taskList != null && !taskList.isEmpty()) {
-			if (taskList.nextTaskCommand().equals("TIME") || taskList.nextTaskTime().equals(systemTime.toString())) {
-				Task t = taskList.pollNextTask();
-				try {
-					executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
-	 * 
-	 * This is a testing method used to just test the TaskList reading the commands
-	 * from a file without executing them all.
-	 * @param file - The file to read the commands from.
-	 */
-	public void testReadFile(File file) {
 		taskList.addTask(file);
 	}
 
@@ -187,8 +179,7 @@ public class SystemController {
 	 */
 	public void readInput() {
 		try {
-			Scanner in = new Scanner(System.in);
-			String input;
+			Scanner input = new Scanner(System.in);
 			String command;
 
 			boolean exit = false;
@@ -196,20 +187,19 @@ public class SystemController {
 			do {
 				System.out.print("mainframe$ ");
 
-				input = systemTime + "\t" + in.nextLine();
+				command = input.nextLine();
 
-				command = executeCommand(input, false);
-				exit = command != null ? command.equalsIgnoreCase("exit") : false;
-
-				if (command == null) {
-					System.err.println("\nInvalid Command!\n");
-					System.err.flush();
-					System.out.flush();
+				if (taskList.addTask(systemTime + " " + command)) {
+					Task task = taskList.pollNextTask();
+					exit = task.getTaskCommand().equals("EXIT");
+					lastTask = task;
+					System.err.println(SystemTime.formatTime(systemTime.getTime()) + " Executing " + task + "...");
+					executeCommand(task.getTaskCommand(), task.getTaskArgumentOne(), task.getTaskArgumentTwo());
 				}
-
+				
 			} while (!exit);
 
-			in.close();
+			input.close();
 		} catch (Exception e) {
 			System.err.println("ERROR: " + e.getMessage());
 			e.getStackTrace();
@@ -223,9 +213,9 @@ public class SystemController {
 	 * @param arguments - The String to parse and execute.
 	 * @return True if executed else false.
 	 */
-	public String executeCommand(String arguments) {
-		return executeCommand(arguments, true);
-	}
+//	public String executeCommand(String arguments) {
+//		return executeCommand(arguments, true);
+//	}
 
 	/**
 	 * This method is private because of the boolean which decides whether or not to wait for the command
@@ -237,19 +227,28 @@ public class SystemController {
 	 * @param doWait - True for timed executing else false.
 	 * @return The command executed.  Null if command was invalid.
 	 */
-	public String executeCommand(String arguments, boolean doWait) {
-		String command = null;		
-		taskList.addTask(arguments);
-		lastTask = taskList.peekNextTask();
-		if (!taskList.isEmpty()) {
-			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { };
-
-			Task t = taskList.pollNextTask();
-			command = t.getTaskCommand();
-			System.out.println("executing");
-			executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
-		}
-		return command;
+//	public String executeCommand(String arguments, boolean doWait) {
+//		String command = null;		
+//		taskList.addTask(arguments);
+//		lastTask = taskList.peekNextTask();
+//		if (!taskList.isEmpty()) {
+//			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { };
+//
+//			Task t = taskList.pollNextTask();
+//			command = t.getTaskCommand();
+//			System.out.println("executing");
+//			executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
+//		}
+//		return command;
+//	}
+	
+	/**
+	 * 
+	 * @param command
+	 * @return
+	 */
+	public boolean addTask(String command) {
+		return taskList.addTask(command);
 	}
 
 	/**
@@ -292,7 +291,7 @@ public class SystemController {
 	 * @throws IllegalArgumentException, IOException 
 	 * 
 	 */
-	public void executeCommand(String cmd, String ...args) {
+	private void executeCommand(String cmd, String ...args) {
 		try {
 			switch (cmd) {
 			case "ON":
@@ -362,7 +361,7 @@ public class SystemController {
 				break;
 			case "EXPORT":
 				// stuff
-				cmdExport(Integer.parseInt(args[0]));
+				cmdExport();
 				break;
 			case "NUM":
 				// stuff
@@ -555,7 +554,7 @@ public class SystemController {
 	 * @throws IOException
 	 */
 	private void cmdPrint() throws IOException {
-		System.out.println(eventLog.read());
+		//System.out.println(eventLog.read());
 		//printer.printData();
 		// TODO Print a specified run. =O
 	}
@@ -565,15 +564,11 @@ public class SystemController {
 	 * 
 	 * @throws FileNotFoundException 
 	 **/
-	private void cmdExport(int exportId) {
-		AbstractEvent exportEvent = null;
-		for (AbstractEvent eve: currentTimer.getTotalEvents()) {
-			if(eve.getEventId() == exportId){
-				exportEvent = eve;
-			}
-		}
-		if(exportEvent == null){
-			System.err.println("ERROR: No event Id matching the given ID field");
+	private void cmdExport() {
+		AbstractEvent exportEvent = currentTimer.getCurrentEvent();
+
+		if (exportEvent == null) {
+			System.err.println("ERROR: No event!");
 			return;
 		}
 			
@@ -652,7 +647,7 @@ public class SystemController {
 				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 				DOMSource source = new DOMSource(doc);
-				String saveFilePath = "" + (detector.driveConnected() ? detector.getDrive() + "/" : "") + currentTimer.getCurrentEvent().getEventName() + ".xml";
+				String saveFilePath = "" + (detector.driveConnected() ? detector.getDrive() + "/" : "") + exportEvent.getEventName() + exportEvent.getEventId() + ".xml";
 				if (detector.driveConnected()) {
 					System.out.println("Saving file to external device: " + saveFilePath);
 				} else {
@@ -665,8 +660,6 @@ public class SystemController {
 				// StreamResult result = new StreamResult(System.out);
 
 				transformer.transform(source, result);
-
-				System.out.println("File saved!");
 
 			} catch (ParserConfigurationException pce) {
 				pce.printStackTrace();
@@ -757,6 +750,7 @@ public class SystemController {
 		}
 
 		detector = null;
+		loop.interrupt();
 		//cannot totally system exit for testing purposes...
 		//System.exit(1);
 	}

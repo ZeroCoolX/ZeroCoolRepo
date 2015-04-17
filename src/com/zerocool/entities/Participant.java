@@ -117,7 +117,7 @@ public class Participant {
 	 */
 	public String getElapsedFormattedData() {
 		Record rec = this.getLastRecord();
-		return "   " + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
+		return "\t" + (rec.getDnf() ? "DNF" : SystemTime.formatTime(rec.getElapsedTime()));
 	}
 
 	/**
@@ -172,8 +172,6 @@ public class Participant {
 	 * Used so the system can exit "gracefully"
 	 */
 	public void exit() {
-		System.out.println("exiting par");
-		
 		name = null;
 		id = -1;
 		isCompeting = false;
@@ -181,7 +179,5 @@ public class Participant {
 		for (int i = 0; i < records.size(); ++i) {
 			records.get(i).exit();
 		}
-		
-		System.out.println("exiting par");
 	}
 }

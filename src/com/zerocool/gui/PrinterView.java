@@ -10,6 +10,7 @@ import javax.swing.border.LineBorder;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.controllers.TaskList;
+import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.services.SystemTime;
 
 public class PrinterView extends JTextArea {
@@ -40,10 +41,11 @@ public class PrinterView extends JTextArea {
 	}
 
 	public void update() {
-		// DO NOTHING FOR NOW
+		// TODO DO NOTHING FOR NOW
 		if (admin.getIsPrinterOn()) {
-			TaskList.Task nextTask = admin.getLastTask();
-			if (nextTask != null && !nextTask.equals(lastTask) && admin.getSystemTime().getTime() - SystemTime.getTimeInMillis(nextTask.getTaskTime()) < 500) {
+			Task nextTask = admin.getLastTask();
+			//if (nextTask != null && !nextTask.equals(lastTask) && admin.getSystemTime().getTime() - SystemTime.getTimeInMillis(nextTask.getTaskTime()) < 500) {
+			if (nextTask != null && !nextTask.equals(lastTask)) {
 				lastTask = nextTask;
 				addText(nextTask.getTaskTime().substring(0, 10) + "\t" + nextTask.getTaskCommand() + " " + nextTask.getTaskArgumentOne() + " " + nextTask.getTaskArgumentTwo());
 			}

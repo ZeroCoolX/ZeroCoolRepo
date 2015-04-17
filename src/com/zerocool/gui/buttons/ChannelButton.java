@@ -56,7 +56,7 @@ public class ChannelButton extends AbstractButton {
 					String totalCommand = admin.getSystemTime() + "\tTRIG " + id;
 
 					try {
-						admin.executeCommand(totalCommand, false);
+						admin.addTask(totalCommand);
 					} catch (IllegalArgumentException exception) {
 						console.printErrorMessage(exception.getMessage());
 					}

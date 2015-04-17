@@ -27,7 +27,7 @@ public class SystemTime extends StopWatch {
 	 * @return A string representing the milliseconds in the desired format.
 	 */
 	public static String formatTime(long millis) {
-		return DurationFormatUtils.formatDuration(millis, "HH:mm:ss.S");
+		return DurationFormatUtils.formatDuration(millis, "HH:mm:ss.S").substring(0, 10);
 	}
 	
 	/**

@@ -53,15 +53,17 @@ public class ChronoTimerSystemTests {
 	private void executeCommands() {
 		while (!commandList.isEmpty()) {
 			try {			
-				systemController.executeCommand(commandList.poll());
+				systemController.addTask(commandList.poll());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
-		try {
-			Thread.sleep(1000);
-		} catch (Exception e) { };
+		while (!systemController.getTaskList().isEmpty()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) { };
+		}
 	}
 	
 	@Test
@@ -113,7 +115,7 @@ public class ChronoTimerSystemTests {
 		long startTime = 0;
 		long finishTime = -1;
 		
-		commandList.add("10:00:00.0	TIME 10:01:00");
+		commandList.add("10:00:00.0	TIME 10:01:00.0");
 		commandList.add("10:01:02.0	ON");
 		commandList.add("10:01:04.0 CONN GATE 1");
 		commandList.add("10:01:06.0 TOGGLE 1");
@@ -259,7 +261,7 @@ public class ChronoTimerSystemTests {
 		timer.triggered(2);
 		
 		systemTime.suspend();
-		participantData = "Run\tBIB\tTime\n" + timer.getEventParticipantData();
+		participantData = "Run" + "\t" + "BIB" + "\t" + "Time\n" + timer.getEventParticipantData();
 
 		eventLog.logParticipants(timer.getEventParticipantData(), systemTime);
 

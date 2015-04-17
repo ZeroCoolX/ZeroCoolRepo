@@ -41,7 +41,7 @@ public class PowerButton extends AbstractButton {
 					main.toggleEnabled(!on);
 					
 					try {
-						admin.executeCommand(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON", false);
+						admin.addTask(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON");
 					} catch (IllegalArgumentException exception) {
 						console.printErrorMessage(exception.getMessage());
 					}

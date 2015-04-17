@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.Sensor;
+import com.zerocool.services.SystemTime;
 
 /**
  * This class represents a Queue of Tasks that the SystemController should execute.  Sometimes the Tasks 
@@ -43,7 +44,7 @@ public class TaskList {
 			command = arguments.get(4);
 
 			if (command.equals("TIME")) {
-				argumentOne = arguments.get(5) + ":" + arguments.get(6) + ":" + arguments.get(7) + "." + (arguments.size() >= 9 ? arguments.get(8) + "00" : "000");
+				argumentOne = arguments.get(5) + ":" + arguments.get(6) + ":" + arguments.get(7) + "." + (arguments.size() >= 9 ? arguments.get(8) : "0");
 			} else {
 				argumentOne = arguments.size() >= 6 ? arguments.get(5) : "";
 			}
@@ -86,6 +87,23 @@ public class TaskList {
 		public String getTaskArgumentTwo() {
 			return argumentTwo;
 		}
+		
+		@Override
+		public String toString() {
+			return (time + " " + command + " " + (argumentOne != null ? argumentOne : "") + " " + (argumentTwo != null ? argumentTwo : "")).trim();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Task) {
+				Task task = (Task) obj;
+				if (task.time.equals(time) && task.command.equals(command)) {
+					return (argumentOne != null ? task.getTaskArgumentOne().equals(argumentOne) : true) && (argumentTwo != null ? task.getTaskArgumentTwo().equals(argumentTwo) : true);
+				}
+			}
+			
+			return false;
+		}
 
 	}
 
@@ -107,8 +125,8 @@ public class TaskList {
 		validCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN|DISC|EVENT|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|"
 				+ "START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
 
-		simpleCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|NEWRUN|ENDRUN|SWAP|RCL|START|FIN|ELAPSED|CANCEL|DNF)\\b");
-		complexCommands = Pattern.compile("\\b(?:TIME|TOGGLE|CONN|DISC|EVENT|PRINT|EXPORT|NUM|CLR|TRIG)\\b");
+		simpleCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|NEWRUN|ENDRUN|SWAP|RCL|START|FIN|ELAPSED|CANCEL|DNF|PRINT|EXPORT)\\b");
+		complexCommands = Pattern.compile("\\b(?:TIME|TOGGLE|CONN|DISC|EVENT|NUM|CLR|TRIG)\\b");
 	}
 
 	/**
@@ -147,7 +165,6 @@ public class TaskList {
 	 * @return True if valid arguments else false.
 	 */
 	public boolean addTask(String input) {
-		System.out.println("input = " + input);
 		if (input == null) {
 			return false;
 		}
@@ -157,8 +174,6 @@ public class TaskList {
 
 		if (parse(input, arguments)) {
 			tasks.add(new Task(arguments));
-			System.out.println("Parsed: " + arguments + "\n");
-			System.out.flush();
 			return true;
 		}
 
@@ -167,6 +182,7 @@ public class TaskList {
 
 	/**
 	 * USE FOR TESTING PURPOSES ONLY!
+	 * 
 	 * Returns the Queue of Tasks.
 	 * 
 	 * @return The Task Queue.
@@ -240,6 +256,24 @@ public class TaskList {
 		return tasks.isEmpty();
 	}
 
+	/**
+	 * Determines whether the next Task is within a specific time frame 
+	 * of when the task should be executed.  Using a delta to create a
+	 * time frame of when the command is valid for executing.  This is because
+	 * things don't happen instantaneously so we account for it with delta.
+	 * 
+	 * @param time - The current system time.
+	 * @return True if within time frame else false.
+	 */
+	public boolean nextTaskReady(long time) {
+		if (nextTaskCommand().equals("TIME")) {
+			return true;
+		}
+		long delta = 10;
+		long taskTime = SystemTime.getTimeInMillis(nextTaskTime());
+		return taskTime <= time && taskTime + delta >= time;
+	}
+	
 	/**
 	 * Removes all remaning Tasks from the Queue.
 	 */
@@ -325,7 +359,7 @@ public class TaskList {
 				
 				return true;
 				
-			case "PRINT": case "EXPORT": case "NUM": case "CLR":
+			case "NUM": case "CLR":
 				// Invalid if the length is not 6 and argument 1 is not a number.
 				if (args.length != 6) {
 					return error("For " + input + " the format is incorrect.");
