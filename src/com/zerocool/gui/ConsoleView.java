@@ -60,7 +60,7 @@ public class ConsoleView extends JTextArea {
 	}
 	
 	public String getTime() {
-		return admin.getSystemTime().toString().substring(0, 10);
+		return admin.getSystemTime().toString();
 	}
 
 	public void toggleEnabled(boolean enabled) {

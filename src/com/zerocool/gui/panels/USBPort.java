@@ -49,9 +49,9 @@ public class USBPort extends AbstractButton {
 	
 	@Override
 	public void update() {
-		//if (admin.getAutoDetect().driveConnected()) {
+		if (admin.isDriveConnected()) {
 			repaint();
-		//}
+		}
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class USBPort extends AbstractButton {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
 		g2.setPaint(Color.DARK_GRAY);
 		g2.fillRect(0, 0, 50, height);
-		g2.setPaint(isEnabled() ? admin.getAutoDetect().driveConnected() ? Main.GREEN : Main.RED : Main.BLACK);
+		g2.setPaint(isEnabled() ? admin.isDriveConnected() ? Main.GREEN : Main.RED : Main.BLACK);
 		g2.fillRect(5, 5, 50 - 10, height - 10);
 		
 		g2.setPaint(Main.BLACK);

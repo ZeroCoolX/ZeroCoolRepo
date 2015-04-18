@@ -47,7 +47,7 @@ public class Printer extends AbstractPanel {
 		view.setText("");
 	}
 	
-	public void printData(){
+	public void printData() {
 		view.printData();
 	}
 	

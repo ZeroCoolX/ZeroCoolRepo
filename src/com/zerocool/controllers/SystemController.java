@@ -152,7 +152,6 @@ public class SystemController {
 	 * @return The current ArrayList of Channels.
 	 */
 	public Channel[] getChannels() {
-		// TODO Some classes use this method, change that.  (ToggleButton)
 		return channels;
 	}
 	
@@ -164,7 +163,6 @@ public class SystemController {
 	 * @return The current USB detector.
 	 */
 	public AutoDetect getAutoDetect() {
-		// TODO Some classes use this method, change that.  (USBPort)
 		return detector;
 	}
 	
@@ -752,6 +750,44 @@ public class SystemController {
 	}
 
 	/**
+	 * Private helper method to get a channel by an id.
+	 * 
+	 * @param id - The id of the channel to get.
+	 * @return The channel from the specified id or null if id is 
+	 * not a valid channel.
+	 */
+	private Channel getChannel(int id) {
+		if (channels == null || id < 0 || id > channels.length) {
+			return null;
+		}
+		return channels[id];
+	}
+	
+	/**
+	 * Checks if the channel is active or not.
+	 * 
+	 * @param id - The id of the channel to check.
+	 * @return True if the channel is active else false.  If the id was
+	 * not a valid channel, it also returns false.
+	 */
+	public boolean isChannelActive(int id) {
+		Channel chan = getChannel(id - 1);
+		return chan != null ? chan.getState() : false;
+	}
+	
+	/**
+	 * Checks if the channel's sensor is active or not.
+	 * 
+	 * @param id - The id of the channel to check.
+	 * @return True if the sensor is active else false.  If the id was
+	 * not a valid channel, it also returns false.
+	 */
+	public boolean isSensorActive(int id) {
+		Channel chan = getChannel(id - 1);
+		return chan != null ? chan.getSensorState() : false;
+	}
+	
+	/**
 	 * Gets the list of all the valid commands.  The extended version includes
 	 * the first argument for CONN and EVENT.
 	 * 
@@ -787,6 +823,15 @@ public class SystemController {
 	 */
 	public boolean getIsPrinterOn() {
 		return isPrinterOn;
+	}
+	
+	/**
+	 * Checks whether there is a USB drive connected.
+	 * 
+	 * @return True if there is a USB drive connected else false.
+	 */
+	public boolean isDriveConnected() {
+		return detector != null && detector.driveConnected();
 	}
 
 	/**

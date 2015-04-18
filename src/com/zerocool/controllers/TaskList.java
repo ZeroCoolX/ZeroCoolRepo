@@ -47,9 +47,8 @@ public class TaskList {
 				argumentOne = arguments.get(5) + ":" + arguments.get(6) + ":" + arguments.get(7) + "." + (arguments.size() >= 9 ? arguments.get(8) : "0");
 			} else {
 				argumentOne = arguments.size() >= 6 ? arguments.get(5) : "";
+				argumentTwo = arguments.size() >= 7 ? arguments.get(6) : "";
 			}
-
-			argumentTwo = arguments.size() >= 7 ? arguments.get(6) : "";
 		}
 
 		/**

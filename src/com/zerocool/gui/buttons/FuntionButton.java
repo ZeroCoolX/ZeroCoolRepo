@@ -25,10 +25,10 @@ public class FuntionButton extends AbstractButton {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(console.currentCommand());
-				String totalLine = (admin.getSystemTime() + "\t" + console.getView().getArgs());
+				String totalLine = (admin.getSystemTime() + " " + console.getView().getArgs());
+				System.out.println(totalLine);
 				//console.getView().setCommandArgCombo(" "+console.currentCommand());		
-				console.setCommandArgComboView();
+				//console.setCommandArgComboView();
 
 				try {
 					admin.addTask(totalLine);

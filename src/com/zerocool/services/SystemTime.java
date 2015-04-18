@@ -24,10 +24,15 @@ public class SystemTime extends StopWatch {
 	/**
 	 * Used to format milliseconds to the desired look.
 	 * @param millis - The milliseconds to format.
+	 * 
 	 * @return A string representing the milliseconds in the desired format.
 	 */
 	public static String formatTime(long millis) {
-		return DurationFormatUtils.formatDuration(millis, "HH:mm:ss.S").substring(0, 10);
+		String time = DurationFormatUtils.formatDuration(millis, "HH:mm:ss.S");
+		String[] split = new String[2];
+		split[0] = time.substring(0, time.lastIndexOf("."));
+		split[1] = time.substring(time.lastIndexOf("."), time.length()).substring(0, 2);
+		return split[0] + split[1];
 	}
 	
 	/**
@@ -44,8 +49,9 @@ public class SystemTime extends StopWatch {
 	/**
 	 * Takes the format <HH>:<mm>:<ss>.<S> and converts it into
 	 * milliseconds.
+	 * 
 	 * @param formattedTime - The String in the formatted form.
-	 * @return - The time in Milliseconds from the formatted string.
+	 * @return The time in Milliseconds from the formatted string.
 	 */
 	public static long getTimeInMillis(String formattedTime) {
 		String[] split = formattedTime.split("[:.]");
@@ -54,6 +60,7 @@ public class SystemTime extends StopWatch {
 	
 	/**
 	 * Resets and sets the time.
+	 * 
 	 * @param startTime - The time in milliseconds to set the time to.
 	 */
 	public void setTime(long startTime) {
@@ -63,6 +70,7 @@ public class SystemTime extends StopWatch {
 	
 	/**
 	 * A more friendly overloaded method to reset and set the time.
+	 * 
 	 * @param hours - The hour(s) to set the time to.
 	 * @param minutes - The minute(s) to set the time to.
 	 * @param seconds - The second(s) to set the time to.
@@ -74,6 +82,7 @@ public class SystemTime extends StopWatch {
 	/**
 	 * A very useful method to set the time given a String in the 
 	 * format <HH>:<mm>:<ss>.<S>.
+	 * 
 	 * @param formattedTime - The formatted String to set the time to.
 	 */
 	public void setTime(String formattedTime) {
@@ -111,7 +120,7 @@ public class SystemTime extends StopWatch {
 	 */
 	public void exit() {
 		super.stop();
-		this.reset();
+		reset();
 	}
 	
 }

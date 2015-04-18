@@ -24,6 +24,7 @@ public class ToggleButton extends AbstractButton {
 	private Type type;
 	private int id;
 	private boolean on;
+	private boolean previousState;
 	
 	public ToggleButton(Main main, SystemController admin, Console console, Printer printer, Type type, int id) {
 		super(main, admin, console, printer, "");
@@ -66,10 +67,9 @@ public class ToggleButton extends AbstractButton {
 	
 	@Override
 	public void update() {
-		if (admin.getChannels() == null) {
-			on = false;
-		} else if (id <= admin.getChannels().length) {
-			on = type.equals(Type.CONNECT) ? admin.getChannels()[id - 1].getSensorState() : admin.getChannels()[id - 1].getState();
+		on = type.equals(Type.CONNECT) ? admin.isSensorActive(id) : admin.isChannelActive(id);
+		if (previousState != on) {
+			previousState = on;
 			main.repaint();
 		}
 	}
