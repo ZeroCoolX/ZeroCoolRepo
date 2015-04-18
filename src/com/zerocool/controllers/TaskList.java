@@ -112,10 +112,8 @@ public class TaskList {
 
 	// Holds all the valid commands to search through when parsing.
 	private Pattern validCommands;
-	private Pattern simpleCommands;
+	private Pattern extendedCommands;
 	private Pattern complexCommands;
-	
-	private String errorMessage;
 
 	/**
 	 * Default constructor that initializes the Queue and valid commands.
@@ -124,8 +122,9 @@ public class TaskList {
 		tasks = new LinkedList<Task>();
 		validCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN|DISC|EVENT|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|"
 				+ "START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
-
-		simpleCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|NEWRUN|ENDRUN|SWAP|RCL|START|FIN|ELAPSED|CANCEL|DNF|PRINT|EXPORT)\\b");
+		extendedCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN GATE|CONN EYE|CONN PAD|DISC|EVENT IND|EVENT GRP|"
+				+ "EVENT PARIND|EVENT PARGRP|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
+		
 		complexCommands = Pattern.compile("\\b(?:TIME|TOGGLE|CONN|DISC|EVENT|NUM|CLR|TRIG)\\b");
 	}
 
@@ -146,7 +145,9 @@ public class TaskList {
 			Scanner in = new Scanner(new FileReader(file));
 
 			while (in.hasNextLine()) {
-				addTask(in.nextLine());
+				try {
+					addTask(in.nextLine());
+				} catch (Exception e) { };
 			}
 
 			in.close();
@@ -163,14 +164,14 @@ public class TaskList {
 	 * 
 	 * @param input - The String to parse and create a new Task from.
 	 * @return True if valid arguments else false.
+	 * @throws IllegalArgumentException If there was an error validating the input.
 	 */
-	public boolean addTask(String input) {
+	public boolean addTask(String input) throws IllegalArgumentException {
 		if (input == null) {
 			return false;
 		}
 
 		ArrayList<String> arguments = new ArrayList<String>();
-		errorMessage = "";
 
 		if (parse(input, arguments)) {
 			tasks.add(new Task(arguments));
@@ -228,23 +229,16 @@ public class TaskList {
 	public String nextTaskCommand() {
 		return tasks.isEmpty() ? null : tasks.peek().getTaskCommand();
 	}
-
-	/**
-	 * Returns the current error message.
-	 * 
-	 * @return The current error message.
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
 	
 	/**
-	 * Gets the list of all of the possible valid commands.
+	 * Gets the list of all the valid commands.  The extended version includes
+	 * the first argument for CONN and EVENT.
 	 * 
-	 * @return A String array of all the valid commands.
+	 * @param extended - Whether to use the extended version.
+	 * @return The string array of valid commands.
 	 */
-	public String[] getCommandList() {
-		return validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
+	public String[] getCommandList(boolean extended) {
+		return extended ? extendedCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|") : validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
 	}
 
 	/**
@@ -269,7 +263,7 @@ public class TaskList {
 		if (nextTaskCommand().equals("TIME")) {
 			return true;
 		}
-		long delta = 10;
+		long delta = 1000;
 		long taskTime = SystemTime.getTimeInMillis(nextTaskTime());
 		return taskTime <= time && taskTime + delta >= time;
 	}
@@ -291,17 +285,17 @@ public class TaskList {
 	 * @param input - The string to parse.
 	 * @param arguments - The ArrayList to add the parsed arguments into.
 	 * @return True if it was a valid String else false.
+	 * @throws IllegalArgumentException If something went wrong, it shows the error.
 	 */
-	private boolean parse(String input, ArrayList<String> arguments) {
+	private boolean parse(String input, ArrayList<String> arguments) throws IllegalArgumentException {
 		String command = input;
 		if (!validCommands.matcher(command).find()) {
-			System.out.println("returning false");
-			return error("For " + command + " the format is invalid or the command is not supported.");
+			throw new IllegalArgumentException("For " + command + " the format is invalid or the command is not supported.");
 		}
 
 		String[] split = input.split("[:. \\t]");
-		if (complexCommands.matcher(split[4]).find() && !validateComplex(command, split)) {
-			return false;
+		if (complexCommands.matcher(split[4]).find()) {
+			validateComplex(command, split);
 		}
 		
 		for (String s : split) {
@@ -318,77 +312,76 @@ public class TaskList {
 	 * 
 	 * @param input - The original entry of the command.
 	 * @param args - The split string of the entered command.
-	 * @return True if it's a valid command else false.
+	 * @throws IllegalArgumentException If the command is invalid.
 	 */
-	private boolean validateComplex(String input, String[] args) {
+	private void validateComplex(String input, String[] args) throws IllegalArgumentException {
 		if (args.length > 4 && complexCommands.matcher(args[4]).find() && isDigit(args[0], args[1], args[2])) {
 			switch(args[4]) {
 			
 			case "TIME":
 				// Invalid if the length is not 8 and if the 3 arguments are not numbers.
 				if (args.length != 9) {
-					return error("For " + input + " the format is incorrect.");
+					throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 				} else if (!isDigit(args[5], args[6], args[7], args[8])) {
-					return error("For " + input + " one or more of the arguments are not valid numbers.");
+					throw new IllegalArgumentException("For " + input + " one or more of the arguments are not valid numbers.");
 				}
 				
-				return true;
+				return;
 				
 			case "CONN":
 				// Invalid if the length is not 7, argument 1 is not a valid sensor type, argument 2 is not a number and if argument 2 is
 				// not a valid channel.
 				if (args.length != 7) {
-					return error("For " + input + " the format is incorrect.");
+					throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 				} else if (!Sensor.isValidSensorType(args[5])) {
-					return error("For " + input + " argument " + args[5] + " is not a valid Sensor Type.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[5] + " is not a valid Sensor Type.");
 				} else if (!isDigit(args[6])) {
-					return error("For " + input + " argument " + args[6] + " is not a valid number.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[6] + " is not a valid number.");
 				} else if (!withinBounds(1, 8, Integer.parseInt(args[6]))) {
-					return error("For " + input + " argument " + args[6] + " is not a valid channel.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[6] + " is not a valid channel.");
 				}
 				
-				return true;
+				return;
 				
 			case "EVENT":
 				// Invalid if the length is not 6 and argument 1 is not a valid event type.
 				if (args.length != 6) {
-					return error("For " + input + " the format is incorrect.");
+					throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 				} else if (!AbstractEvent.isValidEventType(args[5])) {
-					return error("For " + input + " argument " + args[5] + " is not a valid Event Type.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[5] + " is not a valid Event Type.");
 				}
 				
-				return true;
+				return;
 				
 			case "NUM": case "CLR":
 				// Invalid if the length is not 6 and argument 1 is not a number.
 				if (args.length != 6) {
-					return error("For " + input + " the format is incorrect.");
+					throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 				} else if (!isDigit(args[5])) {
-					return error("For " + input + " argument " + args[5] + " is not a valid number.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[5] + " is not a valid number.");
 				}
 				
-				return true;
+				return;
 				
 			case "TRIG": case "DISC": case "TOGGLE":
 				// Invalid if the length is not 6, argument 1 is not a number and argument 1 is not a valid channel.
 				if (args.length != 6) {
-					return error("For " + input + " the format is incorrect.");
+					throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 				} else if (!isDigit(args[5])) {
-					return error("For " + input + " argument " + args[5] + " is not a valid number.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[5] + " is not a valid number.");
 				} else if (!withinBounds(1, 8, Integer.parseInt(args[5]))) {
-					return error("For " + input + " argument " + args[5] + " is not a valid channel.");
+					throw new IllegalArgumentException("For " + input + " argument " + args[5] + " is not a valid channel.");
 				}
 				
-				return true;
+				return;
 				
-			default: 
-				errorMessage = "Unknown Error...";
-				System.err.println("TaskList validation error.  Should never happen!");
-				return false;
+			default:
+				throw new IllegalArgumentException("TaskList validation error.  Should never happen!");
+				
 			}
 		}
 		
-		return error("For " + input + " the format is incorrect.");
+		throw new IllegalArgumentException("For " + input + " the format is incorrect.");
 	}
 
 	/**
@@ -420,17 +413,6 @@ public class TaskList {
 	 */
 	private boolean withinBounds(int low, int high, int check) {
 		return check >= low && check <= high;
-	}
-	
-	/**
-	 * Private helper method to return false and set the error message.
-	 * 
-	 * @param error - The error message to be seen.
-	 * @return Always false.
-	 */
-	private boolean error(String error) {
-		errorMessage = error;
-		return false;
 	}
 	
 }

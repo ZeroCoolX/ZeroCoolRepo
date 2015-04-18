@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -80,10 +79,8 @@ public class SystemController {
 					try {
 						Thread.sleep(1);
 					} catch (Exception e) { e.printStackTrace(); };
-					// TODO Add the correct functionality to this.
 					
 					if (taskList != null && !taskList.isEmpty()) {
-			//			System.out.println(SystemTime.formatTime(systemTime.getTime()) + " Checking " + taskList.peekNextTask().getTaskCommand() + "...");
 						if (taskList.nextTaskReady(systemTime.getTime())) {
 							Task task = taskList.pollNextTask();
 							lastTask = task;
@@ -131,7 +128,7 @@ public class SystemController {
 	 * @return The current Timer.
 	 */
 	public Timer getTimer() {
-		// TODO Some classes use this method, change that.  (Sensor & ChannelButton)
+		// TODO Some classes use this method, change that.  (Sensor)
 		return currentTimer;
 	}
 	
@@ -206,48 +203,15 @@ public class SystemController {
 			System.exit(1);
 		}
 	}
-
-	/**
-	 * Executes a command.
-	 * 
-	 * @param arguments - The String to parse and execute.
-	 * @return True if executed else false.
-	 */
-//	public String executeCommand(String arguments) {
-//		return executeCommand(arguments, true);
-//	}
-
-	/**
-	 * This method is private because of the boolean which decides whether or not to wait for the command
-	 * to execute.  This is only used internally for readInput() otherwise it should always be waiting for
-	 * the time of the Task to execute.  This method adds a new Task to the TaskList (only if the string was
-	 * valid) and then executes it.
-	 * 
-	 * @param arguments - The command to execute.
-	 * @param doWait - True for timed executing else false.
-	 * @return The command executed.  Null if command was invalid.
-	 */
-//	public String executeCommand(String arguments, boolean doWait) {
-//		String command = null;		
-//		taskList.addTask(arguments);
-//		lastTask = taskList.peekNextTask();
-//		if (!taskList.isEmpty()) {
-//			while (doWait && !taskList.nextTaskCommand().equals("TIME") && !taskList.nextTaskTime().equals(systemTime.toString())) { };
-//
-//			Task t = taskList.pollNextTask();
-//			command = t.getTaskCommand();
-//			System.out.println("executing");
-//			executeCommand(t.getTaskCommand(), t.getTaskArgumentOne(), t.getTaskArgumentTwo());
-//		}
-//		return command;
-//	}
 	
 	/**
+	 * Add a command for the system to execute.
 	 * 
-	 * @param command
-	 * @return
+	 * @param command - The command to execute.
+	 * @return True if it was a valid command else false.
+	 * @throws IllegalArgumentException If there was an error validating the command.
 	 */
-	public boolean addTask(String command) {
+	public boolean addTask(String command) throws IllegalArgumentException {
 		return taskList.addTask(command);
 	}
 
@@ -403,9 +367,6 @@ public class SystemController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println(taskList.getErrorMessage());
-			System.err.println("Command " + cmd + " " + Arrays.toString(args) + " not executed because it was not the right format!");
-			System.err.println(e.getMessage());
 		}
 	}
 
@@ -556,7 +517,7 @@ public class SystemController {
 	private void cmdPrint() throws IOException {
 		//System.out.println(eventLog.read());
 		//printer.printData();
-		// TODO Print a specified run. =O
+		// TODO Print the previous run.
 	}
 
 	/**
@@ -791,12 +752,14 @@ public class SystemController {
 	}
 
 	/**
-	 * Gets the list of all the valid commands.
+	 * Gets the list of all the valid commands.  The extended version includes
+	 * the first argument for CONN and EVENT.
 	 * 
-	 * @return The list of valid commands.
+	 * @param extended - Whether to use the extended version.
+	 * @return The string array of valid commands.
 	 */
-	public String[] getCommandList() {
-		return taskList.getCommandList();
+	public String[] getCommandList(boolean extended) {
+		return taskList.getCommandList(extended);
 	}
 	
 	/**

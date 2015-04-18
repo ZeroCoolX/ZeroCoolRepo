@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
@@ -47,17 +46,18 @@ public class ToggleButton extends AbstractButton {
 			public void actionPerformed(ActionEvent e) {
 				String totalCommand = "";
 				if (type.equals(Type.CONNECT)) {
-					totalCommand = admin.getSystemTime() + (on ? "\tDISC " : "\tCONN GATE ") + id;
+					totalCommand = admin.getSystemTime() + (on ? " DISC " : " CONN GATE ") + id;
 				} else if (type.equals(Type.ENABLE)) {
-					totalCommand = admin.getSystemTime() + "\tTOGGLE " + id;
+					totalCommand = admin.getSystemTime() + " TOGGLE " + id;
 				}
 				
 				try {
 					admin.addTask(totalCommand);
-				} catch (IllegalArgumentException exception) {
-					console.printErrorMessage(exception.getMessage());
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+					console.printErrorMessage(ex.getMessage());
 				}
-				//on = !on;
+				
 				main.repaint();
 			}
 			

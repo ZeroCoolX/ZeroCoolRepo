@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+
 
 import javax.swing.JLabel;
 
@@ -57,8 +57,9 @@ public class ChannelButton extends AbstractButton {
 
 					try {
 						admin.addTask(totalCommand);
-					} catch (IllegalArgumentException exception) {
-						console.printErrorMessage(exception.getMessage());
+					} catch (IllegalArgumentException ex) {
+						ex.printStackTrace();
+						console.printErrorMessage(ex.getMessage());
 					}
 				}
 			}
