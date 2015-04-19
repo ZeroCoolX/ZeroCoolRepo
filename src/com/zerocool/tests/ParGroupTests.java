@@ -122,8 +122,8 @@ public class ParGroupTests {
 			
 			// Participants should all still be competing because they
 			// did not trigger the proper channel
-			assertEquals(0, p.getRecordByEventId(event.getEventId()).getFinishTime());
-			assertEquals(0, p.getRecordByEventId(event.getEventId()).getElapsedTime());
+			assertEquals(-1, p.getRecordByEventId(event.getEventId()).getFinishTime());
+			assertEquals(-1, p.getRecordByEventId(event.getEventId()).getElapsedTime());
 			assertTrue(p.getIsCompeting());
 		}
 	}
