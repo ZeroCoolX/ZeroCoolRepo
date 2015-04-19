@@ -100,7 +100,6 @@ public class GroupTests {
 			assertFalse(p.getIsCompeting());
 		}
 		
-		
 	}
 	
 	@Test

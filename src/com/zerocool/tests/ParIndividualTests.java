@@ -27,11 +27,6 @@ public class ParIndividualTests {
 	}
 
 	@Test
-	public void testExit() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testParIndividual() {
 		fail("Not yet implemented");
 	}
