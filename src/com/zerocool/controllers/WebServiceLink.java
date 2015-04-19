@@ -30,31 +30,31 @@ public class WebServiceLink {
 		
 	}
 	
-	private static void setTitle(String title){
+	public static void setTitle(String title){
 		sendParams("title="+title);
 	}
 	
-	private static void setParticipantBib(int part_id, String bib){
+	public static void setParticipantBib(int part_id, String bib){
 		sendParams("part_id="+part_id+"&bib="+bib);
 	}
 	
-	private static void setParticipantName(int part_id, String name){
+	public static void setParticipantName(int part_id, String name){
 		sendParams("part_id="+part_id+"&name="+name);
 	}
 	
-	private static void setParticipantStart(int part_id, String start){
+	public static void setParticipantStart(int part_id, String start){
 		sendParams("part_id="+part_id+"&start="+start);
 	}
 	
-	private static void setParticipantEnd(int part_id, String end){
+	public static void setParticipantEnd(int part_id, String end){
 		sendParams("part_id="+part_id+"&end="+end);
 	}
 	
-	private static void setParticipantElapsed(int part_id, String elapsed){
+	public static void setParticipantElapsed(int part_id, String elapsed){
 		sendParams("part_id="+part_id+"&elapsed="+elapsed);
 	}
 	
-	private static void clear(){
+	public static void clear(){
 		sendParams("version=-1");
 	}
 	
