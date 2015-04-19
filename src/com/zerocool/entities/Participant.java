@@ -12,10 +12,14 @@ import com.zerocool.services.SystemTime;
  */
 public class Participant {
 	
+	private static int last_assigned_part_id_webserv;
+	
 	private String name;
 	private ArrayList<Record> records;
 	
+	// THE ID FIELD IS BEING USED AS A BIB NUMBER IN THE REST OF THE CODE; I AM MAKING A part_id FIELD TO BE USED EXCLUSIVELY WITH THE WEB DISPLAY MODULE
 	private int id;
+	private int part_id_webserv;
 	
 	private boolean isCompeting;
 	
@@ -27,6 +31,7 @@ public class Participant {
 	public Participant(String name, int id) {
 		this.name = name;
 		this.id = id;
+		this.part_id_webserv = last_assigned_part_id_webserv++;
 		records = new ArrayList<Record>();
 	}
 	
@@ -121,11 +126,19 @@ public class Participant {
 	}
 
 	/**
-	 * Get's the ID of the participant.
+	 * Gets the ID of the participant.
 	 * @return The id of the participant.
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * Gets the ID of the participant for the purposes of displaying their info in the web display module.
+	 * @return The id of the participant for the webservice.
+	 */
+	public int getPartIdWebserv() {
+		return part_id_webserv;
 	}
 	
 	/**
