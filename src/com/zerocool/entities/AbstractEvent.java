@@ -6,6 +6,8 @@ import java.util.Queue;
 import com.zerocool.services.SystemTime;
 
 public abstract class AbstractEvent {
+	
+	public static AbstractEvent currentEvent;
 
 	// First event will be 1, 2... so on.
 	protected static int LASTID = 0;
