@@ -2,7 +2,6 @@ package com.zerocool.gui.buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
@@ -25,15 +24,15 @@ public class FuntionButton extends AbstractButton {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String totalLine = (admin.getSystemTime() + " " + console.getView().getArgs());
+				String totalLine = (admin.getSystemTime() + " " + console.getCurrentTask());
 				System.out.println(totalLine);
-				//console.getView().setCommandArgCombo(" "+console.currentCommand());		
-				//console.setCommandArgComboView();
+				console.resetTask();
 
 				try {
 					admin.addTask(totalLine);
 				} catch (IllegalArgumentException exception) {
-					console.printErrorMessage(exception.getMessage());
+					// TODO
+					//console.printErrorMessage(exception.getMessage());
 				}
 			}
 

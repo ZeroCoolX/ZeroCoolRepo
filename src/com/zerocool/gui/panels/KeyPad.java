@@ -42,8 +42,7 @@ public class KeyPad extends AbstractPanel {
 				public void actionPerformed(ActionEvent e) {
 					String print = ((Key) e.getSource()).getPrint();
 					//Basically need to append the number pressed to the end of the current command in the ConsoleView console. 
-					console.getView().setCommandArgCombo("" + print);		
-					console.setCommandArgComboView();
+					console.addArgument(print);
 				}
 				
 			});

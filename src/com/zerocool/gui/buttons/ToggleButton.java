@@ -56,7 +56,8 @@ public class ToggleButton extends AbstractButton {
 					admin.addTask(totalCommand);
 				} catch (IllegalArgumentException ex) {
 					ex.printStackTrace();
-					console.printErrorMessage(ex.getMessage());
+					// TODO
+					//console.printErrorMessage(ex.getMessage());
 				}
 				
 				main.repaint();

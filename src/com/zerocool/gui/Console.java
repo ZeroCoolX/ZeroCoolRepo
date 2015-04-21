@@ -38,7 +38,6 @@ public class Console extends AbstractPanel {
 	
 	@Override
 	public void update() {
-		view.getView(true);
 		view.update();
 	}
 	
@@ -55,10 +54,6 @@ public class Console extends AbstractPanel {
 		view.nextCommand();
 	}
 	
-	public String currentCommand() {
-		return view.currentCommand();
-	}
-
 	public void moveUp() {
 		view.moveUp();
 	}
@@ -67,28 +62,16 @@ public class Console extends AbstractPanel {
 		view.moveDown();
 	}
 	
-	public void setNewText(String text) {
-		view.setText(text);
+	public void addArgument(String arg) {
+		view.addArgument(arg);
 	}
 	
-	public ConsoleView getView(){
-		return view;
+	public void resetTask() {
+		view.resetTask();
 	}
 	
-	public void setCommandArgComboView() {		
-		view.setText(view.getView(true));
- 	}
-	
-	public boolean isScanPrompting() {		
-		return view.isScanPrompting();		
-	}		
-					
-	public void promptScanner(int num) {		
-		view.promptScanner(num);		
-	}
-	
-	public void printErrorMessage(String error) {
-		printer.printInvalidCommandErrorMessage(error);
+	public String getCurrentTask() {
+		return view.getCurrentTask();
 	}
 	
 	private ConsoleView view;

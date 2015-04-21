@@ -2,7 +2,7 @@ package com.zerocool.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JTextArea;
 import javax.swing.border.CompoundBorder;
@@ -10,36 +10,27 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import com.zerocool.controllers.SystemController;
-import com.zerocool.services.SystemTime;
 
 public class ConsoleView extends JTextArea {
 
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<Participant> waiting;
-	private ArrayList<Participant> running;
-	private ArrayList<Participant> finished;
-	private String[] cmds;
+	private String[] commandList;
+	private String[] argumentList;
+	private String startingQueue;
+	private String runningQueue;
+	private String finishedQueue;
 	private SystemController admin;
-
-	private int index;
-	private int currentLine;
 	
-	private String commandArgCombo = "";	
-	
-	private static boolean scanPrompting = false;
-
-	private String args = "";
+	private int commandIndex;
+	private int argumentIndex;
 
 	public ConsoleView(SystemController admin) {
-		waiting = new ArrayList<Participant>();
-		running = new ArrayList<Participant>();
-		finished = new ArrayList<Participant>();
 		this.admin = admin;
-		//boolean parameter indicates if the extended command list should be used or not. 
-		//The NON extended list has cammands like: EVENT, CONN...etc  The extended list has commands like EVENT IND, EVENT PARIND, EVENT GRP, EVENT PARGRP, CONN GATE, CONN EYE...etc
-		cmds = admin.getCommandList(true);
-		index = -1;
+		argumentList = new String[2];
+		commandList = admin.getCommandList();
+		commandIndex = -1;
+		argumentIndex = -1;
 		setPrefs();
 	}
 
@@ -55,12 +46,11 @@ public class ConsoleView extends JTextArea {
 	public void update() {
 		// TODO things
 		if (isEnabled()) {
-			setText(getView(true));
+			startingQueue = admin.getStartingQueue();
+			runningQueue = admin.getRunningQueue();
+			finishedQueue = admin.getFinishedQueue();
+			setText(getView());
 		}
-	}
-	
-	public String getTime() {
-		return admin.getSystemTime().toString();
 	}
 
 	public void toggleEnabled(boolean enabled) {
@@ -68,151 +58,75 @@ public class ConsoleView extends JTextArea {
 		setBackground(enabled ? Main.DARK_SLATE_GREEN : Main.BLACK);
 	}
 
+	public void addArgument(String arg) {
+		argumentList[1] += arg;
+	}
+	
 	public void prevCommand() {
-		args = "";
-		moveIndex(index - 1);
-	}
-
-	public String getArgs() {
-		return args;
-	}
-
-	public String currentCommand() {
-		return getCurrentCommand();
+		clearArgs();
+		commandIndex = moveIndex(commandIndex - 1, commandList.length);
 	}
 
 	public void nextCommand() {
-		args = "";
-		moveIndex(index + 1);
+		clearArgs();
+		commandIndex = moveIndex(commandIndex + 1, commandList.length);
 	}
 
 	public void moveUp() {
-		moveLine(currentLine - 1);
+		String[] args = admin.getCommadArgs(getCurrentCommand());
+		if (args != null) {
+			argumentIndex = moveIndex(argumentIndex - 1, args.length);
+			argumentList[0] = argumentIndex != -1 ? args[argumentIndex] : "";
+		}
 	}
 
 	public void moveDown() {
-		moveLine(currentLine + 1);
-	}
-
-	public void addParticipant(String num, String addTime) {
-		waiting.add(new Participant(num, addTime));
-	}
-
-	public void startParticipant() {
-
-	}
-
-	//ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN GATE|CONN EYE|CONN PAD|DISC|EVENT IND|EVENT GRP|EVENT PARIND|EVENT PARGRP|NEWRUN|ENDRUN|PRINT|EXPORT|
-	//NUM|CLR|SWAP|RCL|START|FIN|TRIG|ELAPSED|CANCEL|DNF
-	
-	private void moveIndex(int next) {
-		index = next < -1 ? cmds.length - 1 : next > cmds.length - 1 ? -1 : next;
-	}
-
-	private void moveLine(int next) {
-		int totalLines = waiting.size() + running.size() + finished.size();
-		currentLine = next < 0 ? totalLines : next > totalLines ? 0 : next;
-		index = -1;
-	}
-
-	private String getCurrentCommand() {
-		return index == - 1 ? "" : cmds[index];
-	}
-
-	public String getView(boolean useCombo) {
-		String text = getTime();
-
-		if (waiting.isEmpty() && running.isEmpty() && finished.isEmpty()) {
-			text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
-		} else {
-			int line = 0;
-			for (Participant par : waiting) {
-				text += par.print();
-				if (line == currentLine) {
-					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
-				}
-				text += "\n";
-				line++;
-			}
-
-			text += "\n";
-
-			for (Participant par : running) {
-				text += par.print();
-				if (line == currentLine) {
-					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
-				}
-				text += "\n";
-				line++;
-			}
-
-			text += "\n";
-
-			for (Participant par : finished) {
-				text += par.print();
-				if (line == currentLine) {
-					text += " > " +  (useCombo ? getCommandArgCombo() : getCurrentCommand());
-				}
-				text += "\n";
-				line++;
-			}
+		String[] args = admin.getCommadArgs(getCurrentCommand());
+		if (args != null) {
+			argumentIndex = moveIndex(argumentIndex + 1, args.length);
+			argumentList[0] = argumentIndex != -1 ? args[argumentIndex] : "";
 		}
+	}
+	
+	public void resetTask() {
+		commandIndex = -1;
+		argumentIndex = -1;
+		clearArgs();
+	}
+	
+	private int moveIndex(int next, int length) {
+		return next < -1 ? length - 1 : next > length - 1 ? -1 : next;
+	}
 
+	public String[] getArgs() {
+		return argumentList;
+	}
+	
+	public String getTime() {
+		return admin.getSystemTime().toString();
+	}
+	
+	public String getCurrentCommand() {
+		return commandIndex != - 1 ? commandList[commandIndex] : "";
+	}
+
+	public String getCurrentTask() {
+		return getCurrentCommand() + " " + Arrays.toString(argumentList).replaceAll("[\\[\\]null,]", "").trim();
+	}
+	
+	public String getView() {
+		String text = getTime() + " > " + getCurrentTask() + "\n\n";
+
+		text += startingQueue + "\n";
+		text += runningQueue + "\n";
+		text += finishedQueue + "\n";
+		
 		return text;
 	}
-
-	private class Participant {
-
-		private String num;
-		private String addedTime;
-		private String startTime;
-		private String endTime;
-		private String action;
-
-		public Participant(String id, String time) {
-			num = id;
-			addedTime = time;
-			startTime = "";
-			endTime = "";
-			action = "";
-		}
-
-		public String print() {
-			return num + "  " + getTime() + " " + action + " ";
-		}
-
-		private String getTime() {
-			return action.equals("") ? addedTime : action.equals("R") ? elapsedTime() : endTime;
-		}
-
-		private String elapsedTime() {
-			return "" + (admin.getSystemTime().getTime() - SystemTime.getTimeInMillis(startTime));
-		}
-		
-
-
-	}
-
-	public void setCommandArgCombo(String arg) {
-		args += arg;		
-		commandArgCombo = args;		
-	}
 	
-	public String getCommandArgCombo() {		
-		return commandArgCombo;		
-	}
-	
-	public boolean isScanPrompting() {		
-		return scanPrompting;		
-	}		
-			
-	public void promptScanner(int num) {	
-		scanPrompting = true;		
-		setText("Select scanner type:" +		
-				"\nGATE" +		
-				"\nEYE" +		
-				"\nPAD" +		
-				"\n> ");		
+	private void clearArgs() {
+		argumentList[0] = null;
+		argumentList[1] = null;
 	}
 
 }

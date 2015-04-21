@@ -794,19 +794,43 @@ public class SystemController {
 	 * @param extended - Whether to use the extended version.
 	 * @return The string array of valid commands.
 	 */
-	public String[] getCommandList(boolean extended) {
-		return taskList.getCommandList(extended);
+	public String[] getCommandList() {
+		return taskList.getCommandList();
+	}
+	
+	/**
+	 * Gets the special arguments for a given command.  The only two
+	 * commands supported are CONN & EVENT since the others only require
+	 * numbers.
+	 * 
+	 * @param command - The command to get the arguments for.
+	 * @return The string array of arguments or null if not a valid command.
+	 */
+	public String[] getCommadArgs(String command) {
+		return taskList.getCommadArgs(command);
 	}
 	
 	/**
 	 * Gets the last task executed by the system.
 	 * 
-	 * @return The last TaskList.Task executed.
+	 * @return The last Task executed.
 	 */
-	public TaskList.Task getLastTask() {
+	public Task getLastTask() {
 		return lastTask;
 	}
 
+	public String getStartingQueue() {
+		return currentTimer.getStartingQueue();
+	}
+	
+	public String getRunningQueue() {
+		return currentTimer.getRunningQueue();
+	}
+	
+	public String getFinishedQueue() {
+		return currentTimer.getFinishedQueue();
+	}
+	
 	/**
 	 * Set's the Printer on or off.
 	 * 

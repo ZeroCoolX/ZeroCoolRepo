@@ -43,7 +43,8 @@ public class PowerButton extends AbstractButton {
 					try {
 						admin.addTask(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON");
 					} catch (IllegalArgumentException exception) {
-						console.printErrorMessage(exception.getMessage());
+						// TODO
+						//console.printErrorMessage(exception.getMessage());
 					}
 					
 					printer.clearScreen();

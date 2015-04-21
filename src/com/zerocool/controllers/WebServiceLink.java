@@ -25,7 +25,7 @@ public class WebServiceLink {
 			System.out.println("Sent to server");
 			new InputStreamReader(conn.getInputStream());
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	}

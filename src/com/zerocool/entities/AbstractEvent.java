@@ -126,7 +126,6 @@ public abstract class AbstractEvent {
 		if (participant == null || currentParticipants.contains(participant)) {
 			throw new IllegalArgumentException("Participant can't be null or in the queue already.");
 		}
-		
 		currentParticipants.add(participant);
 		if (isCurrent()) WebServiceLink.setParticipantName(participant.getPartIdWebserv(), participant.getName());
 		startingQueue.add(participant);

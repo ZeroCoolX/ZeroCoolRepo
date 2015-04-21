@@ -111,7 +111,6 @@ public class TaskList {
 
 	// Holds all the valid commands to search through when parsing.
 	private Pattern validCommands;
-	private Pattern extendedCommands;
 	private Pattern complexCommands;
 
 	/**
@@ -121,12 +120,10 @@ public class TaskList {
 		tasks = new LinkedList<Task>();
 		validCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN|DISC|EVENT|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|"
 				+ "START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
-		extendedCommands = Pattern.compile("\\b(?:ON|OFF|EXIT|RESET|TIME|TOGGLE|CONN GATE|CONN EYE|CONN PAD|DISC|EVENT IND|EVENT GRP|"
-				+ "EVENT PARIND|EVENT PARGRP|NEWRUN|ENDRUN|PRINT|EXPORT|NUM|CLR|SWAP|RCL|START|FIN|TRIG|ELAPSED|CANCEL|DNF)\\b");
 		
 		complexCommands = Pattern.compile("\\b(?:TIME|TOGGLE|CONN|DISC|EVENT|NUM|CLR|TRIG)\\b");
 	}
-
+	
 	/**
 	 * Reads in from a file and Queues all the valid tasks.
 	 * (Note: could return true even tho there are no Tasks in the Queue 
@@ -236,10 +233,35 @@ public class TaskList {
 	 * @param extended - Whether to use the extended version.
 	 * @return The string array of valid commands.
 	 */
-	public String[] getCommandList(boolean extended) {
-		return extended ? extendedCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|") : validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
+	public String[] getCommandList() {
+		return validCommands.pattern().replaceAll("[\\\\?b:()]", "").split("\\|");
 	}
 
+	/**
+	 * Gets the special arguments for a given command.  The only two
+	 * commands supported are CONN & EVENT since the others only require
+	 * numbers.
+	 * 
+	 * @param command - The command to get the arguments for.
+	 * @return The string array of arguments or null if not a valid command.
+	 */
+	public String[] getCommadArgs(String command) {
+		switch(command) {
+		
+		case "CONN":
+			
+			return new String[] { "GATE", "EYE", "PAD" };
+			
+		case "EVENT":
+			
+			return new String[] { "IND", "GRP", "PARIND", "PARGRP" };
+			
+		default:
+			
+			return null;
+		}
+	}
+	
 	/**
 	 * Checks whether the Queue is empty or not.
 	 * 

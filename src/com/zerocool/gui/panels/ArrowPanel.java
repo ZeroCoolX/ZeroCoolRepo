@@ -44,8 +44,6 @@ public class ArrowPanel extends AbstractPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				console.prevCommand();
-				console.getView().setCommandArgCombo("" + console.currentCommand() + " ");		
-				console.setCommandArgComboView();
 			}
 
 		});
@@ -57,8 +55,6 @@ public class ArrowPanel extends AbstractPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				console.nextCommand();
-				console.getView().setCommandArgCombo("" + console.currentCommand() + " ");		
-				console.setCommandArgComboView();
 			}
 
 		});
