@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.zerocool.controllers.WebServiceLink;
 import com.zerocool.services.SystemTime;
 
 public abstract class AbstractEvent {
-	
-	public static AbstractEvent currentEvent;
 
 	// First event will be 1, 2... so on.
 	protected static int LASTID = 0;
@@ -127,7 +124,6 @@ public abstract class AbstractEvent {
 			throw new IllegalArgumentException("Participant can't be null or in the queue already.");
 		}
 		currentParticipants.add(participant);
-		if (isCurrent()) WebServiceLink.setParticipantName(participant.getPartIdWebserv(), participant.getName());
 		startingQueue.add(participant);
 	}
 
@@ -268,7 +264,6 @@ public abstract class AbstractEvent {
 		Participant participant = startingQueue.poll();
 		participant.setIsCompeting(true);
 		participant.getLastRecord().setStartTime(startTime);
-		if (isCurrent()) WebServiceLink.setParticipantStart(participant.getPartIdWebserv(), Long.toString(startTime));
 		runningQueue.add(participant);
 	}
 
@@ -287,19 +282,8 @@ public abstract class AbstractEvent {
 		Participant participant = runningQueue.poll();
 		participant.setIsCompeting(false);
 		participant.getLastRecord().setFinishTime(finishTime);
-		if (isCurrent()) {
-			WebServiceLink.setParticipantEnd(participant.getPartIdWebserv(), Long.toString(finishTime));
-			WebServiceLink.setParticipantElapsed(participant.getPartIdWebserv(), Long.toString(participant.getLastRecord().getElapsedTime()));
-		}
 		participant.getLastRecord().setDnf(setDnf);
 		finishedQueue.add(participant);
-	}
-	
-	/**
-	 * Returns true if this event is the current event.
-	 */
-	public boolean isCurrent() {
-		return this==AbstractEvent.currentEvent;
 	}
 	
 	/**

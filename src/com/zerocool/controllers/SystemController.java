@@ -36,6 +36,7 @@ public class SystemController {
 
 	private Thread loop;
 	
+	private WebServiceLink server;
 	private TaskList taskList;
 	private SystemTime systemTime;
 	private Timer currentTimer;
@@ -49,6 +50,8 @@ public class SystemController {
 	public SystemController() {
 		channels = populateChannels();
 
+		server = new WebServiceLink();
+		
 		taskList = new TaskList();
 
 		systemTime = new SystemTime();
@@ -77,7 +80,7 @@ public class SystemController {
 			public void run() {
 				while (running) {
 					try {
-						Thread.sleep(1);
+						Thread.sleep(50);
 					} catch (Exception e) { e.printStackTrace(); };
 					
 					if (taskList != null && !taskList.isEmpty()) {
@@ -364,7 +367,7 @@ public class SystemController {
 				break;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -418,6 +421,8 @@ public class SystemController {
 		while (!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
 			currentTimer.setDnf();
 		}
+		
+		server.postToServer(currentTimer.getTotalParticipantView());
 	}
 	
 	/**

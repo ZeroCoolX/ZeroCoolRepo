@@ -10,6 +10,7 @@ import com.zerocool.entities.Individual;
 import com.zerocool.entities.ParGroup;
 import com.zerocool.entities.ParIndividual;
 import com.zerocool.entities.Participant;
+import com.zerocool.entities.ParticipantView;
 import com.zerocool.services.SystemTime;
 
 public class Timer {
@@ -157,23 +158,15 @@ public class Timer {
 		switch(type) {
 		case IND:
 			currentEvent = new Individual(eventName, systemTime.getTime());
-			WebServiceLink.clear();
-			AbstractEvent.currentEvent = currentEvent;
 			break;
 		case PARIND:
 			currentEvent = new ParIndividual(eventName, systemTime.getTime());
-			WebServiceLink.clear();
-			AbstractEvent.currentEvent = currentEvent;
 			break;
 		case GRP:
 			currentEvent = new Group(eventName, systemTime.getTime());
-			WebServiceLink.clear();
-			AbstractEvent.currentEvent = currentEvent;
 			break;
 		case PARGRP:
 			currentEvent = new ParGroup(eventName, systemTime.getTime());
-			WebServiceLink.clear();
-			AbstractEvent.currentEvent = currentEvent;
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid Event Type");
@@ -192,6 +185,15 @@ public class Timer {
 		for (Participant par : participants) {
 			addParticipantToStart(par);
 		}
+	}
+	
+	public ArrayList<ParticipantView> getTotalParticipantView() {
+		ArrayList<ParticipantView> list = new ArrayList<ParticipantView>();
+		for (Participant par : totalParticipants) {
+			list.add(new ParticipantView(par));
+		}
+		
+		return list;
 	}
 
 	/**

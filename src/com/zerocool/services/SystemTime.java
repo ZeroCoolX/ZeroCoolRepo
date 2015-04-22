@@ -104,7 +104,7 @@ public class SystemTime extends StopWatch {
 	 */
 	@Override
 	public long getTime() {
-		return super.getTime() + offset;
+		return 100 * ((super.getTime() + offset) / 100);
 	}
 	
 	/**
