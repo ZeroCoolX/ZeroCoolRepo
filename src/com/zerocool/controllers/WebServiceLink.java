@@ -14,6 +14,8 @@ public class WebServiceLink {
 
 	public static final String SERVICE_URL = "http://localhost:8888/";
 
+	public static final String APP_ENGINE_URL = "http://zerocoolchronotimer9000.appspot.com//zc_webservice";
+	
 	private Gson g;
 	
 	public WebServiceLink() {
@@ -23,7 +25,7 @@ public class WebServiceLink {
 	public void postToServer(ArrayList<ParticipantView> list) {
 		System.out.println(g.toJson(list));
 		try {
-			URL site = new URL(SERVICE_URL);
+			URL site = new URL(APP_ENGINE_URL);
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 			conn.setRequestMethod("POST");
 			conn.setDoOutput(true);
