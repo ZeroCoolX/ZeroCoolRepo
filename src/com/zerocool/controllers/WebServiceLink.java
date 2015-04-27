@@ -27,16 +27,16 @@ public class WebServiceLink {
 		try {
 			URL site = new URL(SERVICE_URL);
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
-			conn.setRequestMethod("POST");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
+			conn.setRequestMethod("POST");
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			String json = "data=" + g.toJson(list);
 			out.writeBytes(json);
 			out.flush();
 			out.close();
-			System.out.println("Sent to server");
 			new InputStreamReader(conn.getInputStream());
+			System.out.println("Sent to server");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
