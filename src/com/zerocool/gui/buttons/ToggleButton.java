@@ -54,10 +54,10 @@ public class ToggleButton extends AbstractButton {
 				
 				try {
 					admin.addTask(totalCommand);
-				} catch (IllegalArgumentException ex) {
+				} catch (Exception ex) {
 					ex.printStackTrace();
 					// TODO
-					//console.printErrorMessage(ex.getMessage());
+					printer.printInvalidCommandErrorMessage(ex.getMessage());
 				}
 				
 				main.repaint();

@@ -57,10 +57,10 @@ public class ChannelButton extends AbstractButton {
 
 					try {
 						admin.addTask(totalCommand);
-					} catch (IllegalArgumentException ex) {
+					} catch (Exception ex) {
 						// TODO
 						ex.printStackTrace();
-						//console.printErrorMessage(ex.getMessage());
+						printer.printInvalidCommandErrorMessage(ex.getMessage());
 					}
 				}
 			}

@@ -30,9 +30,10 @@ public class FuntionButton extends AbstractButton {
 
 				try {
 					admin.addTask(totalLine);
-				} catch (IllegalArgumentException exception) {
+				} catch (Exception exception) {
 					// TODO
 					//console.printErrorMessage(exception.getMessage());
+					printer.printInvalidCommandErrorMessage(exception.getMessage());
 				}
 			}
 
