@@ -12,7 +12,7 @@ import com.zerocool.gui.Observer;
 
 public class WebServiceLink {
 
-	public static final String SERVICE_URL = "http://localhost:8888/";
+	public static final String SERVICE_URL = "http://localhost:8888/zc_webservice";
 
 	public static final String APP_ENGINE_URL = "http://1-dot-zerocoolchronotimer9000.appspot.com/zc_webservice";
 	
@@ -25,7 +25,7 @@ public class WebServiceLink {
 	public void postToServer(ArrayList<ParticipantView> list) {
 		System.out.println(g.toJson(list));
 		try {
-			URL site = new URL(APP_ENGINE_URL);
+			URL site = new URL(SERVICE_URL);
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 			conn.setDoOutput(true);
 			conn.setDoInput(true);

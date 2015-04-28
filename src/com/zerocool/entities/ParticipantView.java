@@ -8,6 +8,7 @@ public class ParticipantView {
 	private String startTime;
 	private String finishTime;
 	private String elapsed;
+	private long fin;
 	private int bib;
 	
 	public ParticipantView(Participant par) {
@@ -15,6 +16,7 @@ public class ParticipantView {
 		if (lastRec != null) {
 			eventName = lastRec.getEventName();
 			bib = par.getId();
+			fin = lastRec.getElapsedTime();
 			startTime = SystemTime.formatTime(lastRec.getStartTime());
 			finishTime = SystemTime.formatTime(lastRec.getFinishTime());
 			elapsed = SystemTime.formatTime(lastRec.getElapsedTime());
