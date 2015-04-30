@@ -175,6 +175,23 @@ public abstract class AbstractEvent {
 		runningQueue = new LinkedList<Participant>();
 		finishedQueue = new LinkedList<Participant>();
 	}
+	
+	public void clear(Participant participant) {
+		startingQueue.remove(participant);
+	}
+	
+	public void swap() {
+		if (startingQueue.size() > 1) {
+			Queue<Participant> newStartingQueue = new LinkedList<Participant>();
+			
+			Participant par = startingQueue.poll();
+			newStartingQueue.add(startingQueue.poll());
+			newStartingQueue.add(par);
+			newStartingQueue.addAll(startingQueue);
+			
+			startingQueue = newStartingQueue;
+		}
+	}
 
 	// ----- accessors ----- \\
 

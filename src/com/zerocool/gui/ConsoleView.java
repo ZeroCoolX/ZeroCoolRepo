@@ -44,7 +44,6 @@ public class ConsoleView extends JTextArea {
 	}
 
 	public void update() {
-		// TODO things
 		if (isEnabled()) {
 			startingQueue = admin.getStartingQueue();
 			runningQueue = admin.getRunningQueue();
@@ -59,7 +58,13 @@ public class ConsoleView extends JTextArea {
 	}
 
 	public void addArgument(String arg) {
-		argumentList[1] += arg;
+		if (arg.equals("Back")) {
+			if (argumentList[1] != null) {
+				argumentList[1] = argumentList[1].substring(0, argumentList[1].length() - 1);
+			}
+		} else {
+			argumentList[1] += arg;
+		}
 	}
 	
 	public void prevCommand() {

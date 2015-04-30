@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import com.zerocool.controllers.SystemController;
 import com.zerocool.gui.Console;
@@ -43,7 +42,6 @@ public class PowerButton extends AbstractButton {
 					try {
 						admin.addTask(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON");
 					} catch (Exception exception) {
-						// TODO
 						printer.printInvalidCommandErrorMessage(exception.getMessage());
 					}
 					

@@ -45,7 +45,10 @@ public class SystemController {
 	private Task lastTask;
 
 	private boolean isPrinterOn;
+	private boolean shouldPrint;
 	private boolean running;
+	
+	private int lastTrigger;
 
 	public SystemController() {
 		channels = populateChannels();
@@ -143,7 +146,6 @@ public class SystemController {
 	 * @return The current EventLog.
 	 */
 	public EventLog getEventLog() {
-		// TODO Some classes use this method, change that.  (PrinterView)
 		return eventLog;
 	}
 	
@@ -333,13 +335,13 @@ public class SystemController {
 				cmdNum(Integer.parseInt(args[0]));
 				break;
 			case "CLR":
-				// TODO implement
+				cmdClr(Integer.parseInt(args[0]));
 				break;
 			case "SWAP":
-				// TODO implement
+				cmdSwap();
 				break;
 			case "RCL":
-				// TODO implement
+				cmdRcl();
 				break;
 			case "START":
 				// stuff
@@ -371,6 +373,20 @@ public class SystemController {
 		}
 	}
 
+	private void cmdSwap() {
+		currentTimer.swap();
+	}
+	
+	private void cmdClr(int participantId) {
+		currentTimer.clear(participantId);
+	}
+	
+	private void cmdRcl() {
+		if (lastTrigger > 0 && lastTrigger < 9) {
+			cmdTrig(lastTrigger);
+		}
+	}
+	
 	/**
 	 * Instantiates all the variables to initial states.
 	 */
@@ -518,9 +534,7 @@ public class SystemController {
 	 * @throws IOException
 	 */
 	private void cmdPrint() throws IOException {
-		//System.out.println(eventLog.read());
-		//printer.printData();
-		// TODO Print the previous run.
+		shouldPrint = true;
 	}
 
 	/**
@@ -730,6 +744,7 @@ public class SystemController {
 			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
 		}
 		
+		lastTrigger = channel;
 		channels[channel - 1].triggerSensor();
 		
 		// TODO This is not always true.  In PAR events it is possible that a top channel
@@ -852,6 +867,15 @@ public class SystemController {
 	 */
 	public boolean getIsPrinterOn() {
 		return isPrinterOn;
+	}
+	
+	public boolean shouldPrint() {
+		return shouldPrint;
+	}
+	
+	public String getPrintData() {
+		shouldPrint = false;
+		return eventLog.read();
 	}
 	
 	/**

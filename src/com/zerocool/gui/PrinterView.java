@@ -46,15 +46,15 @@ public class PrinterView extends JTextArea {
 				lastTask = nextTask;
 				addText(nextTask.toString());
 			}
+			
+			if (admin.shouldPrint()) {
+				addText(admin.getPrintData());
+			}
 		}
 	}
 	
 	public void printError(String error) {
 		addText(error);
-	}
-	
-	public void printData() {
-		addText(admin.getEventLog().read());
 	}
 
 	public void toggleEnabled(boolean enabled) {

@@ -69,6 +69,13 @@ public class Timer {
 		currentEvent.resetEvent();
 	}
 
+	public void clear(int participantId) {
+		currentEvent.clear(findParticipant(participantId));
+	}
+	
+	public void swap() {
+		currentEvent.swap();
+	}
 
 	// ----- accessors ----- \\
 

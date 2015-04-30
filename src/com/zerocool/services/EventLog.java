@@ -14,10 +14,10 @@ import java.nio.file.Files;
  * creating output based on Event information
  */
 public class EventLog {
-	
+
 	private File eventFile;
 	private File participantFile;
-	
+
 	/**
 	 * Creates a new instance of the {@link #EventLog} class
 	 */
@@ -26,13 +26,13 @@ public class EventLog {
 		try {
 			eventFile.createNewFile();
 		} catch (IOException e) { }
-		
+
 		participantFile = new File("participantOut.txt");
 		try {
 			participantFile.createNewFile();
 		} catch (IOException e) { }
 	}
-	
+
 	/**
 	 * Logs an Event into an output file
 	 * @param event The event to log
@@ -40,65 +40,65 @@ public class EventLog {
 	 */
 	public void logEvent(String eventData, SystemTime systemTime) {
 		try {
-			
+
 			BufferedWriter bw = new BufferedWriter(new FileWriter(eventFile));
 			bw.write(systemTime + " " + eventData);
 			bw.close();
-			
+
 		} catch (Exception e) { 
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param event
 	 * @param systemTime
 	 */
 	public void logParticipants(String participantData, SystemTime systemTime) {
 		try {
-			
+
 			BufferedWriter bw = new BufferedWriter(new FileWriter(participantFile));
 			bw.write("Run\tBIB\tTime\n");
 			bw.write(participantData);
 			bw.close();
-			
+
 		} catch (Exception e) { 
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String read() {
 		String printData = "";
 
 		try {
-			
-		BufferedReader fr = new BufferedReader(new FileReader(eventFile));
-		printData += "EVENTLOG\nDATA__________\n\n";
 
-		while (fr.ready()) {
-			printData += fr.readLine() + "\n" + fr.readLine() + "\n";
-		}
-		
-		fr.close();
+			BufferedReader fr = new BufferedReader(new FileReader(eventFile));
+			printData += "EVENTLOG\nDATA__________\n\n";
 
-		printData += "\n\n";
+			while (fr.ready()) {
+				printData += fr.readLine() + "\n" + fr.readLine() + "\n";
+			}
 
-		fr = new BufferedReader(new FileReader(participantFile));
-		printData += "PARTICIPANT\nDATA__________\n\n";
+			fr.close();
 
-		while (fr.ready()) {
-			printData += fr.readLine()+"\n"+fr.readLine()+"\n";
-		}
-		
-		fr.close();
-		
+			printData += "\n\n";
+
+			fr = new BufferedReader(new FileReader(participantFile));
+			printData += "PARTICIPANT\nDATA__________\n\n";
+
+			while (fr.ready()) {
+				printData += fr.readLine()+"\n"+fr.readLine()+"\n";
+			}
+
+			fr.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return printData;
 	}
-	
+
 	/**
 	 * Gets the output file of the logged Event
 	 * @return a File
@@ -114,7 +114,7 @@ public class EventLog {
 	public File getParticipantFile() {
 		return participantFile;
 	}
-	
+
 	/**
 	 * Resets variables and deletes the output text files
 	 */
@@ -123,11 +123,11 @@ public class EventLog {
 		try {
 			Files.delete(eventFile.toPath());
 		} catch (IOException e) { };
-		
+
 		try {
 			Files.delete(participantFile.toPath());
 		} catch (IOException e) { };
-		
+
 		eventFile = null;
 		participantFile = null;
 	}

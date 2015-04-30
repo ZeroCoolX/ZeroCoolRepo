@@ -47,10 +47,6 @@ public class Printer extends AbstractPanel {
 		view.setText("");
 	}
 	
-	public void printData() {
-		view.printData();
-	}
-	
 	public void printInvalidCommandErrorMessage(String error) {
 		view.printError(error);
 	}
