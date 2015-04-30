@@ -4,7 +4,7 @@ public class Individual extends AbstractEvent {
 
 	public Individual(String eventName, long eventTime) {
 		super();
-		this.eventName = eventName;
+		this.eventName = eventName + " " + LASTID;
 		this.eventTime = eventTime;
 		type = EventType.IND;
 	}
@@ -28,7 +28,9 @@ public class Individual extends AbstractEvent {
 	 */
 	@Override
 	public void setDnf(long time) {
-		finish(time, true);
+		while (!runningQueue.isEmpty()) {
+			finish(time, true);
+		}
 	}
 	
 	/**

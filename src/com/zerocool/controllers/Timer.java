@@ -194,9 +194,9 @@ public class Timer {
 		}
 	}
 	
-	public ArrayList<ParticipantView> getTotalParticipantView() {
+	public ArrayList<ParticipantView> getEventParticipantView() {
 		ArrayList<ParticipantView> list = new ArrayList<ParticipantView>();
-		for (Participant par : totalParticipants) {
+		for (Participant par : currentEvent.getCurrentParticipants()) {
 			list.add(new ParticipantView(par));
 		}
 		

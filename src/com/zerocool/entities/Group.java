@@ -4,7 +4,7 @@ public class Group extends AbstractEvent {
 
 	public Group(String eventName, long eventTime) {
 		super();
-		this.eventName = eventName;
+		this.eventName = eventName + " " + LASTID;
 		this.eventTime = eventTime;
 		type = EventType.GRP;
 	}
@@ -28,7 +28,9 @@ public class Group extends AbstractEvent {
 	 */
 	@Override
 	public void setDnf(long time) {
-		finishParticipant(time, true);
+		while (!runningQueue.isEmpty()) {
+			finishParticipant(time, true);
+		}
 	}
 	
 	/**

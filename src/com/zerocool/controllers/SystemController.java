@@ -434,11 +434,9 @@ public class SystemController {
 	 * Ends the current running event if there is one.
 	 **/
 	private void cmdEndRun() {
-		while (!currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
-			currentTimer.setDnf();
-		}
+		currentTimer.setDnf();
 		
-		server.postToServer(currentTimer.getTotalParticipantView());
+		server.postToServer(currentTimer.getEventParticipantView());
 	}
 	
 	/**

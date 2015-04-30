@@ -4,7 +4,7 @@ public class ParIndividual extends AbstractEvent {
 	
 	public ParIndividual(String eventName, long eventTime) {
 		super();
-		this.eventName = eventName;
+		this.eventName = eventName + " " + LASTID;
 		this.eventTime = eventTime;
 		type = EventType.PARIND;
 	}
@@ -29,7 +29,9 @@ public class ParIndividual extends AbstractEvent {
 	 */
 	@Override
 	public void setDnf(long time) {
-		finish(time, true);
+		while (!runningQueue.isEmpty()) {
+			finish(time, true);
+		}
 	}
 	
 	/**

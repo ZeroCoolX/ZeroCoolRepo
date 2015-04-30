@@ -4,7 +4,7 @@ public class ParGroup extends AbstractEvent {
 
 	public ParGroup(String eventName, long eventTime) {
 		super();
-		this.eventName = eventName;
+		this.eventName = eventName + " " + LASTID;
 		this.eventTime = eventTime;
 		type = EventType.PARGRP;
 	}
@@ -32,7 +32,9 @@ public class ParGroup extends AbstractEvent {
 	 */
 	@Override
 	public void setDnf(long time) {
-		finishParticipant(time, true);
+		while (!runningQueue.isEmpty()) {
+			finishParticipant(time, true);
+		}
 	}
 	
 	/**
