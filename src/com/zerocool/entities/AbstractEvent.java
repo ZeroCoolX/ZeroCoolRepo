@@ -18,6 +18,11 @@ public abstract class AbstractEvent {
 	// name of this event
 	protected String eventName;
 
+	// Used to tell what channels have been used
+	// so they are not used again in specific implementation
+	protected ArrayList<Integer> startChannelsUsed;
+	protected ArrayList<Integer> finishChannelsUsed;
+	
 	// participants actually competing in this event
 	protected ArrayList<Participant> currentParticipants;
 	protected Queue<Participant> startingQueue;
@@ -54,6 +59,8 @@ public abstract class AbstractEvent {
 	 * **/
 	protected AbstractEvent() {
 		eventId = ++LASTID;
+		startChannelsUsed = new ArrayList<Integer>();
+		finishChannelsUsed = new ArrayList<Integer>();
 		currentParticipants = new ArrayList<Participant>();
 		startingQueue = new LinkedList<Participant>();
 		runningQueue = new LinkedList<Participant>();
@@ -120,8 +127,12 @@ public abstract class AbstractEvent {
 	 * @throws IllegalArgumentException - The Participant is null.
 	 */
 	public void addParticipant(Participant participant) throws IllegalArgumentException {
+		//TODO make sure does not exceed max participants based on the event (only par group and par ind)
 		if (participant == null || currentParticipants.contains(participant)) {
 			throw new IllegalArgumentException("Participant can't be null or in the queue already.");
+		}
+		if ((this.type == EventType.PARGRP && currentParticipants.size() >= 8) || (this.type == EventType.PARIND && currentParticipants.size() >= 4)) {
+			throw new IllegalArgumentException("Cannot add participant for this event type because the max allowed has been reached.");
 		}
 		currentParticipants.add(participant);
 		startingQueue.add(participant);
@@ -157,6 +168,8 @@ public abstract class AbstractEvent {
 	 * to make room for the next batch of participants.
 	 */
 	public void newRun() {
+		startChannelsUsed = new ArrayList<Integer>();
+		finishChannelsUsed = new ArrayList<Integer>();
 		currentParticipants = new ArrayList<Participant>();
 		startingQueue = new LinkedList<Participant>();
 		runningQueue = new LinkedList<Participant>();
@@ -294,6 +307,8 @@ public abstract class AbstractEvent {
 		LASTID = -1;
 		type = null;
 		eventName = null;
+		startChannelsUsed = null;
+		finishChannelsUsed = null;
 		currentParticipants = null;
 		startingQueue = null;
 		runningQueue = null;

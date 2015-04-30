@@ -1,7 +1,7 @@
 package com.zerocool.entities;
 
 public class ParIndividual extends AbstractEvent {
-
+	
 	public ParIndividual(String eventName, long eventTime) {
 		super();
 		this.eventName = eventName;
@@ -12,9 +12,15 @@ public class ParIndividual extends AbstractEvent {
 	@Override
 	public void triggered(long time, int channel) {
 		if (channel % 2 == 0) {
-			finish(time, false);
+			if (!this.finishChannelsUsed.contains(channel)) {
+				finish(time, false);
+				this.finishChannelsUsed.add(channel);
+			}
 		} else {
-			start(time);
+			if (!this.startChannelsUsed.contains(channel)) {
+				start(time);
+				this.startChannelsUsed.add(channel);
+			}
 		}
 	}
 

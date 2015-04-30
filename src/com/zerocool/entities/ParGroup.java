@@ -20,8 +20,9 @@ public class ParGroup extends AbstractEvent {
 		if (runningQueue.isEmpty()) {
 			start(time);
 		} else {
-			if(channel % 2 == 0){
+			if (!this.finishChannelsUsed.contains(channel)) {
 				finish(time);
+				this.finishChannelsUsed.add(channel);
 			}
 		}
 	}
