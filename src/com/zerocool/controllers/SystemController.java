@@ -27,15 +27,30 @@ import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
+import com.zerocool.systemcommands.CancelCommand;
+import com.zerocool.systemcommands.ClearCommand;
 import com.zerocool.systemcommands.Command;
 import com.zerocool.systemcommands.ConnectCommand;
 import com.zerocool.systemcommands.DisconnectCommand;
+import com.zerocool.systemcommands.DnfCommand;
+import com.zerocool.systemcommands.ElapsedCommand;
+import com.zerocool.systemcommands.EndRunCommand;
+import com.zerocool.systemcommands.EventCommand;
 import com.zerocool.systemcommands.ExitCommand;
+import com.zerocool.systemcommands.ExportCommand;
+import com.zerocool.systemcommands.FinishCommand;
+import com.zerocool.systemcommands.NewRunCommand;
+import com.zerocool.systemcommands.NumCommand;
 import com.zerocool.systemcommands.OffCommand;
 import com.zerocool.systemcommands.OnCommand;
+import com.zerocool.systemcommands.PrintCommand;
+import com.zerocool.systemcommands.RecallCommand;
 import com.zerocool.systemcommands.ResetCommand;
+import com.zerocool.systemcommands.StartCommand;
+import com.zerocool.systemcommands.SwapCommand;
 import com.zerocool.systemcommands.TimeCommand;
 import com.zerocool.systemcommands.ToggleCommand;
+import com.zerocool.systemcommands.TriggerCommand;
 
 /**
  * @author adampermann
@@ -260,6 +275,10 @@ public class SystemController {
 	}
 
 	
+	/**
+	 * Sets the current command to the command entered by the user.
+	 * @param command - a String command that is on the approved list of commands
+	 */
 	private void setCurrentCommand(String command) {
 		switch (command) {
 		case "ON":
@@ -307,68 +326,68 @@ public class SystemController {
 			currentCommand = new DisconnectCommand(this);
 			break;
 		case "EVENT":
-			/*
-			 * IND | PARIND | GRP | PARGRP
-			 * 
-			 * --I guess this just creates a new Event? lets go with that --
-			 */
-			cmdEvent(args[0]);
+
+			currentCommand = new EventCommand(this);
 			break;
 		case "NEWRUN":
 			// stuff
-			cmdNewRun();
+			currentCommand = new NewRunCommand(this);
 			break;
 		case "ENDRUN":
 			// stuff
-			cmdEndRun();
+			currentCommand = new EndRunCommand(this);
 			break;
 		case "PRINT":
 			// stuff
-			cmdPrint();
+			currentCommand = new PrintCommand(this);
 			break;
 		case "EXPORT":
 			// stuff
-			cmdExport();
+			currentCommand = new ExportCommand(this);
 			break;
 		case "NUM":
 			// stuff
-			cmdNum(Integer.parseInt(args[0]));
+			currentCommand = new NumCommand(this);
 			break;
 		case "CLR":
-			cmdClr(Integer.parseInt(args[0]));
+			currentCommand = new ClearCommand(this);
 			break;
 		case "SWAP":
-			cmdSwap();
+			currentCommand = new SwapCommand(this);
 			break;
 		case "RCL":
-			cmdRcl();
+			currentCommand = new RecallCommand(this);
 			break;
 		case "START":
 			// stuff
-			cmdStart();
+			currentCommand = new StartCommand(this);
 			break;
 		case "FIN":
 			// stuff
-			cmdFinish();
+			currentCommand = new FinishCommand(this);
 			break;
 		case "TRIG":
 			// stuff
-			cmdTrig(Integer.parseInt(args[0]));
+			currentCommand = new TriggerCommand(this);
 			break;
 		case "DNF":
 			// stuff
-			cmdDnf();
+			currentCommand = new DnfCommand(this);
 			break;
 		case "ELAPSED":
 			// stuff
-			cmdElapsed();
+			currentCommand = new ElapsedCommand(this);
 			break;
 		case "CANCEL":
 			// stuff
-			cmdCancel();
+			currentCommand = new CancelCommand(this);
+			break;
+		default:
 			break;
 		}
 	}
+	
+	
 	/**
 	 * Execute a command.
 	 * 
@@ -681,8 +700,6 @@ public class SystemController {
 
 	/**
 	 * Prints a specified run.
-	 * 
-	 * @throws IOException
 	 */
 	private void cmdPrint() {
 		shouldPrint = true;
@@ -1055,6 +1072,21 @@ public class SystemController {
 			o.update();
 		}
 	}
+	
+	/**
+	 * @return The integer value of the last channel triggered.
+	 */
+	public int getLastTrigger() {
+		return this.lastTrigger;
+	}
+	
+	/**
+	 * Sets the integer value of the last channel triggered.
+	 * @param lastTrigger
+	 */
+	public void setLastTrigger(int lastTrigger) {
+		this.lastTrigger = lastTrigger;
+	}
 
 	/**
 	 * Gets the Systime's time.
@@ -1073,6 +1105,9 @@ public class SystemController {
 		this.systemTime = systemTime;
 	}
 	
+	/**
+	 * @param shouldPrint
+	 */
 	public void setShouldPrint(boolean shouldPrint) {
 		this.shouldPrint = shouldPrint;
 	}

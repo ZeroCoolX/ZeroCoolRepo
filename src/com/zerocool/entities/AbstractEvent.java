@@ -176,6 +176,10 @@ public abstract class AbstractEvent {
 		finishedQueue = new LinkedList<Participant>();
 	}
 	
+	/**
+	 * Removes the participant from the starting queue.
+	 * @param participant
+	 */
 	public void clear(Participant participant) {
 		startingQueue.remove(participant);
 	}
