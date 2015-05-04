@@ -27,7 +27,12 @@ import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
+import com.zerocool.systemcommands.Command;
 
+/**
+ * @author adampermann
+ *
+ */
 public class SystemController {
 
 	private ArrayList<Observer> observers;
@@ -43,7 +48,8 @@ public class SystemController {
 	private EventLog eventLog;
 	private AutoDetect detector;
 	private Task lastTask;
-
+	private Command currentCommand;
+	
 	private boolean isPrinterOn;
 	private boolean shouldPrint;
 	private boolean running;
@@ -126,20 +132,19 @@ public class SystemController {
 	}
 	
 	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
-	 * 
-	 * This method returns the current Timer.  This should only be used for testing.
-	 * All of the other classes should be able to get all the needed info from this class.
+	 * This method returns the current Timer.  Used by commands.
 	 * 
 	 * @return The current Timer.
 	 */
 	public Timer getTimer() {
-		// TODO Some classes use this method, change that.  (Sensor)
 		return currentTimer;
 	}
 	
+	public void createTimer() {
+		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
+	}
+	
 	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
 	 * 
 	 * This method returns the current EventLog.
 	 * 
@@ -147,6 +152,14 @@ public class SystemController {
 	 */
 	public EventLog getEventLog() {
 		return eventLog;
+	}
+	
+	
+	/**
+	 * Creates a new event log.
+	 */
+	public void createEventLog() {
+		eventLog = new EventLog();
 	}
 	
 	/**
@@ -161,7 +174,14 @@ public class SystemController {
 	}
 	
 	/**
-	 * USE THIS FOR TESTING PUROSES ONLY!
+	 * Used by the commands
+	 */
+	public void createChannels() {
+		channels = populateChannels();
+	}
+	
+	/**
+	 * Used in commands
 	 * 
 	 * Gets the current USB detector.
 	 * 
@@ -169,6 +189,10 @@ public class SystemController {
 	 */
 	public AutoDetect getAutoDetect() {
 		return detector;
+	}
+	
+	public void createAutoDetect() {
+		detector = new AutoDetect();
 	}
 	
 	/**
