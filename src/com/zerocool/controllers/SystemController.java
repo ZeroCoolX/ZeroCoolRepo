@@ -28,6 +28,14 @@ import com.zerocool.gui.Observer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
 import com.zerocool.systemcommands.Command;
+import com.zerocool.systemcommands.ConnectCommand;
+import com.zerocool.systemcommands.DisconnectCommand;
+import com.zerocool.systemcommands.ExitCommand;
+import com.zerocool.systemcommands.OffCommand;
+import com.zerocool.systemcommands.OnCommand;
+import com.zerocool.systemcommands.ResetCommand;
+import com.zerocool.systemcommands.TimeCommand;
+import com.zerocool.systemcommands.ToggleCommand;
 
 /**
  * @author adampermann
@@ -121,14 +129,18 @@ public class SystemController {
 	}
 
 	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
-	 * 
-	 * This method returns the TaskList of the SystemController.  This is very dangerous and
-	 * should only be used for testing the SystemController.
+	 * This method returns the TaskList of the SystemController. Used by commands.
 	 * @return The TaskList.
 	 */
 	public TaskList getTaskList() {
 		return taskList;
+	}
+	
+	/**
+	 * @param taskList - can be null because of commands like exit.
+	 */
+	public void setTaskList(TaskList taskList) {
+		this.taskList = taskList;
 	}
 	
 	/**
@@ -140,8 +152,13 @@ public class SystemController {
 		return currentTimer;
 	}
 	
-	public void createTimer() {
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
+	/**
+	 * Can be set to null with commands such as exit and reset.
+	 * 
+	 * @param timer - the timer to set current timer to
+	 */
+	public void setTimer(Timer timer) {
+		currentTimer = timer;
 	}
 	
 	/**
@@ -156,10 +173,10 @@ public class SystemController {
 	
 	
 	/**
-	 * Creates a new event log.
+	 * Sets the event log.  Only used by commands
 	 */
-	public void createEventLog() {
-		eventLog = new EventLog();
+	public void setEventLog(EventLog log) {
+		eventLog = log;
 	}
 	
 	/**
@@ -176,8 +193,8 @@ public class SystemController {
 	/**
 	 * Used by the commands
 	 */
-	public void createChannels() {
-		channels = populateChannels();
+	public void setChannels(Channel[] channels) {
+		this.channels = channels;
 	}
 	
 	/**
@@ -191,8 +208,8 @@ public class SystemController {
 		return detector;
 	}
 	
-	public void createAutoDetect() {
-		detector = new AutoDetect();
+	public void setAutoDetect(AutoDetect detector) {
+		this.detector = detector;
 	}
 	
 	/**
@@ -242,6 +259,116 @@ public class SystemController {
 		return taskList.addTask(command);
 	}
 
+	
+	private void setCurrentCommand(String command) {
+		switch (command) {
+		case "ON":
+			/*
+			 * --Turn system on-- create new Timer create new EventLog
+			 * create new ArrayList<Channel> set isPrinterOn = false
+			 * (default state) set ID = 0 (default state)
+			 */
+			currentCommand = new OnCommand(this);
+			break;
+		case "OFF":
+			/*
+			 * --Turn system off (stay in simulator)--set currentTimer =
+			 * nullset all channels within ArrayList<Channel> and sensors
+			 * associated with such to inactive statesset isPrinterOn =
+			 * false(I think the ID is kept...not sure)
+			 */
+			currentCommand = new OffCommand(this);
+			break;
+		case "EXIT":
+			/*
+			 * --Turn system off (kill everything)--
+			 */
+			currentCommand = new ExitCommand(this);
+			break;
+		case "RESET":
+			currentCommand = new ResetCommand(this);
+			break;
+		case "TIME":
+			/*
+			 * --Set the current time--
+			 */
+			currentCommand = new TimeCommand(this);
+			break;
+		case "TOGGLE":
+			// stuff
+			currentCommand = new ToggleCommand(this);
+			break;
+		case "CONN":
+			// stuff
+			currentCommand = new ConnectCommand(this);
+			break;
+		case "DISC":
+			// stuff
+			currentCommand = new DisconnectCommand(this);
+			break;
+		case "EVENT":
+			/*
+			 * IND | PARIND | GRP | PARGRP
+			 * 
+			 * --I guess this just creates a new Event? lets go with that --
+			 */
+			cmdEvent(args[0]);
+			break;
+		case "NEWRUN":
+			// stuff
+			cmdNewRun();
+			break;
+		case "ENDRUN":
+			// stuff
+			cmdEndRun();
+			break;
+		case "PRINT":
+			// stuff
+			cmdPrint();
+			break;
+		case "EXPORT":
+			// stuff
+			cmdExport();
+			break;
+		case "NUM":
+			// stuff
+			cmdNum(Integer.parseInt(args[0]));
+			break;
+		case "CLR":
+			cmdClr(Integer.parseInt(args[0]));
+			break;
+		case "SWAP":
+			cmdSwap();
+			break;
+		case "RCL":
+			cmdRcl();
+			break;
+		case "START":
+			// stuff
+			cmdStart();
+			break;
+		case "FIN":
+			// stuff
+			cmdFinish();
+			break;
+		case "TRIG":
+			// stuff
+			cmdTrig(Integer.parseInt(args[0]));
+			break;
+		case "DNF":
+			// stuff
+			cmdDnf();
+			break;
+		case "ELAPSED":
+			// stuff
+			cmdElapsed();
+			break;
+		case "CANCEL":
+			// stuff
+			cmdCancel();
+			break;
+		}
+	}
 	/**
 	 * Execute a command.
 	 * 
@@ -291,6 +418,7 @@ public class SystemController {
 				 * create new ArrayList<Channel> set isPrinterOn = false
 				 * (default state) set ID = 0 (default state)
 				 */
+				currentCommand = new OnCommand(this);
 				cmdOn();
 				break;
 			case "OFF":
@@ -300,6 +428,7 @@ public class SystemController {
 				 * associated with such to inactive statesset isPrinterOn =
 				 * false(I think the ID is kept...not sure)
 				 */
+				currentCommand = new OffCommand(this);
 				cmdOff();
 				break;
 			case "EXIT":
@@ -555,7 +684,7 @@ public class SystemController {
 	 * 
 	 * @throws IOException
 	 */
-	private void cmdPrint() throws IOException {
+	private void cmdPrint() {
 		shouldPrint = true;
 	}
 
@@ -752,7 +881,7 @@ public class SystemController {
 		detector = null;
 		loop.interrupt();
 		//cannot totally system exit for testing purposes...
-		//System.exit(1);
+		System.exit(1);
 	}
 
 	/**
@@ -781,7 +910,7 @@ public class SystemController {
 	 * 
 	 * @return - The array of 8 Channels created.
 	 */
-	private Channel[] populateChannels() {
+	public Channel[] populateChannels() {
 		Channel[] chans = new Channel[8];
 		
 		for (int i = 0; i < chans.length; ++i) {
@@ -934,6 +1063,40 @@ public class SystemController {
 	 */
 	public SystemTime getSystemTime() {
 		return systemTime;
+	}
+	
+	/**
+	 * Sets the System Time
+	 * @param systemTime
+	 */
+	public void setSystemTime(SystemTime systemTime) {
+		this.systemTime = systemTime;
+	}
+	
+	public void setShouldPrint(boolean shouldPrint) {
+		this.shouldPrint = shouldPrint;
+	}
+	
+	/**
+	 * Sets if isRunning
+	 * @param isRunning - true or false
+	 */
+	public void setIsRunning(boolean isRunning) {
+		running = isRunning;
+	}
+	
+	/**
+	 * Interrupts the event loop of the controller.
+	 */
+	public void stopEventLoop() {
+		loop.interrupt();
+	}
+	
+	/**
+	 * Posts the most recent run results to the web server.
+	 */
+	public void postResultsToServer() {
+		server.postToServer(currentTimer.getEventParticipantView());
 	}
 
 }

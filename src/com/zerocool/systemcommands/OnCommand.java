@@ -1,7 +1,10 @@
 package com.zerocool.systemcommands;
 
+import com.zerocool.controllers.AutoDetect;
 import com.zerocool.controllers.SystemController;
+import com.zerocool.controllers.Timer;
 import com.zerocool.entities.AbstractEvent.EventType;
+import com.zerocool.services.EventLog;
 
 public class OnCommand implements Command {
 
@@ -11,6 +14,10 @@ public class OnCommand implements Command {
 		this.controller = controller;
 	}
 	
+	/**
+	 * Instantiates all of the system controller's variables
+	 * to an initial state.
+	 */
 	@Override
 	public void execute(String... args) {
 
@@ -23,10 +30,10 @@ public class OnCommand implements Command {
 		// we need to converse on this
 		// printer set to false for default state
 		if (controller.getEventLog() == null) {
-			controller.createEventLog();
+			controller.setEventLog(new EventLog());
 		}
 		if (controller.getTimer() == null) {
-			controller.createTimer();
+			controller.setTimer(new Timer(controller.getSystemTime(), EventType.IND, EventType.IND.toString()));
 			//NO event should be logging because...there isn't en event to be logged till the user specifies what event to run with the cmd "for example": EVENT IND
 			
 			// same thing as cmdEvent("IND")
@@ -34,10 +41,10 @@ public class OnCommand implements Command {
 			controller.getEventLog().logEvent(controller.getTimer().getEventData(), controller.getSystemTime());
 		}
 		if (controller.getChannels() == null) {
-			controller.createChannels();
+			controller.setChannels(controller.populateChannels());
 		}
 		if (controller.getAutoDetect() == null) {
-			 controller.createAutoDetect();
+			 controller.setAutoDetect(new AutoDetect());
 		}
 		// printer set to false for insurance
 		controller.setIsPrinterOn(false);
