@@ -2,7 +2,6 @@ package com.zerocool.controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -53,7 +52,7 @@ import com.zerocool.systemcommands.ToggleCommand;
 import com.zerocool.systemcommands.TriggerCommand;
 
 /**
- * @author adampermann
+ * @author ZeroCool
  *
  */
 public class SystemController {
@@ -120,7 +119,8 @@ public class SystemController {
 							Task task = taskList.pollNextTask();
 							lastTask = task;
 							System.err.println(SystemTime.formatTime(systemTime.getTime()) + " Executing " + task + "...");
-							executeCommand(task.getTaskCommand(), task.getTaskArgumentOne(), task.getTaskArgumentTwo());
+							setCurrentCommand(task.getTaskCommand());
+							currentCommand.execute(task.getTaskArgumentOne(), task.getTaskArgumentTwo());
 						}
 					}
 					
@@ -188,16 +188,15 @@ public class SystemController {
 	
 	
 	/**
-	 * Sets the event log.  Only used by commands
+	 * Sets the event log.  Only used by commands.
 	 */
 	public void setEventLog(EventLog log) {
 		eventLog = log;
 	}
 	
 	/**
-	 * USE THIS FOR TESTING PURPOSES ONLY!
-	 * 
 	 * This method returns the current array of Channels.
+	 * Used in command implementations.
 	 * 
 	 * @return The current ArrayList of Channels.
 	 */
@@ -250,7 +249,8 @@ public class SystemController {
 					exit = task.getTaskCommand().equals("EXIT");
 					lastTask = task;
 					System.err.println(SystemTime.formatTime(systemTime.getTime()) + " Executing " + task + "...");
-					executeCommand(task.getTaskCommand(), task.getTaskArgumentOne(), task.getTaskArgumentTwo());
+					setCurrentCommand(task.getTaskCommand());
+					currentCommand.execute(task.getTaskArgumentOne(), task.getTaskArgumentTwo());
 				}
 				
 			} while (!exit);
@@ -291,10 +291,7 @@ public class SystemController {
 			break;
 		case "OFF":
 			/*
-			 * --Turn system off (stay in simulator)--set currentTimer =
-			 * nullset all channels within ArrayList<Channel> and sensors
-			 * associated with such to inactive statesset isPrinterOn =
-			 * false(I think the ID is kept...not sure)
+			 * --Turn system off (stay in simulator)--
 			 */
 			currentCommand = new OffCommand(this);
 			break;
@@ -387,541 +384,6 @@ public class SystemController {
 		}
 	}
 	
-	
-	/**
-	 * Execute a command.
-	 * 
-	 * @param time - The current time
-	 * @param cmd - The command to execute.
-	 * @param args - Types of events to run.
-	 * 
-	 *            Note for the different indexes used!
-	 * 
-	 *            whenever you see something like "args.get(5)" or any number in
-	 *            the parens its grabbing a specific CONSTANT value from the
-	 *            line in the file.
-	 * 
-	 *            The reason I say constant is because we have a CONSTANT file
-	 *            format like below: 12:00:00.0 TIME 12:01:00 12:01:02.0 ON
-	 *            12:01:12.0 CONN GATE 1 12:02:00.0 TOGGLE 1 12:02:10.0 NUM 234
-	 * 
-	 *            This allows us to ALWAYS know that the index 0 = hour, 1 =
-	 *            minute, 2 = second, 3 = milisecond because every line is
-	 *            preceeded by a timestamp.
-	 * 
-	 *            This also allows us to ALWAYS KNOW that the 4th index is the
-	 *            command. always. everytime. no matter what.
-	 * 
-	 * 
-	 *            This also allows us to make other assumptions like for example
-	 *            the line below: 12:01:12.0 CONN GATE 1 index 0 1 2 3 4 5 6
-	 * 
-	 *            since we know the 4th index is the command, ALL indicies after
-	 *            the 4th are the args. so for the line above which would have
-	 *            its own Case statement in the actual executeCommand() method
-	 *            we know that the 5th index is the type of sensor and the 6th
-	 *            index is the channel id.
-	 * 
-	 *            Using these known assumptions about the format of the file is
-	 *            the reason for specific indecies being used in each individual
-	 *            case statement body.
-	 * @throws IllegalArgumentException, IOException 
-	 * 
-	 */
-	private void executeCommand(String cmd, String ...args) {
-		try {
-			switch (cmd) {
-			case "ON":
-				/*
-				 * --Turn system on-- create new Timer create new EventLog
-				 * create new ArrayList<Channel> set isPrinterOn = false
-				 * (default state) set ID = 0 (default state)
-				 */
-				currentCommand = new OnCommand(this);
-				cmdOn();
-				break;
-			case "OFF":
-				/*
-				 * --Turn system off (stay in simulator)--set currentTimer =
-				 * nullset all channels within ArrayList<Channel> and sensors
-				 * associated with such to inactive statesset isPrinterOn =
-				 * false(I think the ID is kept...not sure)
-				 */
-				currentCommand = new OffCommand(this);
-				cmdOff();
-				break;
-			case "EXIT":
-				/*
-				 * --Turn system off (kill everything)--
-				 */
-				cmdExit();
-				break;
-			case "RESET":
-				// stuff
-				cmdReset();
-				break;
-			case "TIME":
-				/*
-				 * --Set the current time--
-				 */
-				cmdTime(args[0]);
-				break;
-			case "TOGGLE":
-				// stuff
-				cmdTog(Integer.parseInt(args[0]));
-				break;
-			case "CONN":
-				// stuff
-				cmdConn(args[0], Integer.parseInt(args[1]));
-				break;
-			case "DISC":
-				// stuff
-				cmdDisc(Integer.parseInt(args[0]));
-				break;
-			case "EVENT":
-				/*
-				 * IND | PARIND | GRP | PARGRP
-				 * 
-				 * --I guess this just creates a new Event? lets go with that --
-				 */
-				cmdEvent(args[0]);
-				break;
-			case "NEWRUN":
-				// stuff
-				cmdNewRun();
-				break;
-			case "ENDRUN":
-				// stuff
-				cmdEndRun();
-				break;
-			case "PRINT":
-				// stuff
-				cmdPrint();
-				break;
-			case "EXPORT":
-				// stuff
-				cmdExport();
-				break;
-			case "NUM":
-				// stuff
-				cmdNum(Integer.parseInt(args[0]));
-				break;
-			case "CLR":
-				cmdClr(Integer.parseInt(args[0]));
-				break;
-			case "SWAP":
-				cmdSwap();
-				break;
-			case "RCL":
-				cmdRcl();
-				break;
-			case "START":
-				// stuff
-				cmdStart();
-				break;
-			case "FIN":
-				// stuff
-				cmdFinish();
-				break;
-			case "TRIG":
-				// stuff
-				cmdTrig(Integer.parseInt(args[0]));
-				break;
-			case "DNF":
-				// stuff
-				cmdDnf();
-				break;
-			case "ELAPSED":
-				// stuff
-				cmdElapsed();
-				break;
-			case "CANCEL":
-				// stuff
-				cmdCancel();
-				break;
-			}
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
-	private void cmdSwap() {
-		currentTimer.swap();
-	}
-	
-	private void cmdClr(int participantId) {
-		currentTimer.clear(participantId);
-	}
-	
-	private void cmdRcl() {
-		if (lastTrigger > 0 && lastTrigger < 9) {
-			cmdTrig(lastTrigger);
-		}
-	}
-	
-	/**
-	 * Instantiates all the variables to initial states.
-	 */
-	private void cmdOn() {
-		// When the command ON is entered/read then the time needs to start.
-		// As
-		// of now upon instantiation of this class the systemTime is
-		// started...not sure if that should happen HERE or THERE
-		// What happens when OFF is entered...then ON again right after it?
-		// IDK
-		// we need to converse on this
-		// printer set to false for default state
-		if (eventLog == null) {
-			eventLog = new EventLog();
-		}
-		if (currentTimer == null) {
-			currentTimer = new Timer(systemTime, EventType.IND, EventType.IND.toString());
-			//NO event should be logging because...there isn't en event to be logged till the user specifies what event to run with the cmd "for example": EVENT IND
-			cmdEvent("IND");
-		}
-		if (channels == null) {
-			channels = populateChannels();
-		}
-		if (detector == null) {
-			detector = new AutoDetect();
-		}
-		// printer set to false for insurance
-		isPrinterOn = false;
-	}
-
-	/**
-	 * Keep the SystemTime running but set everything else to null.
-	 **/
-	private void cmdOff() {
-		// When the command OFF is entered/read then the time needs to stop.
-		eventLog = null;
-		currentTimer.resetEventId();
-		currentTimer = null;
-		channels = null;
-		detector = null;
-		isPrinterOn = false;
-	}
-	
-	/**
-	 * Ends the current running event if there is one.
-	 **/
-	private void cmdEndRun() {
-		currentTimer.setDnf();
-		
-		server.postToServer(currentTimer.getEventParticipantView());
-	}
-	
-	/**
-	 * Creates a new Run.
-	 **/
-	private void cmdNewRun() {
-		currentTimer.createNewRun();
-	}
-
-	/**
-	 * Creates a new Event based upon the given String.  If the String is not a valid
-	 * event, shit hits the fan.
-	 * 
-	 * @param event - The type of event to create.
-	 */
-	private void cmdEvent(String event) {
-		currentTimer.createEvent(EventType.valueOf(event), event);
-		eventLog.logEvent(currentTimer.getEventData(), systemTime);
-	}
-
-	/**
-	 * Instantiates all the variables to initial states
-	 **/
-	private void cmdReset() {
-		eventLog = new EventLog();
-		currentTimer = new Timer(systemTime, EventType.IND, EventType.IND + "");
-		eventLog.logEvent(currentTimer.getEventData(), systemTime);
-
-		channels = populateChannels();
-		// printer set to false for insurance
-		isPrinterOn = false;
-	}
-
-	/**
-	 * Sets the systemTime variable to the given hour, minute, and second
-	 * from the given String.
-	 * 
-	 * @param time - String in this format: HR:MIN:SEC
-	 **/
-	private void cmdTime(String time) {
-		// set the current time
-		systemTime.setTime(time);
-		systemTime.start();
-	}
-
-	/**
-	 * Turns the given channel on if it was off or off if it was on.
-	 * 
-	 * @param channel - The channel to toggle.  [1, 8]
-	 * @throws IllegalArgumentException If the channel was not [1, 8].
-	 */
-	private void cmdTog(int channel) {
-		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
-		}
-		
-		channels[channel - 1].setState(!channels[channel - 1].getState());
-	}
-
-	/**
-	 * Connects a sensor to the given channel.
-	 * 
-	 * @param sensorType - The type of sensor to add to the channel.  [GATE, EYE, PAD]
-	 * @param channel - The channel to add the sensor to.
-	 * @throws IllegalArgumentException If the channel was not [1, 8].
-	 * @throws IllegalArgumentException If the string entered was not a valid SensorType.
-	 */
-	private void cmdConn(String sensorType, int channel) {
-		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Sensor cannot connect. Invalid channel number, channels are 1-8.");
-		}
-		
-		channels[channel - 1].addSensor(sensorType);
-	}
-
-	/**
-	 * Disconnects the given channel.
-	 * 
-	 * @param channel - The channel to disconnect. [1, 8]
-	 * @throws IllegalArgumentException If the channel was not [1, 8].
-	 */
-	private void cmdDisc(int channel) {
-		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
-		}
-		
-		channels[channel - 1].disconnectSensor();
-	}
-
-	/**
-	 * Prints a specified run.
-	 */
-	private void cmdPrint() {
-		shouldPrint = true;
-	}
-
-	/**
-	 * Copies the data from the event log and writes the data to an external device (USB) if there is one connected.
-	 * 
-	 * @throws FileNotFoundException 
-	 **/
-	private void cmdExport() {
-		AbstractEvent exportEvent = currentTimer.getCurrentEvent();
-
-		if (exportEvent == null) {
-			System.err.println("ERROR: No event!");
-			return;
-		}
-			
-			try {
-
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-				// root elements
-				Document doc = docBuilder.newDocument();
-				Element rootElement = doc.createElement("logged_data");
-				doc.appendChild(rootElement);
-
-				Element eventData = doc.createElement("event_data");
-				rootElement.appendChild(eventData);	
-
-
-				Element timestamp = doc.createElement("timestamp");
-				timestamp.appendChild(doc.createTextNode(""+systemTime));
-				eventData.appendChild(timestamp);
-
-				Element eventName = doc.createElement("event_name");
-				eventName.appendChild(doc.createTextNode(""+exportEvent.getEventName()));
-				eventData.appendChild(eventName);	
-
-				Element eventId = doc.createElement("event_ID");
-				eventId.appendChild(doc.createTextNode(""+exportEvent.getEventId()));
-				eventData.appendChild(eventId);
-
-				Element eventType = doc.createElement("event_type");
-				eventType.appendChild(doc.createTextNode(""+exportEvent.getType()));
-				eventData.appendChild(eventType);
-
-				Element eventTime = doc.createElement("event_time");
-				eventTime.appendChild(doc.createTextNode(""+exportEvent.getFormattedEventTime()));
-				eventData.appendChild(eventTime);
-
-				//END event_data root child element
-
-
-				Element parRun = doc.createElement("participant_data");
-				rootElement.appendChild(parRun);
-
-				int i = 0;
-				ArrayList<Element> elements = new ArrayList<Element>();
-				for (Participant p: currentTimer.getCurrentEvent().getCurrentParticipants()) {
-						int k = i;
-
-						elements.add(doc.createElement("participant_event_ID_"+k));
-						elements.get(i).appendChild(doc.createTextNode(""+currentTimer.getCurrentEvent().getEventId()));
-						parRun.appendChild(elements.get(i));
-
-						++i;
-
-						elements.add(doc.createElement("participant_BIB_"+k));
-						elements.get(i).appendChild(doc.createTextNode(""+p.getId()));
-						parRun.appendChild(elements.get(i));
-
-						++i;
-
-						elements.add(doc.createElement("participant_time_"+k));
-						elements.get(i).appendChild(doc.createTextNode(""+SystemTime.formatTime(p.getLastRecord().getElapsedTime())));
-						parRun.appendChild(elements.get(i));
-					
-						++i;
-
-				}
-
-				//END participant_run root child element
-
-				//END participant root element
-
-				// write the content into xml file
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-				DOMSource source = new DOMSource(doc);
-				String saveFilePath = "" + (detector.driveConnected() ? detector.getDrive() + "/" : "") + exportEvent.getEventName() + exportEvent.getEventId() + ".xml";
-				if (detector.driveConnected()) {
-					System.out.println("Saving file to external device: " + saveFilePath);
-				} else {
-					//there isn't a usb drive to export to...throw error and gtfo.
-					System.err.println("NO USB DRIVE DETECTED\nSaving file locally to: " + saveFilePath);
-				}
-				StreamResult result = new StreamResult(new File(saveFilePath));
-
-				// Output to console for testing
-				// StreamResult result = new StreamResult(System.out);
-
-				transformer.transform(source, result);
-
-			} catch (ParserConfigurationException pce) {
-				pce.printStackTrace();
-			} catch (TransformerException tfe) {
-				tfe.printStackTrace();
-			}	
-			
-	}
-
-	/**
-	 * Adds a Participant to the current event.
-	 * 
-	 * @param participantId - The id of the Participant.
-	 */
-	private void cmdNum(int participantId) {
-		currentTimer.addParticipantToStart(participantId);
-	}
-
-	/**
-	 * ShortHand for triggering Channel 1's sensor.
-	 */
-	private void cmdStart() {
-		cmdTrig(1);
-	}
-
-	/**
-	 * Cancels the current run and resets it.
-	 */
-	private void cmdCancel() {
-		currentTimer.cancelStart();
-	}
-
-	/**
-	 * Print the elapsed time of all the finished participants.
-	 */
-	private void cmdElapsed() {
-		String elapsedText = "\nElapsed Time: " + currentTimer.getEventParticipantElapsedData() + "\n";
-		System.out.println(elapsedText);
-		// TODO Does this even work?
-	}
-
-	/**
-	 * ShortHand for triggering Channel 2's sensor.
-	 */
-	private void cmdFinish() {
-		cmdTrig(2);
-	}
-
-	/**
-	 * End the participant within event..but...not as cool as the REGULAR finish.
-	 */
-	private void cmdDnf() {
-		currentTimer.setDnf();
-		
-		if (currentTimer.getCurrentEvent().getRunningQueue().isEmpty()) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}
-	}
-
-	/**
-	 * Exit the entire system. Go through all global variables calling their
-	 * .exit() function and/or set them to null
-	 */
-	private void cmdExit() {
-		// when the command EXIT is entered/read then the time needs to
-		// completely die
-		running = false;
-		systemTime.exit();
-		systemTime = null;
-		isPrinterOn = false;
-
-		if (currentTimer != null) {
-			currentTimer.exit();
-			currentTimer = null;
-		}
-
-		taskList.clearTasks();
-		taskList = null;
-
-		if (channels != null) {
-			for (Channel chan : channels) {
-				chan.exit();
-			}
-		}
-
-		if (eventLog != null) {
-			eventLog.exit();
-		}
-
-		detector = null;
-		loop.interrupt();
-		//cannot totally system exit for testing purposes...
-		System.exit(1);
-	}
-
-	/**
-	 * Manually triggers a sensor on a specified channel.
-	 * 
-	 * @param channel - The channel of the sensor to trigger.
-	 * @throws IllegalArgumentException If the channel was not [1, 8].
-	 */
-	private void cmdTrig(int channel) throws IllegalStateException {
-		if (channel < 1 || channel > 8) {
-			throw new IllegalArgumentException("Invalid channel number. Channels are 1-8.");
-		}
-		
-		lastTrigger = channel;
-		channels[channel - 1].triggerSensor();
-		
-		// TODO This is not always true.  In PAR events it is possible that a top channel
-		//	could finish participants.
-		if (channel % 2 == 0) {
-			eventLog.logParticipants(currentTimer.getEventParticipantData(), systemTime);
-		}
-	}
-
 	/**
 	 * Creates an array of 8 Channels.
 	 * 
@@ -1133,5 +595,4 @@ public class SystemController {
 	public void postResultsToServer() {
 		server.postToServer(currentTimer.getEventParticipantView());
 	}
-
 }
