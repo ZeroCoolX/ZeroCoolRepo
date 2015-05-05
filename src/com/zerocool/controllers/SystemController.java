@@ -595,4 +595,8 @@ public class SystemController {
 	public void postResultsToServer() {
 		server.postToServer(currentTimer.getEventParticipantView());
 	}
+	
+	public void resetServer() {
+		server.postToServer(null);
+	}
 }
