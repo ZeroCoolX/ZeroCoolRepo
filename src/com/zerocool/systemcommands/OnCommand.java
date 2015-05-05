@@ -29,6 +29,9 @@ public class OnCommand implements Command {
 		// IDK
 		// we need to converse on this
 		// printer set to false for default state
+		controller.setOn(true);
+		if (controller.getSystemTime().isSuspended())
+			controller.getSystemTime().resume();
 		if (controller.getEventLog() == null) {
 			controller.setEventLog(new EventLog());
 		}

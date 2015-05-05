@@ -37,17 +37,13 @@ public class PowerButton extends AbstractButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (type.equals(Type.Main)) {
-					main.toggleEnabled(!on);
-					
 					try {
 						admin.addTask(on ? admin.getSystemTime() + "\tOFF" : admin.getSystemTime() + "\tON");
 					} catch (Exception exception) {
 						printer.printInvalidCommandErrorMessage(exception.getMessage());
 					}
 					
-					printer.clearScreen();
-					
-					on = !on;
+					reset();
 				} else if (type.equals(Type.Printer)) {
 					admin.setIsPrinterOn(!admin.getIsPrinterOn());
 				}
@@ -86,7 +82,18 @@ public class PowerButton extends AbstractButton {
 	public void update() {
 		if (type.equals(Type.Printer)) {
 			on = admin.getIsPrinterOn();
+		} else if (type.equals(Type.Main)) {
+			if (!admin.isOn() && on) {
+				reset();
+			}
 		}
+	}
+	
+	private void reset() {
+		printer.clearScreen();
+		console.resetTask();
+		main.toggleEnabled(!on);
+		on = !on;
 	}
 
 	@Override

@@ -16,8 +16,12 @@ public class OffCommand implements Command {
 	@Override
 	public void execute(String... args) {
 		// When the command OFF is entered/read then the time needs to stop.
+		controller.setOn(false);
+		if (!controller.getSystemTime().isSuspended())
+			controller.getSystemTime().suspend();
 		controller.setEventLog(null);
-		controller.getTimer().resetEventId();
+		if (controller.getTimer() != null)
+			controller.getTimer().resetEventId();
 		controller.setTimer(null);
 		controller.setChannels(null);
 		controller.setAutoDetect(null);

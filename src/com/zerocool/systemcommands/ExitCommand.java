@@ -14,6 +14,7 @@ public class ExitCommand implements Command {
 	@Override
 	public void execute(String... args) {
 		controller.resetServer();
+		controller.setOn(false);
 		controller.setIsRunning(false);
 		controller.getSystemTime().exit();
 		controller.setSystemTime(null);

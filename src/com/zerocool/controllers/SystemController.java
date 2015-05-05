@@ -1,28 +1,12 @@
 package com.zerocool.controllers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.zerocool.controllers.TaskList.Task;
-import com.zerocool.entities.AbstractEvent;
 import com.zerocool.entities.AbstractEvent.EventType;
 import com.zerocool.entities.Channel;
-import com.zerocool.entities.Participant;
 import com.zerocool.gui.Observer;
 import com.zerocool.services.EventLog;
 import com.zerocool.services.SystemTime;
@@ -75,6 +59,7 @@ public class SystemController {
 	private boolean isPrinterOn;
 	private boolean shouldPrint;
 	private boolean running;
+	private boolean on;
 	
 	private int lastTrigger;
 
@@ -516,7 +501,11 @@ public class SystemController {
 	public boolean isDriveConnected() {
 		return detector != null && detector.driveConnected();
 	}
-
+	
+	public boolean isOn() {
+		return on;
+	}
+	
 	/**
 	 * Add an Observer to the list of Observers to be updated by the System.
 	 * 
@@ -557,6 +546,10 @@ public class SystemController {
 	 */
 	public SystemTime getSystemTime() {
 		return systemTime;
+	}
+	
+	public void setOn(boolean on) {
+		this.on = on;
 	}
 	
 	/**

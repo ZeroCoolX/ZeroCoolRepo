@@ -1,12 +1,15 @@
 package com.zerocool.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.zerocool.controllers.SystemController;
+import com.zerocool.controllers.TaskList.Task;
 import com.zerocool.gui.views.BotView;
 import com.zerocool.gui.views.TopView;
 
@@ -79,6 +82,45 @@ public class Main extends JFrame implements Observer {
 		contentPane.add(botView, BorderLayout.SOUTH);
 		
 		toggleEnabled(false);
+		
+		addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// DO NOTHING
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				admin.addTask(admin.getSystemTime() + "\tEXIT");
+			}
+
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// DO NOTHING
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// DO NOTHING
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// DO NOTHING
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// DO NOTHING
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// DO NOTHING
+			}
+			
+		});
 	}
 	
 	@Override
