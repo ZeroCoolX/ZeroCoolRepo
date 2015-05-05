@@ -21,7 +21,7 @@ public class Main extends JFrame implements Observer {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String TITLE = "ChronoTimer 1009";
-	public static final String VERSION = "vSprint 2";
+	public static final String VERSION = "vFinal Release";
 		
 	public static final Color BLACK = new Color(13, 13, 13);
 	public static final Color BLEACHED_ALMOND = new Color(255, 235, 205);
