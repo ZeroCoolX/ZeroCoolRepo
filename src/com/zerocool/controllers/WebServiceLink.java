@@ -25,7 +25,7 @@ public class WebServiceLink {
 	public void postToServer(ArrayList<ParticipantView> list) {
 		System.out.println(g.toJson(list));
 		try {
-			URL site = new URL(SERVICE_URL);
+			URL site = new URL(APP_ENGINE_URL);
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
