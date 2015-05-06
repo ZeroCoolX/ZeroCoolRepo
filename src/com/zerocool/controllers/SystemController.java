@@ -275,93 +275,89 @@ public class SystemController {
 			currentCommand = new OnCommand(this);
 			break;
 		case "OFF":
-			/*
-			 * --Turn system off (stay in simulator)--
-			 */
+			 //Turn system off (stay in simulator)--
 			currentCommand = new OffCommand(this);
 			break;
 		case "EXIT":
-			/*
-			 * --Turn system off (kill everything)--
-			 */
+			 //Turn system off (kill everything)--
 			currentCommand = new ExitCommand(this);
 			break;
 		case "RESET":
 			currentCommand = new ResetCommand(this);
 			break;
 		case "TIME":
-			/*
-			 * --Set the current time--
-			 */
+			 //Set the current time--
 			currentCommand = new TimeCommand(this);
 			break;
 		case "TOGGLE":
-			// stuff
+			// toggles on or off a sensor
 			currentCommand = new ToggleCommand(this);
 			break;
 		case "CONN":
-			// stuff
+			// connects a chanel to a sensor
 			currentCommand = new ConnectCommand(this);
 			break;
 		case "DISC":
-			// stuff
+			// disconnects a chanel from a sensor
 			currentCommand = new DisconnectCommand(this);
 			break;
 		case "EVENT":
-
+			// creates an event  
 			currentCommand = new EventCommand(this);
 			break;
 		case "NEWRUN":
-			// stuff
+			// clears competing, finish, start queues and readies for a new event
 			currentCommand = new NewRunCommand(this);
 			break;
 		case "ENDRUN":
-			// stuff
+			// finishes all non finished particiapnts with DNF 
 			currentCommand = new EndRunCommand(this);
 			break;
 		case "PRINT":
-			// stuff
+			// prints event log data to the printer screen
 			currentCommand = new PrintCommand(this);
 			break;
 		case "EXPORT":
-			// stuff
+			// if an external, WRITABLE, (read only will not work...duh...) storage device is connected, eventLog data is copied to a .xml file onto the device
 			currentCommand = new ExportCommand(this);
 			break;
 		case "NUM":
-			// stuff
+			// adds a participant with an id as the args to a collection of event participants
 			currentCommand = new NumCommand(this);
 			break;
 		case "CLR":
+			//clears 
 			currentCommand = new ClearCommand(this);
 			break;
 		case "SWAP":
+			// switches placement of the 1st and the 2nd participant in the competing queue
 			currentCommand = new SwapCommand(this);
 			break;
 		case "RCL":
 			currentCommand = new RecallCommand(this);
 			break;
 		case "START":
-			// stuff
+			// Start a participant competing in an event
 			currentCommand = new StartCommand(this);
 			break;
 		case "FIN":
-			// stuff
+			// Finish a participant competing in an event
 			currentCommand = new FinishCommand(this);
 			break;
 		case "TRIG":
-			// stuff
+			// Triggers a sensor to be tripped
 			currentCommand = new TriggerCommand(this);
 			break;
 		case "DNF":
-			// stuff
+			// the participant did not finish the event and will have DNF as a finish time
 			currentCommand = new DnfCommand(this);
 			break;
 		case "ELAPSED":
-			// stuff
+			// get the time from system start till now
 			currentCommand = new ElapsedCommand(this);
 			break;
 		case "CANCEL":
-			// stuff
+			// cancel the curent command
 			currentCommand = new CancelCommand(this);
 			break;
 		default:
