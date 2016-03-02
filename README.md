@@ -1,4 +1,4 @@
-# Computer Architecture Final Team Project
+# Software Engineering Final Team Project
 
 This is a project called Chrono Timer 9000 which is an application that simulates the events of various track and field events by
 using sensors and pads and then records the information so that it can be displayed real time to the user, in the form of an
